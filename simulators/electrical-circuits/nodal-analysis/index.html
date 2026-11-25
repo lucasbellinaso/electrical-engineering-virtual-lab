@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102e4a">
+  <title>Nodal Analysis · EEVL</title>
+  <link rel="icon" href="../../../assets/branding/favicon.svg">
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./nodal.css">
+  <script type="module" src="./ui.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="sim-header">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../assets/branding/logo-icon.svg" width="36" height="36" alt="">
+      <span>EEVL</span>
+    </a>
+    <a class="back" href="../../../index.html#catalog" data-i18n="back">← Back to the catalog</a>
+    <div class="preferences">
+      <select id="language" data-i18n-aria="language" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="pt-BR">PT-BR</option>
+      </select>
+      <select id="theme" data-i18n-aria="theme" aria-label="Theme">
+        <option value="auto" data-i18n="auto">Auto</option>
+        <option value="light" data-i18n="light">Light</option>
+        <option value="dark" data-i18n="dark">Dark</option>
+      </select>
+    </div>
+  </header>
+
+  <main id="main" class="sim-wrapper nodal-app">
+    <div class="eyebrow" id="eyebrow">EEVL / ELECTRICAL CIRCUITS / NODAL ANALYSIS · v1.0.0</div>
+    <div class="nodal-intro">
+      <div>
+        <h1 id="page-title">Nodal Analysis of Resistive Circuits</h1>
+        <p id="page-desc" class="lead-text"></p>
+      </div>
+      <span class="verified-badge" id="verified-badge"></span>
+    </div>
+
+    <div class="lab-layout nodal-layout">
+      <section class="panel" aria-labelledby="config-heading">
+        <h2 id="config-heading">Circuit editor</h2>
+
+        <div class="field-group">
+          <span class="group-label" id="presets-label">Examples</span>
+          <div id="presets" class="preset-buttons" role="group" aria-labelledby="presets-label"></div>
+          <p id="preset-desc" class="hint-text" aria-live="polite"></p>
+        </div>
+
+        <label class="parameter" for="node-count">
+          <span id="node-count-label">Non-reference nodes (excluding GND = 0)</span>
+          <select id="node-count" name="nodeCount">
+            <option value="2">2 (Nodes 1, 2)</option>
+            <option value="3">3 (Nodes 1, 2, 3)</option>
+            <option value="4">4 (Nodes 1, 2, 3, 4)</option>
+            <option value="5">5 (Nodes 1 … 5)</option>
+          </select>
+        </label>
+
+        <div class="field-group">
+          <div class="comp-header">
+            <span class="group-label" id="components-label">Components</span>
+            <span id="comp-count" class="count-pill"></span>
+          </div>
+          <p id="convention-hint" class="hint-text"></p>
+          <div id="component-list" class="component-list"></div>
+          <div class="add-buttons">
+            <button type="button" id="add-r" class="add-btn">+ R (Ω)</button>
+            <button type="button" id="add-i" class="add-btn">+ I (A)</button>
+            <button type="button" id="add-v" class="add-btn">+ V (V)</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="solve-btn" class="primary">Solve circuit</button>
+          <button type="button" id="reset-btn">Reset</button>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+      </section>
+
+      <section class="panel" aria-labelledby="results-heading">
+        <div class="results-toolbar">
+          <h2 id="results-heading">Schematic &amp; nodal solution</h2>
+          <div class="actions compact-actions">
+            <button type="button" id="export-csv">Export CSV</button>
+            <button type="button" id="export-svg">Export SVG</button>
+            <button type="button" id="export-png">Export PNG</button>
+            <button type="button" id="share-btn">Copy link</button>
+          </div>
+        </div>
+
+        <p id="status-msg" class="status-line" aria-live="polite" role="status"></p>
+        <input id="share-url" class="share-field" aria-label="Configuration URL" readonly hidden>
+
+        <div class="schematic-wrap">
+          <svg id="schematic" class="schematic-svg" viewBox="0 0 820 380" role="img" aria-labelledby="sch-title sch-desc">
+            <title id="sch-title"></title>
+            <desc id="sch-desc"></desc>
+            <g id="schematic-content"></g>
+          </svg>
+        </div>
+
+        <div id="node-metrics" class="metric-grid nodal-metrics"></div>
+
+        <div class="math-section">
+          <h3 id="matrix-heading">System of nodal equations</h3>
+          <p id="matrix-subtitle" class="hint-text"></p>
+          <div id="matrix-katex" class="equation-math"></div>
+          <details id="kcl-details">
+            <summary id="kcl-summary">Node-by-node KCL equations</summary>
+            <div id="kcl-list" class="kcl-list"></div>
+          </details>
+        </div>
+
+        <details open>
+          <summary id="branch-summary">Branch currents, voltages and powers</summary>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr id="branch-thead"></tr>
+              </thead>
+              <tbody id="branch-tbody"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <section class="sim-docs" id="documentation">
+      <h2 id="doc-eq-title">Equations &amp; conventions</h2>
+      <p id="doc-eq-text"></p>
+      <div id="doc-katex" class="equation-math"></div>
+
+      <h2 id="doc-method-title">Numerical method</h2>
+      <p id="doc-method-text"></p>
+
+      <h2 id="doc-limits-title">Assumptions &amp; limitations</h2>
+      <p id="doc-limits-text"></p>
+
+      <h2 id="doc-ref-title">References &amp; validation</h2>
+      <p id="doc-ref-text"></p>
+      <a class="back" href="../../../docs/validation/nodal-analysis.md" id="validation-link">docs/validation/nodal-analysis.md ↗</a>
+    </section>
+  </main>
+
+  <div class="update-bar" id="update" hidden role="status">
+    <span data-i18n="updateReady">A new version is available.</span>
+    <button id="update-button" data-i18n="update">Update</button>
+  </div>
+</body>
+</html>

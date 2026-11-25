@@ -288,5 +288,190 @@
         "url": null
       }
     ]
+  },
+  {
+    "id": "nodal-analysis",
+    "title": {
+      "en": "Nodal Analysis · Resistive Circuits",
+      "pt-BR": "Análise Nodal · Circuitos Resistivos"
+    },
+    "description": {
+      "en": "Build DC resistive circuits with current and voltage sources. Compute node voltages, branch currents, power balance and the nodal/MNA matrix.",
+      "pt-BR": "Monte circuitos CC resistivos com fontes de corrente e tensão. Calcule tensões nodais, correntes de ramo, balanço de potência e a matriz nodal/MNA."
+    },
+    "category": "electrical-circuits",
+    "keywords": {
+      "en": [
+        "nodal analysis",
+        "KCL",
+        "MNA",
+        "resistors",
+        "DC circuit",
+        "Wheatstone bridge"
+      ],
+      "pt-BR": [
+        "análise nodal",
+        "LKC",
+        "MNA",
+        "resistores",
+        "circuito CC",
+        "ponte de Wheatstone"
+      ]
+    },
+    "path": "simulators/electrical-circuits/nodal-analysis/index.html",
+    "thumbnail": "assets/images/nodal-analysis.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "beginner",
+    "languages": [
+      "en",
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/nodal-analysis.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS.",
+          "pt-BR": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS."
+        },
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "rc-rl-first-order",
+    "title": {
+      "en": "RC & RL · First-Order Circuits",
+      "pt-BR": "RC e RL · Circuitos de 1ª Ordem"
+    },
+    "description": {
+      "en": "Charge, discharge and natural response of ideal RC and RL circuits with a step-by-step derivation, analytical overlay and exports.",
+      "pt-BR": "Carga, descarga e resposta natural de circuitos RC e RL ideais, com dedução passo a passo, sobreposição analítica e exportações."
+    },
+    "category": "electrical-circuits",
+    "keywords": {
+      "en": [
+        "RC",
+        "RL",
+        "time constant",
+        "transient",
+        "first order"
+      ],
+      "pt-BR": [
+        "RC",
+        "RL",
+        "constante de tempo",
+        "transitório",
+        "primeira ordem"
+      ]
+    },
+    "path": "simulators/electrical-circuits/rl-rc/index.html",
+    "thumbnail": "assets/images/rc-rl.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "beginner",
+    "languages": [
+      "en",
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/linear-circuits.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "MIT OpenCourseWare 6.002 Circuits and Electronics, lecture notes (general background; derivations and code are original to EEVL).",
+          "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL)."
+        },
+        "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/"
+      }
+    ]
+  },
+  {
+    "id": "rlc-second-order",
+    "title": {
+      "en": "RLC · Second-Order Circuits",
+      "pt-BR": "RLC · Circuitos de 2ª Ordem"
+    },
+    "description": {
+      "en": "Series and parallel RLC: underdamped, critically damped and overdamped responses, energy exchange and a derivation with KaTeX.",
+      "pt-BR": "RLC série e paralelo: respostas subamortecida, criticamente amortecida e superamortecida, troca de energia e dedução com KaTeX."
+    },
+    "category": "electrical-circuits",
+    "keywords": {
+      "en": [
+        "RLC",
+        "damping",
+        "resonance",
+        "second order",
+        "transient"
+      ],
+      "pt-BR": [
+        "RLC",
+        "amortecimento",
+        "ressonância",
+        "segunda ordem",
+        "transitório"
+      ]
+    },
+    "path": "simulators/electrical-circuits/rlc-series-parallel/index.html",
+    "thumbnail": "assets/images/rlc.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "intermediate",
+    "languages": [
+      "en",
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/linear-circuits.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "MIT OpenCourseWare 6.002 Circuits and Electronics, lecture notes (general background; derivations and code are original to EEVL).",
+          "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL)."
+        },
+        "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/"
+      }
+    ]
   }
 ]

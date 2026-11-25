@@ -75,3 +75,17 @@ Microsoft Edge local, servidor HTTP sob `/EEVL/` para exercitar um subdiretório
 Executar e ativar GitHub Pages: `README.md`. Adicionar simuladores e traduções:
 `CONTRIBUTING.md`. Requisitos e decisões: `SPECIFICATION.md`. Evidência analítica
 do template e critérios de teste: `VALIDATION.md`.
+
+## Extensão: circuitos de 1ª e 2ª ordem (25/11/2026)
+
+- Novos aplicativos EN/PT-BR em Circuitos Elétricos: `rc-rl-first-order` (RC e RL) e
+  `rlc-second-order` (RLC série e paralelo). Modelo puro em
+  `simulators/electrical-circuits/shared/model.js`, RK4 em Worker, solução analítica
+  de referência, dedução em LaTeX com KaTeX local, exportações CSV/SVG/PNG e URL.
+- Correção: expressão `-omega0**2` era sintaxe inválida e impedia carregar o modelo.
+- Evidência analítica reproduzível: `docs/validation/linear-circuits.md` e
+  `tests/linear-circuits.test.mjs` (15 testes). Nível declarado: *analytically-verified*.
+- Cache da PWA: VERSION `eevl-v1.0.4`, miniaturas `rc-rl.svg` e `rlc.svg` no precache.
+- **Não executado**: verificação em navegador real (Worker, gráficos, exportações,
+  layout em 390 px, tema escuro, offline) para esses dois aplicativos; sem SPICE
+  nem medições; sem push ou publicação.

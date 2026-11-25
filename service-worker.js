@@ -1,5 +1,5 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.0.2';
+const VERSION='eevl-v1.0.4';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
@@ -7,7 +7,7 @@ const urls=[
  'assets/css/main.css','assets/js/app.js','assets/js/common.js','assets/js/i18n.js','assets/js/document.js','assets/js/lab.js',
  'data/config.json','data/categories.json','data/simulators.json','locales/en.json','locales/pt-BR.json',
  'assets/branding/logo-icon.svg','assets/branding/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png',
- 'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg'
+ 'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg','assets/images/nodal-analysis.svg','assets/images/rc-rl.svg','assets/images/rlc.svg'
 ].map(p=>new URL(p,root).href);
 self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(urls)));});
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();});
