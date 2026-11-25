@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SISO Design App — Projeto de Controladores</title>
+<script src="../../../assets/vendor/plotly-2.35.2.min.js" charset="utf-8"></script>
+<style>
+  :root {
+    --surface: #ffffff; --panel: #f6f7f9; --border: #d9dce1;
+    --text: #191919; --text2: #666666; --accent: #257de0;
+    --s-T: #257de0; --s-Gp: #f47230; --s-Gc: #00b894; --s-cl: #6a4ce2; --s-ref: #7a7a7a;
+    --ok: #0a7d24; --bad: #c62828;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--surface); }
+  header { display: flex; align-items: baseline; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 18px; margin: 0; }
+  header .sub { color: var(--text2); font-size: 12px; }
+  header .spacer { flex: 1; }
+  button { font: inherit; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; background: #fff; cursor: pointer; }
+  button:hover { background: #eef3fb; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button.primary:hover { background: #1b66bb; }
+  input, select { font: inherit; padding: 3px 5px; border: 1px solid var(--border); border-radius: 4px; background: #fff; }
+  input[type=number] { width: 90px; }
+  input.err, select.err { border-color: var(--bad); background: #fff3f3; }
+  main { display: grid; grid-template-columns: 480px 1fr; min-height: calc(100vh - 50px); }
+  aside { border-right: 1px solid var(--border); background: var(--panel); padding: 0 0 20px; overflow-y: auto; max-height: calc(100vh - 50px); position: sticky; top: 0; }
+  .tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--border); background: #eceef2; position: sticky; top: 0; z-index: 2; }
+  .tabs button { border: none; border-radius: 0; background: transparent; padding: 9px 11px; color: var(--text2); border-bottom: 2px solid transparent; }
+  .tabs button.active { color: var(--text); border-bottom-color: var(--accent); background: var(--panel); font-weight: 600; }
+  .tab { display: none; padding: 12px 14px; }
+  .tab.active { display: block; }
+  .field { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 6px; margin: 6px 0; }
+  .field label { color: var(--text2); }
+  .field input[type=text] { width: 100%; }
+  .hint { color: var(--text2); font-size: 12px; margin: 4px 0 8px; }
+  .msg { font-size: 13px; margin: 6px 0; min-height: 1em; }
+  .msg.error { color: var(--bad); }
+  .msg.warn { color: #9a5b00; }
+  h3 { font-size: 14px; margin: 14px 0 6px; }
+  .tfbox { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin: 8px 0; overflow-x: auto; white-space: nowrap; }
+  .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 2px; }
+  .frac > span:first-child { border-bottom: 1px solid var(--text); padding: 0 3px 1px; }
+  .frac > span:last-child { padding: 1px 3px 0; }
+  .pzrow { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; margin: 6px 0; }
+  .pzrow.bad { border-color: var(--bad); }
+  .pzrow .line1 { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .pzrow .line1 input[type=number] { width: 84px; }
+  .pzrow .line2 { display: flex; gap: 8px; align-items: center; margin-top: 4px; font-size: 12px; color: var(--text2); }
+  .pzrow .line2 input[type=range] { flex: 1; }
+  .pzrow .rm { margin-left: auto; padding: 1px 7px; }
+  .gainbox { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; }
+  .gainbox .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .gainbox input[type=range] { width: 100%; margin: 6px 0; }
+  .gainbox input.small { width: 64px; }
+  table.dist { border-collapse: collapse; width: 100%; font-size: 12px; }
+  table.dist td, table.dist th { padding: 2px 2px; text-align: left; }
+  table.dist input[type=text] { width: 70px; }
+  table.dist input[type=number] { width: 56px; }
+  .distdesc { font-size: 11px; color: var(--text2); padding-bottom: 6px !important; border-bottom: 1px solid var(--border); }
+  pre.code { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 12px; overflow-x: auto; white-space: pre; }
+  .plots { padding: 8px 12px 24px; min-width: 0; }
+  .metrics { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .metric { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 4px 9px; font-size: 12px; }
+  .metric b { font-size: 14px; font-variant-numeric: tabular-nums; }
+  .metric .lbl { color: var(--text2); display: block; font-size: 11px; }
+  .metric.ok { border-color: var(--ok); }
+  .metric.bad { border-color: var(--bad); }
+  .metric .st { font-weight: 700; margin-left: 4px; }
+  .metric.ok .st { color: var(--ok); }
+  .metric.bad .st { color: var(--bad); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .card { border: 1px solid var(--border); border-radius: 8px; background: #fff; min-width: 0; }
+  .card.tall { grid-row: span 2; }
+  .card.wide { grid-column: span 2; }
+  .plot { width: 100%; }
+  #banner { display: none; background: #fff3f3; color: var(--bad); border: 1px solid var(--bad); border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; }
+  svg.bd text { font: 12px system-ui, sans-serif; fill: var(--text); }
+  svg.bd .lbl { fill: var(--text2); font-size: 11px; }
+  @media (max-width: 1100px) {
+    main { grid-template-columns: 1fr; }
+    aside { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
+    .grid { grid-template-columns: 1fr; }
+    .card.tall, .card.wide { grid-row: auto; grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>SISO Design App</h1>
+  <span class="sub">Projeto de controladores SISO — baseado no PythonSisoDesignApp (Prof. Lucas V. Bellinaso, UFSM)</span>
+  <span class="spacer"></span>
+  <label class="sub">Frequência em
+    <select id="funit"><option value="Hz">Hz</option><option value="rad">rad/s</option></select>
+  </label>
+  <button id="btnLink" title="Copia um link com planta, controlador e requisitos atuais">Copiar link da configuração</button>
+</header>
+<main>
+<aside>
+  <div class="tabs" id="tabs">
+    <button data-tab="plant" class="active">Planta</button>
+    <button data-tab="ctrl">Controlador</button>
+    <button data-tab="req">Requisitos</button>
+    <button data-tab="dist">Distúrbios</button>
+    <button data-tab="info">Resultados</button>
+  </div>
+
+  <!-- ===================== PLANTA ===================== -->
+  <section class="tab active" id="tab-plant">
+    <svg class="bd" viewBox="0 0 450 130" width="100%" aria-label="Diagrama de blocos da malha de controle">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker></defs>
+      <g stroke="#333" fill="none" stroke-width="1.2">
+        <line x1="18" y1="40" x2="45" y2="40" marker-end="url(#ah)"/>
+        <circle cx="55" cy="40" r="9"/>
+        <line x1="64" y1="40" x2="98" y2="40" marker-end="url(#ah)"/>
+        <rect x="98" y="27" width="46" height="26" rx="3"/>
+        <line x1="144" y1="40" x2="181" y2="40" marker-end="url(#ah)"/>
+        <circle cx="190" cy="40" r="9"/>
+        <line x1="190" y1="8" x2="190" y2="30" marker-end="url(#ah)"/>
+        <line x1="199" y1="40" x2="226" y2="40" marker-end="url(#ah)"/>
+        <rect x="226" y="27" width="46" height="26" rx="3"/>
+        <line x1="272" y1="40" x2="306" y2="40" marker-end="url(#ah)"/>
+        <circle cx="315" cy="40" r="9"/>
+        <line x1="315" y1="8" x2="315" y2="30" marker-end="url(#ah)"/>
+        <line x1="324" y1="40" x2="440" y2="40" marker-end="url(#ah)"/>
+        <line x1="380" y1="40" x2="380" y2="91"/>
+        <line x1="380" y1="91" x2="380" y2="91" marker-end="url(#ah)"/>
+        <circle cx="380" cy="100" r="9"/>
+        <line x1="420" y1="100" x2="390" y2="100" marker-end="url(#ah)"/>
+        <line x1="371" y1="100" x2="272" y2="100" marker-end="url(#ah)"/>
+        <rect x="226" y="87" width="46" height="26" rx="3"/>
+        <line x1="226" y1="100" x2="55" y2="100"/>
+        <line x1="55" y1="100" x2="55" y2="50" marker-end="url(#ah)"/>
+      </g>
+      <circle cx="380" cy="40" r="2.5" fill="#333"/>
+      <text x="4" y="44">r</text>
+      <text x="76" y="35" class="lbl">e</text>
+      <text x="107" y="45">G<tspan baseline-shift="sub" font-size="9">c</tspan>·K</text>
+      <text x="158" y="35" class="lbl">u<tspan baseline-shift="sub" font-size="8">c</tspan></text>
+      <text x="195" y="16" class="lbl">d<tspan baseline-shift="sub" font-size="8">u</tspan></text>
+      <text x="206" y="35" class="lbl">u</text>
+      <text x="240" y="45">G<tspan baseline-shift="sub" font-size="9">p</tspan></text>
+      <text x="282" y="35" class="lbl">y<tspan baseline-shift="sub" font-size="8">p</tspan></text>
+      <text x="320" y="16" class="lbl">d<tspan baseline-shift="sub" font-size="8">y</tspan></text>
+      <text x="426" y="34">y</text>
+      <text x="408" y="95" class="lbl">d<tspan baseline-shift="sub" font-size="8">m</tspan></text>
+      <text x="330" y="95" class="lbl">y<tspan baseline-shift="sub" font-size="8">m</tspan></text>
+      <text x="242" y="105">G<tspan baseline-shift="sub" font-size="9">f</tspan></text>
+      <text x="150" y="95" class="lbl">y<tspan baseline-shift="sub" font-size="8">f</tspan></text>
+      <text x="38" y="62">−</text>
+      <text x="40" y="33">+</text>
+    </svg>
+    <div class="hint">Malha aberta: T = G<sub>c</sub>·K·G<sub>p</sub>·G<sub>f</sub>. Entradas: referência r e distúrbios d<sub>u</sub>, d<sub>y</sub>, d<sub>m</sub>.</div>
+
+    <div class="field"><label for="preset">Exemplo</label>
+      <select id="preset"><option value="">— escolher um exemplo —</option></select></div>
+
+    <div class="field"><label for="domain">Domínio</label>
+      <select id="domain">
+        <option value="c">Contínuo, G(s)</option>
+        <option value="zoh">G(s) discretizada com ZOH → G(z)</option>
+        <option value="d">Discreto, G(z) direto</option>
+      </select></div>
+    <div class="field" id="fTs"><label for="Ts">Amostragem T<sub>s</sub> (s)</label><input type="number" id="Ts" value="0.1" step="any" min="0"></div>
+
+    <h3>Planta G<sub>p</sub></h3>
+    <div class="field"><label for="pnum">Numerador</label><input type="text" id="pnum" value="1"></div>
+    <div class="field"><label for="pden">Denominador</label><input type="text" id="pden" value="s^2 + s + 1"></div>
+    <div class="field"><label for="pdelay">Atraso (s)</label><input type="number" id="pdelay" value="0" step="any" min="0"></div>
+    <div class="field" id="fPade"><label for="pade">Ordem de Padé</label><input type="number" id="pade" value="4" min="1" max="8" step="1"></div>
+    <div class="hint">Aceita vetor de coeficientes (<code>1 2 3</code> ou <code>[1, 2, 3]</code>) ou expressão em <code>s</code>/<code>z</code>, por exemplo <code>(s+1)(s^2+2s+5)</code> ou <code>10*(0.5s+1)</code>.
+      Atraso contínuo: exato no Bode e nas margens; aproximado por Padé no lugar das raízes e nas simulações. No discreto, o atraso é arredondado para múltiplos de T<sub>s</sub>.</div>
+
+    <h3>Sensor / filtro de medição G<sub>f</sub></h3>
+    <div class="field"><label for="fnum">Numerador</label><input type="text" id="fnum" value="1"></div>
+    <div class="field"><label for="fden">Denominador</label><input type="text" id="fden" value="1"></div>
+    <div class="hint" id="gfhint">G<sub>f</sub> é definido no mesmo domínio do controlador.</div>
+
+    <div class="msg" id="plantMsg"></div>
+    <div class="tfbox" id="plantTF"></div>
+    <div class="hint" id="plantPZ"></div>
+  </section>
+
+  <!-- ===================== CONTROLADOR ===================== -->
+  <section class="tab" id="tab-ctrl">
+    <div class="gainbox">
+      <div class="row">
+        <b>Ganho K</b>
+        <input type="number" id="kdb" step="0.1" title="Ganho em dB"> dB
+        <span>=</span>
+        <input type="number" id="klin" step="any" title="Ganho linear">
+        <button id="ksign" title="Inverte o sinal do ganho">sinal: +</button>
+      </div>
+      <input type="range" id="kslider" step="0.05">
+      <div class="row hint" style="margin:0">Faixa do controle deslizante:
+        <input type="number" class="small" id="kmin" value="-80" step="10"> a
+        <input type="number" class="small" id="kmax" value="80" step="10"> dB
+      </div>
+    </div>
+    <div class="tfbox" id="ctrlTF"></div>
+    <div class="msg" id="ctrlMsg"></div>
+    <div id="pzlist"></div>
+    <div style="display:flex; gap:8px; margin-top:8px">
+      <button id="addPZ" class="primary">+ Adicionar polo/zero</button>
+      <button id="resetC">Limpar controlador</button>
+    </div>
+    <div class="hint" style="margin-top:10px">
+      Cada fator tem ganho DC unitário (ex.: polo real <code>1/(s/ω+1)</code>), então K é o ganho em baixa frequência da parte não integradora.
+      G<sub>c</sub> precisa ser própria: número de zeros ≤ número de polos.
+      Arraste o controle deslizante de frequência ou digite o valor; os gráficos atualizam na hora.
+    </div>
+  </section>
+
+  <!-- ===================== REQUISITOS ===================== -->
+  <section class="tab" id="tab-req">
+    <div class="hint">Os requisitos aparecem como regiões proibidas (cinza) na resposta ao degrau e como região desejada no lugar das raízes. Deixe em branco ou 0 para desativar.</div>
+    <div class="field"><label for="reqOS">Sobressinal máx. (%)</label><input type="number" id="reqOS" value="10" step="any" min="0"></div>
+    <div class="field"><label for="reqTr">Tempo de subida máx. (s)</label><input type="number" id="reqTr" value="" step="any" min="0"></div>
+    <div class="field"><label for="reqTs">Tempo de acomodação máx. (s)</label><input type="number" id="reqTs" value="" step="any" min="0"></div>
+    <div class="field"><label for="tStep">Tempo final do degrau (s)</label><input type="number" id="tStep" value="" step="any" min="0" placeholder="automático"></div>
+    <div class="hint">
+      Definições (referência r = 1): sobressinal = máximo de y acima de 1;
+      tempo de subida = instante em que y atinge 0,9 (e a partir do requisito y não pode ficar abaixo de 0,9);
+      tempo de acomodação = último instante em que y está fora da faixa 0,98–1,02.
+      No lugar das raízes: o sobressinal define ζ<sub>mín</sub> e o tempo de acomodação define σ = 4/t<sub>s</sub>.
+    </div>
+  </section>
+
+  <!-- ===================== DISTÚRBIOS ===================== -->
+  <section class="tab" id="tab-dist">
+    <div class="field"><label for="dT">Tempo total (s)</label><input type="number" id="dT" value="20" step="any" min="0"></div>
+    <div class="field" id="fdDt"><label for="dDt">Passo (s)</label><input type="number" id="dDt" value="0.001" step="any" min="0"></div>
+    <div style="display:flex; gap:8px; margin:6px 0">
+      <button id="dAuto">Ajustar tempo ao sistema</button>
+    </div>
+    <table class="dist">
+      <thead><tr><th></th><th>Entrada</th><th>Sinal</th><th>Freq (Hz)</th><th>Tempos (s)</th><th>Amplitudes</th><th>Máx dA/dt</th><th></th></tr></thead>
+      <tbody id="distRows"></tbody>
+    </table>
+    <button id="addDist" class="primary" style="margin-top:8px">+ Adicionar sinal</button>
+    <div class="msg" id="distMsg"></div>
+    <div class="hint">Os sinais de mesma entrada são somados. Tempos e amplitudes são listas separadas por vírgula.
+      No seno, a amplitude pode ser complexa (<code>a+bj</code>) para mudar a fase. Máx dA/dt vazio = mudança instantânea.</div>
+  </section>
+
+  <!-- ===================== RESULTADOS ===================== -->
+  <section class="tab" id="tab-info">
+    <h3>Controlador</h3>
+    <div class="tfbox" id="infoGc"></div>
+    <div class="hint" id="infoGcZpk"></div>
+    <h3>Malha aberta T = G<sub>c</sub>·K·G<sub>p</sub>·G<sub>f</sub></h3>
+    <div class="tfbox" id="infoT"></div>
+    <h3>Polos de malha fechada</h3>
+    <div class="tfbox" id="infoCL" style="white-space:normal"></div>
+    <h3>Código MATLAB</h3>
+    <pre class="code" id="codeM"></pre>
+    <h3>Código Python (python-control)</h3>
+    <pre class="code" id="codeP"></pre>
+    <button id="copyM">Copiar MATLAB</button> <button id="copyP">Copiar Python</button>
+  </section>
+</aside>
+
+<section class="plots">
+  <div id="banner"></div>
+  <div class="metrics" id="metrics"></div>
+  <div class="grid">
+    <div class="card tall"><div id="plotBode" class="plot" style="height:766px"></div></div>
+    <div class="card"><div id="plotRL" class="plot" style="height:380px"></div></div>
+    <div class="card"><div id="plotStep" class="plot" style="height:380px"></div></div>
+    <div class="card wide"><div id="plotDist" class="plot" style="height:420px"></div></div>
+  </div>
+</section>
+</main>
+
+<script>
+'use strict';
+/* =====================================================================
+   SISO Design App (JavaScript) — conversão do PythonSisoDesignApp
+   Toda a parte numérica (raízes, resposta em frequência, margens,
+   lugar das raízes, espaço de estados, simulação) está implementada aqui.
+   ===================================================================== */
+
+const COLORS = { T: '#257de0', Gp: '#f47230', Gc: '#00b894', cl: '#6a4ce2', ref: '#7a7a7a', dm: '#6a4ce2', dy: '#00b894', du: '#f47230' };
+const TWO_PI = 2 * Math.PI, R2D = 180 / Math.PI;
+
+/* ------------------------- formatação ------------------------- */
+function fmt(x, d = 4) {
+  if (x === Infinity) return '∞';
+  if (x === -Infinity) return '−∞';
+  if (!isFinite(x)) return '—';
+  if (x === 0) return '0';
+  const a = Math.abs(x);
+  if (a >= 1e5 || a < 1e-3) return x.toExponential(d - 1).replace('e+', 'e');
+  return String(parseFloat(x.toPrecision(d)));
+}
+const fmtN = (x) => String(parseFloat(x.toPrecision(8)));   // para código
+function fmtC(z) {
+  if (Math.abs(z[1]) < 1e-12) return fmt(z[0]);
+  return `${fmt(z[0])} ${z[1] < 0 ? '−' : '+'} j${fmt(Math.abs(z[1]))}`;
+}
+function sup(k) { return k > 1 ? `<sup>${k}</sup>` : ''; }
+
+/* ------------------------- polinômios ------------------------- */
+// Convenção: coeficientes da maior para a menor potência (como no MATLAB).
+function ptrim(p, rel = 1e-14) {
+  const mx = Math.max(...p.map(Math.abs));
+  if (mx === 0) return [0];
+  let i = 0;
+  while (i < p.length - 1 && Math.abs(p[i]) <= rel * mx) i++;
+  return p.slice(i);
+}
+function pmul(a, b) {
+  const r = new Array(a.length + b.length - 1).fill(0);
+  for (let i = 0; i < a.length; i++) for (let j = 0; j < b.length; j++) r[i + j] += a[i] * b[j];
+  return r;
+}
+function padd(a, b) {
+  const n = Math.max(a.length, b.length), r = new Array(n).fill(0);
+  a.forEach((v, i) => r[n - a.length + i] += v);
+  b.forEach((v, i) => r[n - b.length + i] += v);
+  return r;
+}
+const pscale = (a, k) => a.map(v => v * k);
+const pdeg = (p) => ptrim(p).length - 1;
+const plead = (p) => ptrim(p)[0];
+function pprod(list) { return list.reduce((acc, p) => pmul(acc, p), [1]); }
+function polyFromRoots(rs) {
+  let re = [1], im = [0];
+  for (const [a, b] of rs) {   // multiplica por (x - (a+jb))
+    const nr = new Array(re.length + 1).fill(0), ni = new Array(re.length + 1).fill(0);
+    for (let i = 0; i < re.length; i++) {
+      nr[i] += re[i]; ni[i] += im[i];
+      nr[i + 1] += -(re[i] * a - im[i] * b); ni[i + 1] += -(re[i] * b + im[i] * a);
+    }
+    re = nr; im = ni;
+  }
+  return re;
+}
+function polyStr(p, v, html = true) {
+  p = ptrim(p);
+  const n = p.length - 1;
+  let s = '';
+  p.forEach((c, i) => {
+    const k = n - i;
+    if (c === 0 && n > 0) return;
+    const neg = c < 0, a = Math.abs(c);
+    let coef = (a === 1 && k > 0) ? '' : fmt(a);
+    let term = k === 0 ? fmt(a) : `${coef}${coef ? ' ' : ''}${v}${html ? sup(k) : (k > 1 ? '^' + k : '')}`;
+    if (s === '') s = (neg ? '−' : '') + term;
+    else s += (neg ? ' − ' : ' + ') + term;
+  });
+  return s || '0';
+}
+
+/* ------------------------- raízes (Aberth–Ehrlich) ------------------------- */
+function roots(pIn, init) {
+  let p = ptrim(pIn.slice());
+  const res = [];
+  if (p.length <= 1) return res;
+  while (p.length > 1 && p[p.length - 1] === 0) { res.push([0, 0]); p.pop(); }
+  const n = p.length - 1;
+  if (n === 0) return res;
+  const c = p.map(v => v / p[0]);
+  if (n === 1) { res.push([-c[1], 0]); return res; }
+  if (n === 2) {
+    const b = c[1], cc = c[2], disc = b * b - 4 * cc;
+    if (disc >= 0) {
+      const q = -(b + (b >= 0 ? 1 : -1) * Math.sqrt(disc)) / 2;
+      const r1 = q, r2 = q !== 0 ? cc / q : 0;
+      res.push([r1, 0], [r2, 0]);
+    } else {
+      res.push([-b / 2, Math.sqrt(-disc) / 2], [-b / 2, -Math.sqrt(-disc) / 2]);
+    }
+    return res;
+  }
+  return res.concat(aberth(c, n, init && init.length === n + res.length ? init.slice(res.length) : null));
+}
+function aberth(c, n, init) {
+  const d = []; for (let i = 0; i < n; i++) d.push(c[i] * (n - i));
+  const zr = new Float64Array(n), zi = new Float64Array(n);
+  if (init && init.length === n) {
+    for (let i = 0; i < n; i++) {
+      const m = 1 + Math.hypot(init[i][0], init[i][1]);
+      zr[i] = init[i][0] + 1e-7 * m * Math.cos(i * 2.1);
+      zi[i] = init[i][1] + 1e-7 * m * Math.sin(i * 2.1 + 0.3);
+    }
+  } else {
+    let r0 = Math.pow(Math.abs(c[n]), 1 / n);
+    let R = 0; for (let i = 1; i <= n; i++) R = Math.max(R, Math.pow(Math.abs(c[i]), 1 / i));
+    if (!(r0 > 0) || !isFinite(r0)) r0 = R > 0 ? R : 1;
+    for (let k = 0; k < n; k++) { const th = TWO_PI * k / n + 0.4; zr[k] = r0 * Math.cos(th); zi[k] = r0 * Math.sin(th); }
+  }
+  for (let it = 0; it < 400; it++) {
+    let maxStep = 0;
+    for (let i = 0; i < n; i++) {
+      const x = zr[i], y = zi[i];
+      let pr = 1, pi = 0;
+      for (let k = 1; k <= n; k++) { const t = pr * x - pi * y + c[k]; pi = pr * y + pi * x; pr = t; }
+      if (pr === 0 && pi === 0) continue;
+      let dr = d[0], di = 0;
+      for (let k = 1; k < n; k++) { const t = dr * x - di * y + d[k]; di = dr * y + di * x; dr = t; }
+      const dm = dr * dr + di * di;
+      let rr, ri;
+      if (dm === 0) { rr = 1e-6 * (1 + Math.hypot(x, y)); ri = 0; }
+      else { rr = (pr * dr + pi * di) / dm; ri = (pi * dr - pr * di) / dm; }
+      let sr = 0, si = 0;
+      for (let j = 0; j < n; j++) {
+        if (j === i) continue;
+        const dx = x - zr[j], dy = y - zi[j], m = dx * dx + dy * dy;
+        if (m === 0) continue;
+        sr += dx / m; si -= dy / m;
+      }
+      const tr = 1 - (rr * sr - ri * si), ti = -(rr * si + ri * sr), tm = tr * tr + ti * ti;
+      if (tm === 0) continue;
+      const wr = (rr * tr + ri * ti) / tm, wi = (ri * tr - rr * ti) / tm;
+      if (!isFinite(wr) || !isFinite(wi)) continue;
+      zr[i] -= wr; zi[i] -= wi;
+      const st = Math.hypot(wr, wi) / (1 + Math.hypot(zr[i], zi[i]));
+      if (st > maxStep) maxStep = st;
+    }
+    if (maxStep < 1e-14) break;
+  }
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    let im = zi[i];
+    if (Math.abs(im) < 1e-7 * (1 + Math.abs(zr[i]))) im = 0;
+    out.push([zr[i], im]);
+  }
+  return out;
+}
+function matchRoots(prev, next) {
+  if (!prev || prev.length !== next.length) return next;
+  const used = new Array(next.length).fill(false), out = [];
+  for (const p of prev) {
+    let best = -1, bd = Infinity;
+    for (let j = 0; j < next.length; j++) {
+      if (used[j]) continue;
+      const dd = Math.hypot(p[0] - next[j][0], p[1] - next[j][1]);
+      if (dd < bd) { bd = dd; best = j; }
+    }
+    used[best] = true; out.push(next[best]);
+  }
+  return out;
+}
+
+/* ------------------------- matrizes ------------------------- */
+const zeros2 = (r, c) => Array.from({ length: r }, () => new Array(c).fill(0));
+const eye = (n) => { const I = zeros2(n, n); for (let i = 0; i < n; i++) I[i][i] = 1; return I; };
+function mmul(A, B) {
+  const r = A.length, c = B[0] ? B[0].length : 0, k = B.length, C = zeros2(r, c);
+  for (let i = 0; i < r; i++) for (let l = 0; l < k; l++) { const a = A[i][l]; if (a === 0) continue; for (let j = 0; j < c; j++) C[i][j] += a * B[l][j]; }
+  return C;
+}
+const madd = (A, B, kb = 1) => A.map((row, i) => row.map((v, j) => v + kb * B[i][j]));
+const mscale = (A, k) => A.map(row => row.map(v => v * k));
+function msolve(A, B) {   // resolve A X = B (eliminação de Gauss com pivotamento parcial)
+  const n = A.length, m = B[0].length;
+  const M = A.map((row, i) => row.concat(B[i]));
+  for (let col = 0; col < n; col++) {
+    let piv = col, mx = Math.abs(M[col][col]);
+    for (let r = col + 1; r < n; r++) if (Math.abs(M[r][col]) > mx) { mx = Math.abs(M[r][col]); piv = r; }
+    if (mx === 0) throw new Error('Matriz singular');
+    [M[col], M[piv]] = [M[piv], M[col]];
+    for (let r = 0; r < n; r++) {
+      if (r === col) continue;
+      const f = M[r][col] / M[col][col];
+      if (f === 0) continue;
+      for (let j = col; j < n + m; j++) M[r][j] -= f * M[col][j];
+    }
+  }
+  return M.map((row, i) => row.slice(n).map(v => v / M[i][i]));
+}
+function expm(A) {   // escalonamento e quadratura + Padé(6)
+  const n = A.length;
+  if (n === 0) return [];
+  const nrm = Math.max(...A.map(r => r.reduce((s, v) => s + Math.abs(v), 0)));
+  const s = Math.max(0, Math.ceil(Math.log2(nrm / 0.5)) + 1);
+  const X = mscale(A, Math.pow(2, -s));
+  const q = 6;
+  let c = 1, Xk = eye(n), N = eye(n), D = eye(n);
+  for (let k = 1; k <= q; k++) {
+    c = c * (q - k + 1) / (k * (2 * q - k + 1));
+    Xk = mmul(Xk, X);
+    N = madd(N, Xk, c);
+    D = madd(D, Xk, (k % 2 ? -1 : 1) * c);
+  }
+  let E = msolve(D, N);
+  for (let k = 0; k < s; k++) E = mmul(E, E);
+  return E;
+}
+function charpoly(A) {   // Faddeev–LeVerrier
+  const n = A.length;
+  const coef = new Array(n + 1).fill(0); coef[0] = 1;
+  let M = zeros2(n, n);
+  for (let k = 1; k <= n; k++) {
+    M = madd(mmul(A, M), eye(n), coef[k - 1]);
+    const AM = mmul(A, M);
+    let tr = 0; for (let i = 0; i < n; i++) tr += AM[i][i];
+    coef[k] = -tr / k;
+  }
+  return coef;
+}
+
+/* ------------------------- espaço de estados ------------------------- */
+function tf2ss(num, den) {   // forma canônica controlável
+  den = ptrim(den); num = ptrim(num);
+  const n = den.length - 1;
+  const a = den.map(v => v / den[0]);
+  const b = new Array(n + 1).fill(0);
+  num.forEach((v, i) => b[n + 1 - num.length + i] = v / den[0]);
+  const D = b[0];
+  const A = zeros2(n, n), B = zeros2(n, 1), C = zeros2(1, n);
+  for (let j = 0; j < n; j++) A[0][j] = -a[j + 1];
+  for (let i = 1; i < n; i++) A[i][i - 1] = 1;
+  if (n > 0) B[0][0] = 1;
+  for (let j = 0; j < n; j++) C[0][j] = b[j + 1] - D * a[j + 1];
+  return { A, B, C, D, n };
+}
+function c2d(A, B, dt) {     // ZOH exato via exponencial da matriz aumentada
+  const n = A.length, m = B[0] ? B[0].length : 0;
+  if (n === 0) return { Ad: [], Bd: [] };
+  const M = zeros2(n + m, n + m);
+  for (let i = 0; i < n; i++) { for (let j = 0; j < n; j++) M[i][j] = A[i][j] * dt; for (let j = 0; j < m; j++) M[i][n + j] = B[i][j] * dt; }
+  const E = expm(M);
+  return { Ad: E.slice(0, n).map(r => r.slice(0, n)), Bd: E.slice(0, n).map(r => r.slice(n)) };
+}
+// Monta a malha fechada: entradas [r, du, dy, dm], saídas [y, uc]
+function closedLoopSS(Gc, Gp, Gf) {
+  const c = tf2ss(Gc.num, Gc.den), p = tf2ss(Gp.num, Gp.den), f = tf2ss(Gf.num, Gf.den);
+  const N = c.n + p.n + f.n, oc = 0, op = c.n, of = c.n + p.n;
+  const lc = () => ({ x: new Array(N).fill(0), w: [0, 0, 0, 0] });
+  const comb = (terms) => { const r = lc(); for (const [k, s] of terms) { for (let i = 0; i < N; i++) r.x[i] += k * s.x[i]; for (let i = 0; i < 4; i++) r.w[i] += k * s.w[i]; } return r; };
+  const stateOut = (blk, off) => { const r = lc(); for (let j = 0; j < blk.n; j++) r.x[off + j] = blk.C[0][j]; return r; };
+  const inp = (k) => { const r = lc(); r.w[k] = 1; return r; };
+  const Dc = c.D, Dp = p.D, Df = f.D, den = 1 + Df * Dp * Dc;
+  if (Math.abs(den) < 1e-12) throw new Error('Laço algébrico mal-posto (1 + Dc·Dp·Df = 0).');
+  const Cc = stateOut(c, oc), Cp = stateOut(p, op), Cf = stateOut(f, of);
+  const yf = comb([[1 / den, Cf], [Df / den, Cp], [Df * Dp / den, Cc], [Df * Dp * Dc / den, inp(0)], [Df * Dp / den, inp(1)], [Df / den, inp(2)], [Df / den, inp(3)]]);
+  const e = comb([[1, inp(0)], [-1, yf]]);
+  const uc = comb([[1, Cc], [Dc, e]]);
+  const u = comb([[1, uc], [1, inp(1)]]);
+  const y = comb([[1, Cp], [Dp, u], [1, inp(2)]]);
+  const ym = comb([[1, y], [1, inp(3)]]);
+  const A = zeros2(N, N), B = zeros2(N, 4);
+  const fill = (blk, off, sig) => {
+    for (let i = 0; i < blk.n; i++) {
+      for (let j = 0; j < blk.n; j++) A[off + i][off + j] += blk.A[i][j];
+      const bi = blk.B[i][0];
+      for (let j = 0; j < N; j++) A[off + i][j] += bi * sig.x[j];
+      for (let j = 0; j < 4; j++) B[off + i][j] += bi * sig.w[j];
+    }
+  };
+  fill(c, oc, e); fill(p, op, u); fill(f, of, ym);
+  return { A, B, C: [y.x, uc.x], D: [y.w, uc.w], n: N };
+}
+// Simula x[k+1] = Ad x + Bd u ; saídas C x + D u.  U: array de colunas (cada uma Float64Array)
+function simulate(sys, U, dt, discrete) {
+  const n = sys.n, K = U[0].length, m = U.length, p = sys.C.length;
+  let Ad, Bd;
+  if (discrete) { Ad = sys.A; Bd = sys.B; } else ({ Ad, Bd } = c2d(sys.A, sys.B, dt));
+  const Y = Array.from({ length: p }, () => new Float64Array(K));
+  let x = new Float64Array(n), xn = new Float64Array(n);
+  const uk = new Float64Array(m);
+  for (let k = 0; k < K; k++) {
+    for (let j = 0; j < m; j++) uk[j] = U[j][k];
+    for (let o = 0; o < p; o++) {
+      let s = 0; const Co = sys.C[o], Do = sys.D[o];
+      for (let i = 0; i < n; i++) s += Co[i] * x[i];
+      for (let j = 0; j < m; j++) s += Do[j] * uk[j];
+      Y[o][k] = s;
+    }
+    for (let i = 0; i < n; i++) {
+      let s = 0; const Ai = Ad[i], Bi = Bd[i];
+      for (let j = 0; j < n; j++) s += Ai[j] * x[j];
+      for (let j = 0; j < m; j++) s += Bi[j] * uk[j];
+      xn[i] = s;
+    }
+    [x, xn] = [xn, x];
+    if (!isFinite(x[0]) && n > 0) { for (let o = 0; o < p; o++) Y[o].fill(NaN, k + 1); break; }
+  }
+  return Y;
+}
+
+/* ------------------------- Padé ------------------------- */
+function pade(T, N) {
+  const fact = (k) => { let r = 1; for (let i = 2; i <= k; i++) r *= i; return r; };
+  const num = [], den = [];
+  for (let k = N; k >= 0; k--) {
+    const ck = fact(2 * N - k) * fact(N) / (fact(2 * N) * fact(k) * fact(N - k)) * Math.pow(T, k);
+    num.push((k % 2 ? -1 : 1) * ck); den.push(ck);
+  }
+  return { num, den };
+}
+
+/* ------------------------- parser de polinômios ------------------------- */
+function parsePoly(text) {
+  const t = String(text).trim();
+  if (t === '') throw new Error('campo vazio');
+  if (/^[\s\[\],;0-9eE.+\-]*$/.test(t)) {
+    const parts = t.replace(/[\[\]]/g, ' ').split(/[\s,;]+/).filter(Boolean);
+    const nums = parts.map(Number);
+    if (nums.length && nums.every(v => isFinite(v))) return nums;
+  }
+  return parseExpr(t);
+}
+function parseExpr(src) {
+  const toks = [];
+  const re = /\s*(?:((?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)|(pi)|([sz])|(\*\*|[-+*/^()]))/y;
+  let pos = 0;
+  while (pos < src.length) {
+    re.lastIndex = pos;
+    const m = re.exec(src);
+    if (!m || m.index !== pos) { if (/\s/.test(src.slice(pos))) { if (src.slice(pos).trim() === '') break; } throw new Error(`símbolo inválido perto de "${src.slice(pos, pos + 6)}"`); }
+    if (m[1]) toks.push({ t: 'n', v: parseFloat(m[1]) });
+    else if (m[2]) toks.push({ t: 'n', v: Math.PI });
+    else if (m[3]) toks.push({ t: 'v' });
+    else toks.push({ t: m[4] === '**' ? '^' : m[4] });
+    pos = re.lastIndex;
+  }
+  let i = 0;
+  const peek = () => toks[i], next = () => toks[i++];
+  const isConst = (p) => ptrim(p).length === 1;
+  function expr() {
+    let v = term();
+    while (peek() && (peek().t === '+' || peek().t === '-')) { const op = next().t; const w = term(); v = padd(v, op === '+' ? w : pscale(w, -1)); }
+    return v;
+  }
+  function term() {
+    let v = unary();
+    for (;;) {
+      const p = peek();
+      if (!p) break;
+      if (p.t === '*') { next(); v = pmul(v, unary()); }
+      else if (p.t === '/') { next(); const w = unary(); if (!isConst(w)) throw new Error('divisão só por constantes (use os campos Num/Den)'); v = pscale(v, 1 / ptrim(w)[0]); }
+      else if (p.t === 'n' || p.t === 'v' || p.t === '(') v = pmul(v, unary());
+      else break;
+    }
+    return v;
+  }
+  function unary() {
+    const p = peek();
+    if (p && p.t === '-') { next(); return pscale(unary(), -1); }
+    if (p && p.t === '+') { next(); return unary(); }
+    return power();
+  }
+  function power() {
+    const b = atom();
+    if (peek() && peek().t === '^') {
+      next();
+      const e = unary();
+      if (!isConst(e)) throw new Error('expoente deve ser constante');
+      const k = ptrim(e)[0];
+      if (!(Number.isInteger(k) && k >= 0)) throw new Error('expoente deve ser inteiro ≥ 0');
+      let r = [1]; for (let j = 0; j < k; j++) r = pmul(r, b);
+      return r;
+    }
+    return b;
+  }
+  function atom() {
+    const p = next();
+    if (!p) throw new Error('expressão incompleta');
+    if (p.t === 'n') return [p.v];
+    if (p.t === 'v') return [1, 0];
+    if (p.t === '(') { const v = expr(); if (!peek() || next().t !== ')') throw new Error('falta ")"'); return v; }
+    throw new Error(`"${p.t}" inesperado`);
+  }
+  const v = expr();
+  if (i < toks.length) throw new Error('sobrou texto no fim da expressão');
+  return ptrim(v);
+}
+function parseComplex(str) {
+  const s = str.replace(/\s/g, '').replace(/i/g, 'j');
+  if (s === '') return null;
+  if (!s.endsWith('j')) { const v = Number(s); return isFinite(v) ? [v, 0] : null; }
+  const body = s.slice(0, -1);
+  let k = -1;
+  for (let j = body.length - 1; j > 0; j--) if ((body[j] === '+' || body[j] === '-') && !/[eE]/.test(body[j - 1])) { k = j; break; }
+  const reS = k > 0 ? body.slice(0, k) : '0';
+  let imS = k > 0 ? body.slice(k) : body;
+  if (imS === '' || imS === '+') imS = '1'; else if (imS === '-') imS = '-1';
+  const re = Number(reS), im = Number(imS);
+  return isFinite(re) && isFinite(im) ? [re, im] : null;
+}
+function parseList(str, complex) {
+  const s = String(str).trim();
+  if (s === '') return [];
+  const parts = /[,;]/.test(s) ? s.split(/[,;]/) : s.split(/\s+/);
+  return parts.map(p => complex ? parseComplex(p) : (p.trim() === '' ? NaN : Number(p)));
+}
+
+/* ------------------------- estado da aplicação ------------------------- */
+const PZ_TYPES = {
+  'integrator':     { label: 'Integrador',       pole: true,  ord: 1, f: false, z: false },
+  'real pole':      { label: 'Polo real',        pole: true,  ord: 1, f: true,  z: false },
+  'complex pole':   { label: 'Polos complexos',  pole: true,  ord: 2, f: true,  z: true },
+  'differentiator': { label: 'Derivador',        pole: false, ord: 1, f: false, z: false },
+  'real zero':      { label: 'Zero real',        pole: false, ord: 1, f: true,  z: false },
+  'complex zero':   { label: 'Zeros complexos',  pole: false, ord: 2, f: true,  z: true },
+  'unit delay':     { label: 'Atraso z⁻¹',       pole: true,  ord: 1, f: false, z: false, discreteOnly: true },
+};
+const DIST_TYPES = {
+  'steps':    { label: 'degraus',  f: false, rate: true,  t: '0, 1', a: '1, 0.9', desc: 'A amplitude muda nos instantes dados.' },
+  'sine':     { label: 'senoide',  f: true,  rate: true,  t: '0',    a: '1',      desc: 'Envoltória definida nos instantes dados; amplitude pode ser complexa (a+bj).' },
+  'square':   { label: 'quadrada', f: true,  rate: true,  t: '0',    a: '1',      desc: 'Onda quadrada; amplitude muda nos instantes dados.' },
+  'triangle': { label: 'triangular', f: true, rate: true, t: '0',    a: '1',      desc: 'Onda triangular; amplitude muda nos instantes dados.' },
+  'PWL':      { label: 'PWL',      f: false, rate: false, t: '0, 1, 2', a: '0, 1, 1', desc: 'Linear por partes entre os pontos (tempo, amplitude).' },
+  'P-PWL':    { label: 'PWL periódica', f: false, rate: false, t: '0, 0.5, 1', a: '0, 1, 0', desc: 'PWL periódica; período = último tempo.' },
+  'noise':    { label: 'ruído',    f: true,  rate: true,  t: '0',    a: '0.05',   desc: 'Ruído gaussiano: amplitude = desvio padrão; Freq = banda do filtro passa-baixas de 1ª ordem.' },
+};
+const PRESETS = [
+  { name: '2ª ordem: 1/(s² + s + 1)', domain: 'c', num: '1', den: 's^2 + s + 1' },
+  { name: '1ª ordem: 1/(s + 1)', domain: 'c', num: '1', den: 's + 1' },
+  { name: 'Motor CC (posição): 1/(s(0,5s + 1))', domain: 'c', num: '1', den: 's(0.5s + 1)' },
+  { name: 'Três polos: 1/(s + 1)³', domain: 'c', num: '1', den: '(s + 1)^3' },
+  { name: 'Fase não mínima: (1 − s)/((s + 1)(s + 2))', domain: 'c', num: '1 - s', den: '(s + 1)(s + 2)' },
+  { name: 'Instável: 1/(s − 1)', domain: 'c', num: '1', den: 's - 1' },
+  { name: 'Com atraso: e^(−0,5s)/(s + 1)', domain: 'c', num: '1', den: 's + 1', delay: 0.5 },
+  { name: 'Conversor buck (LC): 48/(LCs² + (L/R)s + 1)', domain: 'c', num: '48', den: '1e-3*100e-6 s^2 + 1e-3/10 s + 1' },
+  { name: 'ZOH: 1/(s + 1), Ts = 0,1 s', domain: 'zoh', num: '1', den: 's + 1', Ts: 0.1 },
+  { name: 'Discreto: 0,1/(z − 0,9), Ts = 0,1 s', domain: 'd', num: '0.1', den: 'z - 0.9', Ts: 0.1 },
+];
+
+const state = {
+  funit: 'Hz',
+  plant: { domain: 'c', Ts: 0.1, num: '1', den: 's^2 + s + 1', delay: 0, pade: 4, fnum: '1', fden: '1' },
+  ctrl: { kdb: 0, sign: 1, kmin: -80, kmax: 80, rows: [ { en: true, type: 'integrator', w: 1, zeta: 0.707 }, { en: true, type: 'real zero', w: 1, zeta: 0.707 } ] },
+  req: { os: 10, tr: '', ts: '', tstep: '' },
+  dist: { T: 20, dt: 0.001, rows: [
+    { en: true, input: 'r', type: 'steps', f: 1, t: '0', a: '1', rate: '' },
+    { en: true, input: 'du', type: 'steps', f: 1, t: '0, 10', a: '0, 0.5', rate: '' },
+  ] },
+};
+let P = null;     // planta processada
+let CS = null;    // forma do controlador (sem K)
+let LOC = null;   // lugar das raízes em cache
+let lastGood = { P: null, CS: null };
+
+/* ------------------------- planta ------------------------- */
+function computePlant() {
+  const s = state.plant;
+  const discrete = s.domain !== 'c';
+  const Ts = discrete ? Number(s.Ts) : 0;
+  if (discrete && !(Ts > 0)) throw new Error('Ts deve ser > 0.');
+  let num = parsePoly(s.num), den = parsePoly(s.den);
+  if (ptrim(den).length === 1 && ptrim(den)[0] === 0) throw new Error('Denominador da planta é zero.');
+  if (ptrim(num).length === 1 && ptrim(num)[0] === 0) throw new Error('Numerador da planta é zero.');
+  if (pdeg(num) > pdeg(den)) throw new Error('G_p deve ser própria (grau do numerador ≤ grau do denominador).');
+  num = ptrim(num); den = ptrim(den);
+  const delay = Math.max(0, Number(s.delay) || 0);
+  let warn = '';
+  const out = { discrete, Ts, delay: 0, padeOrder: 0 };
+  if (s.domain === 'c') {
+    out.num = num; out.den = den; out.delay = delay;
+    if (delay > 0) {
+      const N = Math.min(8, Math.max(1, Math.round(Number(s.pade) || 4)));
+      const pd = pade(delay, N);
+      out.padeOrder = N;
+      out.numR = pmul(num, pd.num); out.denR = pmul(den, pd.den);
+      out.padeZeros = roots(pd.num); out.padePoles = roots(pd.den);
+    } else { out.numR = num; out.denR = den; out.padeZeros = []; out.padePoles = []; }
+  } else {
+    let nz = num, dz = den;
+    if (s.domain === 'zoh') {
+      const ss = tf2ss(num, den);
+      if (ss.n === 0) { nz = [ss.D]; dz = [1]; }
+      else {
+        const { Ad, Bd } = c2d(ss.A, ss.B, Ts);
+        const cpA = charpoly(Ad);
+        const ABC = madd(Ad, mmul(Bd, ss.C), -1);
+        const cpL = charpoly(ABC);
+        nz = padd(padd(cpL, pscale(cpA, -1)), pscale(cpA, ss.D));
+        const mx = Math.max(...nz.map(Math.abs));
+        nz = nz.map(v => Math.abs(v) < 1e-10 * mx ? 0 : v);
+        nz = ptrim(nz); dz = cpA;
+      }
+    }
+    const d = Math.round(delay / Ts);
+    if (delay > 0 && Math.abs(d * Ts - delay) > 1e-9 * Math.max(1, delay)) warn = `Atraso arredondado para ${d}·Ts = ${fmt(d * Ts)} s.`;
+    if (d > 0) dz = pmul(dz, [1].concat(new Array(d).fill(0)));
+    out.num = nz; out.den = dz; out.numR = nz; out.denR = dz; out.padeZeros = []; out.padePoles = [];
+  }
+  out.zeros = roots(out.num); out.poles = roots(out.den);
+  // Gf
+  let fn = parsePoly(s.fnum), fd = parsePoly(s.fden);
+  if (ptrim(fd).length === 1 && ptrim(fd)[0] === 0) throw new Error('Denominador de G_f é zero.');
+  if (pdeg(fn) > pdeg(fd)) throw new Error('G_f deve ser própria.');
+  out.fnum = ptrim(fn); out.fden = ptrim(fd);
+  out.fzeros = roots(out.fnum); out.fpoles = roots(out.fden);
+  out.warn = warn;
+  out.v = discrete ? 'z' : 's';
+  return out;
+}
+
+/* ------------------------- controlador ------------------------- */
+function factorPoly(type, w, zeta, discrete, Ts) {
+  if (!discrete) {
+    if (type === 'integrator' || type === 'differentiator') return [1, 0];
+    if (type === 'real pole' || type === 'real zero') return [1 / w, 1];
+    if (type === 'complex pole' || type === 'complex zero') return [1 / (w * w), 2 * zeta / w, 1];
+  } else {
+    if (type === 'integrator' || type === 'differentiator') return [1 / Ts, -1 / Ts];
+    if (type === 'unit delay') return [1, 0];
+    if (type === 'real pole' || type === 'real zero') { const pz = Math.exp(-w * Ts); return [1 / (1 - pz), -pz / (1 - pz)]; }
+    if (type === 'complex pole' || type === 'complex zero') {
+      const a1 = -2 * Math.exp(-zeta * w * Ts) * Math.cos(w * Math.sqrt(1 - zeta * zeta) * Ts), a2 = Math.exp(-2 * zeta * w * Ts), c = 1 + a1 + a2;
+      return [1 / c, a1 / c, a2 / c];
+    }
+  }
+  return [1];
+}
+function factorStr(type, w, zeta, discrete, Ts) {
+  if (!discrete) {
+    if (type === 'integrator' || type === 'differentiator') return 's';
+    if (type === 'real pole' || type === 'real zero') return `(s/${fmt(w)} + 1)`;
+    return `(s²/${fmt(w * w)}${zeta > 0 ? ` + ${fmt(2 * zeta / w)} s` : ''} + 1)`;
+  }
+  return `(${polyStr(factorPoly(type, w, zeta, true, Ts), 'z')})`;
+}
+function computeController() {
+  const discrete = P.discrete, Ts = P.Ts;
+  const nyq = discrete ? Math.PI / Ts : Infinity;
+  let numF = [], denF = [], zeros = [], poles = [], numS = [], denS = [], order = 0;
+  const bad = new Set();
+  let err = '';
+  state.ctrl.rows.forEach((r, idx) => {
+    if (!r.en) return;
+    const T = PZ_TYPES[r.type];
+    if (!T) return;
+    if (T.discreteOnly && !discrete) { bad.add(idx); err = 'Atraso z⁻¹ só existe no domínio discreto.'; return; }
+    if (T.f && !(r.w > 0)) { bad.add(idx); err = 'Frequência deve ser > 0.'; return; }
+    if (T.f && discrete && r.w >= nyq) { bad.add(idx); err = `Frequência deve ser menor que a de Nyquist (${fmtFreq(nyq)}).`; return; }
+    if (T.z && !(r.zeta >= 0 && r.zeta < 1)) { bad.add(idx); err = 'ζ deve estar entre 0 e 0,999.'; return; }
+    const f = factorPoly(r.type, r.w, r.zeta, discrete, Ts);
+    const rts = roots(f);
+    const str = factorStr(r.type, r.w, r.zeta, discrete, Ts);
+    if (T.pole) { denF.push(f); poles.push(...rts); denS.push(str); order += T.ord; }
+    else { numF.push(f); zeros.push(...rts); numS.push(str); order -= T.ord; }
+  });
+  if (order < 0) {
+    err = 'G_c imprópria: há mais zeros que polos. Acrescente polos antes dos zeros.';
+    state.ctrl.rows.forEach((r, i) => { if (r.en && !PZ_TYPES[r.type].pole) bad.add(i); });
+  }
+  return { num: pprod(numF), den: pprod(denF), zeros, poles, numS, denS, err, bad };
+}
+function Kval() { return state.ctrl.sign * Math.pow(10, state.ctrl.kdb / 20); }
+
+/* ------------------------- resposta em frequência ------------------------- */
+// Fase calculada como soma de ângulos dos fatores → contínua, sem "unwrap".
+function makeFR(zeros, poles, k, discrete, Ts, delay = 0) {
+  const lk = Math.log10(Math.abs(k)), phk = k < 0 ? -180 : 0;
+  return function (w) {
+    let lm = lk, ph = 0;
+    let xr, xi;
+    if (discrete) { xr = Math.cos(w * Ts); xi = Math.sin(w * Ts); } else { xr = 0; xi = w; }
+    for (const z of zeros) { const a = xr - z[0], b = xi - z[1]; lm += 0.5 * Math.log10(a * a + b * b); ph += Math.atan2(b, a); }
+    for (const p of poles) { const a = xr - p[0], b = xi - p[1]; lm -= 0.5 * Math.log10(a * a + b * b); ph -= Math.atan2(b, a); }
+    return { db: 20 * lm, ph: phk + ph * R2D - (discrete ? 0 : w * delay * R2D) };
+  };
+}
+const logspace = (a, b, n) => Array.from({ length: n }, (_, i) => Math.pow(10, a + (b - a) * i / (n - 1)));
+function bisect(f, a, b, it = 50) {
+  let fa = f(a);
+  for (let i = 0; i < it; i++) {
+    const m = Math.sqrt(a * b), fm = f(m);
+    if ((fm <= 0) === (fa <= 0)) { a = m; fa = fm; } else b = m;
+  }
+  return Math.sqrt(a * b);
+}
+function margins(fr, w0, w1) {
+  const ws = logspace(Math.log10(w0), Math.log10(w1), 3000), vals = ws.map(fr);
+  const pms = [], gms = [];
+  for (let i = 0; i < ws.length - 1; i++) {
+    const a = vals[i], b = vals[i + 1];
+    if (!isFinite(a.db) || !isFinite(b.db)) continue;
+    if ((a.db > 0) !== (b.db > 0)) {
+      const wc = bisect(w => fr(w).db, ws[i], ws[i + 1]);
+      const ph = fr(wc).ph;
+      const pm = ((ph + 180) % 360 + 540) % 360 - 180;
+      pms.push({ w: wc, pm });
+    }
+    const ma = Math.floor((a.ph + 180) / 360), mb = Math.floor((b.ph + 180) / 360);
+    if (ma !== mb) {
+      const lvl = 360 * Math.max(ma, mb) - 180;
+      const wg = bisect(w => fr(w).ph - lvl, ws[i], ws[i + 1]);
+      gms.push({ w: wg, gm: -fr(wg).db });
+    }
+  }
+  const pm = pms.length ? pms.reduce((m, x) => Math.abs(x.pm) < Math.abs(m.pm) ? x : m) : { w: NaN, pm: Infinity };
+  const gm = gms.length ? gms.reduce((m, x) => Math.abs(x.gm) < Math.abs(m.gm) ? x : m) : { w: NaN, gm: Infinity };
+  return { pm, gm };
+}
+function charFreq(r, discrete, Ts) {
+  if (!discrete) return Math.hypot(r[0], r[1]);
+  const m = Math.hypot(r[0], r[1]);
+  if (m < 1e-12) return NaN;
+  return Math.hypot(Math.log(m), Math.atan2(r[1], r[0])) / Ts;
+}
+
+/* ------------------------- lugar das raízes ------------------------- */
+function computeLocus() {
+  const N0 = pprod([CS.num, P.numR, P.fnum]).map(v => v * state.ctrl.sign);
+  const D0 = pprod([CS.den, P.denR, P.fden]);
+  const Kmin = Math.pow(10, Math.min(state.ctrl.kmin, state.ctrl.kmax) / 20), Kmax = Math.pow(10, Math.max(state.ctrl.kmin, state.ctrl.kmax) / 20);
+  const ol = roots(D0).concat(roots(N0));
+  let scale = 0; for (const r of ol) scale = Math.max(scale, Math.hypot(r[0], r[1]));
+  if (P.discrete) scale = Math.max(scale, 1);
+  if (!(scale > 0)) scale = 1;
+  const delta = 0.01 * scale;
+  const xs = [], ys = [], ks = [];
+  let total = 0;
+  const push = (K, R) => { for (const r of R) { xs.push(r[0]); ys.push(r[1]); ks.push(20 * Math.log10(K)); } total += R.length; };
+  const solve = (K, init) => matchRoots(init, roots(padd(D0, pscale(N0, K)), init));
+  const maxDisp = (A, B) => { let m = 0; for (let i = 0; i < A.length; i++) m = Math.max(m, Math.hypot(A[i][0] - B[i][0], A[i][1] - B[i][1])); return m; };
+  function seg(K0, R0, K1, R1, depth) {
+    if (depth < 6 && total < 60000 && R0.length === R1.length && maxDisp(R0, R1) > delta) {
+      const Km = Math.sqrt(K0 * K1), Rm = solve(Km, R0);
+      seg(K0, R0, Km, Rm, depth + 1); seg(Km, Rm, K1, R1, depth + 1);
+    } else push(K1, R1);
+  }
+  const nK = 400;
+  let Kp = Kmin, Rp = solve(Kmin, null);
+  push(Kp, Rp);
+  for (let i = 1; i <= nK; i++) {
+    const K = Kmin * Math.pow(Kmax / Kmin, i / nK);
+    const R = solve(K, Rp);
+    seg(Kp, Rp, K, R, 0);
+    Kp = K; Rp = R;
+  }
+  return { xs, ys, ks, N0, D0 };
+}
+
+/* ------------------------- sinais de distúrbio ------------------------- */
+function randn() { let u = 0, v = 0; while (u === 0) u = Math.random(); while (v === 0) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TWO_PI * v); }
+function genSignal(row, t, dt) {
+  const cfg = DIST_TYPES[row.type];
+  const T = parseList(row.t, false);
+  const A = parseList(row.a, row.type === 'sine');
+  if (!T.length) throw new Error('informe os tempos');
+  if (T.length !== A.length) throw new Error('tempos e amplitudes com quantidades diferentes');
+  if (T.some(v => !isFinite(v)) || A.some(v => v === null || (Array.isArray(v) ? false : !isFinite(v)))) throw new Error('valor inválido');
+  for (let i = 1; i < T.length; i++) if (!(T[i] > T[i - 1])) throw new Error('tempos devem ser crescentes');
+  if (T[0] < 0) throw new Error('tempos devem ser ≥ 0');
+  const Ac = A.map(a => Array.isArray(a) ? a : [a, 0]);
+  if (T[0] !== 0) { T.unshift(0); Ac.unshift([0, 0]); }
+  const n = t.length, out = new Float64Array(n);
+  const f = Number(row.f) || 0;
+  if (row.type === 'PWL' || row.type === 'P-PWL') {
+    const per = T[T.length - 1];
+    if (row.type === 'P-PWL' && !(per > 0)) throw new Error('período (último tempo) deve ser > 0');
+    let q = 0;
+    for (let k = 0; k < n; k++) {
+      let tk = t[k];
+      if (row.type === 'P-PWL') { tk = tk % per; if (k === 0 || tk < (t[k - 1] % per)) q = 0; }
+      while (q + 1 < T.length && tk >= T[q + 1]) q++;
+      if (q + 1 < T.length) { const a = Ac[q][0], b = Ac[q + 1][0]; out[k] = a + (b - a) * (tk - T[q]) / (T[q + 1] - T[q]); }
+      else out[k] = Ac[Ac.length - 1][0];
+    }
+    return out;
+  }
+  const rateV = Number(row.rate);
+  const rate = (row.rate === '' || row.rate === undefined || !(rateV > 0) || rateV >= 1e9) ? Infinity : rateV;
+  let q = 0, cr = Ac[0][0], ci = Ac[0][1];
+  let noise = null;
+  if (row.type === 'noise') {
+    noise = new Float64Array(n);
+    for (let k = 0; k < n; k++) noise[k] = randn();
+    if (f > 0 && f < 0.5 / dt) {
+      const wT = TWO_PI * f * dt, a0 = 1 + 2 / wT, a1 = 1 - 2 / wT;
+      let yp = 0, xp = 0;
+      for (let k = 0; k < n; k++) { const x = noise[k]; const y = (x + xp - a1 * yp) / a0; noise[k] = y; xp = x; yp = y; }
+      let m = 0, s2 = 0; for (let k = 0; k < n; k++) m += noise[k]; m /= n;
+      for (let k = 0; k < n; k++) s2 += (noise[k] - m) ** 2;
+      const sd = Math.sqrt(s2 / n) || 1; for (let k = 0; k < n; k++) noise[k] /= sd;
+    }
+  }
+  for (let k = 0; k < n; k++) {
+    const tk = t[k];
+    while (q + 1 < T.length && tk >= T[q + 1]) q++;
+    const [tr, ti] = Ac[q];
+    if (rate === Infinity) { cr = tr; ci = ti; }
+    else { const dr = tr - cr, di = ti - ci, m = Math.hypot(dr, di), st = rate * dt; if (m <= st) { cr = tr; ci = ti; } else { cr += dr * st / m; ci += di * st / m; } }
+    switch (row.type) {
+      case 'steps': out[k] = cr; break;
+      case 'sine': { const w = TWO_PI * f; out[k] = cr * Math.sin(w * tk) - ci * Math.cos(w * tk); break; }
+      case 'square': { const ph = (f * tk) % 1; out[k] = cr * (ph < 0.5 ? 1 : -1); break; }
+      case 'triangle': { const ph = (f * tk) % 1; out[k] = cr * (1 - 4 * Math.abs(ph - 0.5)); break; }
+      case 'noise': out[k] = cr * noise[k]; break;
+    }
+  }
+  return out;
+}
+
+/* ------------------------- unidades de frequência ------------------------- */
+const fu = () => state.funit === 'Hz' ? 1 / TWO_PI : 1;           // rad/s → unidade exibida
+const fuLabel = () => state.funit === 'Hz' ? 'Hz' : 'rad/s';
+const fmtFreq = (w) => `${fmt(w * fu())} ${fuLabel()}`;
+
+/* ------------------------- cálculo principal ------------------------- */
+let R = {};   // últimos resultados
+function analyze() {
+  const K = Kval(), discrete = P.discrete, Ts = P.Ts;
+  const Lzeros = CS.zeros.concat(P.zeros, P.fzeros);
+  const Lpoles = CS.poles.concat(P.poles, P.fpoles);
+  const kL = K * plead(CS.num) * plead(P.num) * plead(P.fnum) / (plead(CS.den) * plead(P.den) * plead(P.fden));
+  const frT = makeFR(Lzeros, Lpoles, kL, discrete, Ts, P.delay);
+  const frG = makeFR(P.zeros, P.poles, plead(P.num) / plead(P.den), discrete, Ts, P.delay);
+  const frC = makeFR(CS.zeros, CS.poles, K * plead(CS.num) / plead(CS.den), discrete, Ts, 0);
+  // faixa de frequências
+  let cf = Lzeros.concat(Lpoles).map(r => charFreq(r, discrete, Ts)).filter(w => isFinite(w) && w > 1e-9);
+  if (P.delay > 0) cf.push(1 / P.delay);
+  if (!cf.length) cf = [1];
+  const wNy = discrete ? Math.PI / Ts : Infinity;
+  let wlo = 0.05 * Math.min(...cf), whi = discrete ? 0.9999 * wNy : 20 * Math.max(...cf);
+  if (discrete) wlo = Math.min(wlo, whi / 1000);
+  const mg = margins(frT, wlo / 1000, discrete ? whi : whi * 1000);
+  for (const w of [mg.pm.w, mg.gm.w]) if (isFinite(w)) { wlo = Math.min(wlo, w / 10); if (!discrete) whi = Math.max(whi, w * 10); }
+  const ws = logspace(Math.log10(wlo), Math.log10(whi), 1200);
+  const bode = { w: ws, T: ws.map(frT), G: ws.map(frG), C: ws.map(frC) };
+  // polos de malha fechada
+  const Nc = pscale(CS.num, K);
+  const cl = roots(padd(pprod([CS.den, P.denR, P.fden]), pprod([Nc, P.numR, P.fnum])));
+  const unstable = cl.filter(p => discrete ? Math.hypot(p[0], p[1]) > 1 + 1e-9 : p[0] > 1e-9);
+  const marginal = cl.filter(p => discrete ? Math.abs(Math.hypot(p[0], p[1]) - 1) <= 1e-9 : Math.abs(p[0]) <= 1e-9);
+  // simulação
+  const Gc = { num: Nc, den: CS.den }, Gp = { num: P.numR, den: P.denR }, Gf = { num: P.fnum, den: P.fden };
+  const sys = closedLoopSS(Gc, Gp, Gf);
+  // tempo final automático
+  let tf = Number(state.req.tstep) > 0 ? Number(state.req.tstep) : autoTime(cl, discrete, Ts);
+  let wfast = 0;
+  if (!discrete) for (const p of cl) wfast = Math.max(wfast, Math.hypot(p[0], p[1]));
+  const step = stepResponse(sys, Gp, tf, discrete, Ts, wfast);
+  const dist = distResponse(sys, discrete, Ts);
+  R = { K, frT, bode, mg, cl, unstable, marginal, step, dist, Lzeros, Lpoles, wNy };
+}
+function autoTime(cl, discrete, Ts) {
+  let sig = [];
+  for (const p of cl) {
+    let s = p;
+    if (discrete) { const m = Math.hypot(p[0], p[1]); if (m < 1e-12) continue; s = [Math.log(m) / Ts, Math.atan2(p[1], p[0]) / Ts]; }
+    const a = Math.abs(s[0]);
+    if (a > 1e-9) sig.push(a);
+    else if (Math.abs(s[1]) > 1e-9) sig.push(TWO_PI / (10 * Math.abs(s[1])) * 5);
+  }
+  let tf = sig.length ? 6 / Math.min(...sig) : 10;
+  const unst = cl.some(p => discrete ? Math.hypot(p[0], p[1]) > 1 : p[0] > 0);
+  if (unst && sig.length) tf = Math.min(tf, 8 / Math.max(...sig.filter(x => x > 0)));
+  const ts = Number(state.req.ts);
+  if (ts > 0 && ts * 1.5 > tf && ts * 1.5 < 20 * tf) tf = ts * 1.5;
+  if (discrete) tf = Math.max(tf, 20 * Ts);
+  return Math.min(Math.max(tf, 1e-6), 1e5);
+}
+function stepResponse(sys, Gp, tf, discrete, Ts, wfast = 0) {
+  let dt, K;
+  if (discrete) { dt = Ts; K = Math.min(Math.ceil(tf / Ts) + 1, 20000); }
+  else { K = Math.min(40001, Math.max(2001, Math.ceil(tf * wfast / 0.3) + 1)); dt = tf / (K - 1); }
+  const t = new Float64Array(K); for (let k = 0; k < K; k++) t[k] = k * dt;
+  const one = new Float64Array(K).fill(1), zero = new Float64Array(K);
+  const [y, u] = simulate(sys, [one, zero, zero, zero], dt, discrete);
+  const gp = tf2ss(Gp.num, Gp.den);
+  const [yol] = simulate({ A: gp.A, B: gp.B, C: gp.C, D: [[gp.D]], n: gp.n }, [one], dt, discrete);
+  // métricas (referência r = 1)
+  let ymax = -Infinity, t90 = NaN, tsl = 0;
+  for (let k = 0; k < K; k++) {
+    if (y[k] > ymax) ymax = y[k];
+    if (isNaN(t90) && y[k] >= 0.9) t90 = t[k];
+    if (y[k] < 0.98 || y[k] > 1.02) tsl = k + 1 < K ? t[k + 1] : Infinity;
+  }
+  const os = Math.max(0, ymax - 1) * 100;
+  const yfin = y[K - 1];
+  return { t, y, u, yol, os, t90, tsl, yfin, tf, discrete };
+}
+function distResponse(sys, discrete, Ts) {
+  const T = Number(state.dist.T), dt = discrete ? Ts : Number(state.dist.dt);
+  const out = { ok: false, msg: '' };
+  if (!(T > 0) || !(dt > 0)) { out.msg = 'Tempo total e passo devem ser > 0.'; return out; }
+  const K = Math.floor(T / dt) + 1;
+  if (K > 400000) { out.msg = `Pontos demais (${K}). Aumente o passo ou reduza o tempo total.`; return out; }
+  const t = new Float64Array(K); for (let k = 0; k < K; k++) t[k] = k * dt;
+  const sig = { r: new Float64Array(K), du: new Float64Array(K), dy: new Float64Array(K), dm: new Float64Array(K) };
+  const errs = [];
+  state.dist.rows.forEach((row, i) => {
+    row._err = '';
+    if (!row.en) return;
+    try { const v = genSignal(row, t, dt); const s = sig[row.input]; for (let k = 0; k < K; k++) s[k] += v[k]; }
+    catch (e) { row._err = e.message; errs.push(`linha ${i + 1}: ${e.message}`); }
+  });
+  const [y, u] = simulate(sys, [sig.r, sig.du, sig.dy, sig.dm], dt, discrete);
+  return { ok: true, t, y, u, ...sig, msg: errs.join(' · '), discrete };
+}
+
+/* ------------------------- gráficos ------------------------- */
+const PCFG = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d', 'select2d'] };
+const AX = { gridcolor: '#ececec', zerolinecolor: '#cfcfcf', linecolor: '#bdbdbd', tickfont: { size: 11, color: '#555' }, title: { font: { size: 12, color: '#555' } } };
+const baseLayout = (title) => ({
+  title: { text: title, font: { size: 14 }, x: 0.01, xanchor: 'left' },
+  margin: { l: 58, r: 14, t: 34, b: 95 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+  font: { family: 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif', color: '#191919' },
+  legend: { orientation: 'h', y: -0.2, yanchor: 'top', x: 0, font: { size: 11 } }, hovermode: 'closest',
+});
+function decimate(arrs, maxPts = 5000) {
+  const n = arrs[0].length; if (n <= maxPts) return arrs.map(a => Array.from(a));
+  const st = Math.ceil(n / maxPts), idx = [];
+  for (let i = 0; i < n; i += st) idx.push(i);
+  if (idx[idx.length - 1] !== n - 1) idx.push(n - 1);
+  return arrs.map(a => idx.map(i => a[i]));
+}
+function pzMarkers(list, fr, f) {
+  const pts = list.map(r => charFreq(r, P.discrete, P.Ts)).filter(w => isFinite(w) && w > 1e-9).map(w => P.discrete ? Math.min(w, 0.9999 * Math.PI / P.Ts) : w);
+  const ws = [...new Set(pts.map(w => w.toPrecision(10)))].map(Number);
+  return { x: ws.map(w => w * f), mag: ws.map(w => fr(w).db), ph: ws.map(w => fr(w).ph) };
+}
+function plotBode() {
+  const f = fu(), b = R.bode, x = b.w.map(w => w * f);
+  const tr = [];
+  const curve = (data, key, name, color, dash, vis, group) => {
+    tr.push({ x, y: data.map(v => v.db), name, legendgroup: group, type: 'scatter', mode: 'lines', line: { color, width: 2, dash }, visible: vis, xaxis: 'x', yaxis: 'y', hovertemplate: `${name}<br>f = %{x:.4g} ${fuLabel()}<br>|·| = %{y:.2f} dB<extra></extra>` });
+    tr.push({ x, y: data.map(v => v.ph), name, legendgroup: group, showlegend: false, type: 'scatter', mode: 'lines', line: { color, width: 2, dash }, visible: vis, xaxis: 'x2', yaxis: 'y2', hovertemplate: `${name}<br>f = %{x:.4g} ${fuLabel()}<br>∠ = %{y:.1f}°<extra></extra>` });
+  };
+  curve(b.T, 'T', 'T (malha aberta)', COLORS.T, 'solid', true, 'T');
+  curve(b.G, 'G', 'Gp (planta)', COLORS.Gp, 'dash', true, 'G');
+  curve(b.C, 'C', 'Gc·K (controlador)', COLORS.Gc, 'dot', 'legendonly', 'C');
+  const mk = (list, sym, color, name, group) => {
+    const m = pzMarkers(list, R.frT, f);
+    const common = { type: 'scatter', mode: 'markers', legendgroup: group, marker: { symbol: sym, size: 10, color, line: { color, width: 2 } } };
+    tr.push({ ...common, x: m.x, y: m.mag, name, xaxis: 'x', yaxis: 'y', hovertemplate: `${name}<br>f = %{x:.4g} ${fuLabel()}<extra></extra>` });
+    tr.push({ ...common, x: m.x, y: m.ph, name, showlegend: false, xaxis: 'x2', yaxis: 'y2', hovertemplate: `${name}<br>f = %{x:.4g} ${fuLabel()}<extra></extra>` });
+  };
+  mk(P.poles.concat(P.padePoles), 'x-thin-open', COLORS.Gp, 'polos Gp', 'pG');
+  mk(P.zeros.concat(P.padeZeros), 'circle-open', COLORS.Gp, 'zeros Gp', 'zG');
+  mk(CS.poles, 'x-thin-open', COLORS.Gc, 'polos Gc', 'pC');
+  mk(CS.zeros, 'circle-open', COLORS.Gc, 'zeros Gc', 'zC');
+  const shapes = [], ann = [];
+  const vline = (w, color, dash) => { for (const [xr, yr] of [['x', 'y domain'], ['x2', 'y2 domain']]) shapes.push({ type: 'line', xref: xr, yref: yr, x0: w * f, x1: w * f, y0: 0, y1: 1, line: { color, width: 1, dash } }); };
+  if (isFinite(R.mg.pm.w)) vline(R.mg.pm.w, '#555', 'dot');
+  if (isFinite(R.mg.gm.w)) vline(R.mg.gm.w, '#999', 'dot');
+  if (P.discrete) vline(Math.PI / P.Ts, '#191919', 'dash');
+  shapes.push({ type: 'line', xref: 'x domain', yref: 'y', x0: 0, x1: 1, y0: 0, y1: 0, line: { color: '#bbb', width: 1 } });
+  const allPh = b.T.map(v => v.ph).concat(b.G.map(v => v.ph)).filter(isFinite);
+  const phMin = Math.min(...allPh), phMax = Math.max(...allPh);
+  for (let lv = -180 - 360 * 3; lv <= 540; lv += 360) if (lv >= phMin - 30 && lv <= phMax + 30) shapes.push({ type: 'line', xref: 'x2 domain', yref: 'y2', x0: 0, x1: 1, y0: lv, y1: lv, line: { color: '#bbb', width: 1 } });
+  const pmTxt = isFinite(R.mg.pm.pm) ? `MF = ${R.mg.pm.pm.toFixed(1)}° em ${fmtFreq(R.mg.pm.w)}` : 'MF = ∞';
+  const gmTxt = isFinite(R.mg.gm.gm) ? `MG = ${R.mg.gm.gm.toFixed(1)} dB em ${fmtFreq(R.mg.gm.w)}` : 'MG = ∞';
+  ann.push({ xref: 'x2 domain', yref: 'y2 domain', x: 0.01, y: 0.02, xanchor: 'left', yanchor: 'bottom', text: `${pmTxt}<br>${gmTxt}`, showarrow: false, align: 'left', font: { size: 11 }, bgcolor: 'rgba(255,255,255,0.85)' });
+  if (P.discrete) ann.push({ xref: 'x', yref: 'y domain', x: Math.log10(Math.PI / P.Ts * f), y: 1, text: 'Nyquist', showarrow: false, xanchor: 'right', yanchor: 'top', font: { size: 10, color: '#555' } });
+  const allMag = b.T.map(v => v.db).concat(b.G.map(v => v.db)).filter(isFinite);
+  let mlo = Math.min(...allMag), mhi = Math.max(...allMag);
+  mlo = Math.max(mlo, mhi - 200);
+  const pad = Math.max(5, 0.05 * (mhi - mlo));
+  const span = phMax - phMin;
+  const dtick = span > 720 ? 180 : span > 300 ? 90 : 45;
+  const lay = {
+    ...baseLayout('Diagrama de Bode'),
+    xaxis: { ...AX, type: 'log', anchor: 'y', showticklabels: false, exponentformat: 'power' },
+    xaxis2: { ...AX, type: 'log', anchor: 'y2', matches: 'x', title: { ...AX.title, text: `frequência (${fuLabel()})` }, exponentformat: 'power' },
+    yaxis: { ...AX, domain: [0.54, 1], title: { ...AX.title, text: 'magnitude (dB)' }, range: [mlo - pad, mhi + pad] },
+    yaxis2: { ...AX, domain: [0, 0.46], title: { ...AX.title, text: 'fase (°)' }, tick0: 0, dtick },
+    shapes, annotations: ann, legend: { orientation: 'h', y: -0.08, yanchor: 'top', x: 0, font: { size: 11 } }, margin: { l: 58, r: 14, t: 34, b: 95 },
+  };
+  Plotly.react('plotBode', tr, lay, PCFG);
+}
+function plotRL() {
+  const tr = [], shapes = [], ann = [];
+  const d = P.discrete;
+  // região de instabilidade
+  if (!d) shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: 0, x1: 1e9, y0: 0, y1: 1, fillcolor: 'rgba(0,0,0,0.06)', line: { width: 0 }, layer: 'below' });
+  else {
+    // quadrado externo num sentido e círculo unitário no sentido oposto → "furo" no círculo
+    let path = 'M -1e3,-1e3 L 1e3,-1e3 L 1e3,1e3 L -1e3,1e3 Z M 1,0';
+    for (let i = 1; i <= 120; i++) { const th = -TWO_PI * i / 120; path += ` L ${Math.cos(th).toFixed(5)},${Math.sin(th).toFixed(5)}`; }
+    path += ' Z';
+    shapes.push({ type: 'path', path, xref: 'x', yref: 'y', fillcolor: 'rgba(0,0,0,0.06)', line: { width: 0 }, layer: 'below' });
+    shapes.push({ type: 'circle', xref: 'x', yref: 'y', x0: -1, x1: 1, y0: -1, y1: 1, line: { color: '#888', width: 1 }, layer: 'below' });
+  }
+  // região desejada a partir dos requisitos
+  const os = Number(state.req.os), ts = Number(state.req.ts);
+  if (os > 0 && os < 100) {
+    const L = Math.log(os / 100), z = -L / Math.sqrt(Math.PI * Math.PI + L * L);
+    if (!d) {
+      const Rr = 1e4;
+      for (const sg of [1, -1]) shapes.push({ type: 'line', xref: 'x', yref: 'y', x0: 0, y0: 0, x1: -Rr * z, y1: sg * Rr * Math.sqrt(1 - z * z), line: { color: COLORS.cl, width: 1, dash: 'dash' } });
+    } else {
+      const xs = [], ys = [];
+      for (let i = 0; i <= 100; i++) { const b = Math.PI * i / 100; const sr = -z / Math.sqrt(1 - z * z) * b; const m = Math.exp(sr); xs.push(m * Math.cos(b)); ys.push(m * Math.sin(b)); }
+      tr.push({ x: xs.concat(xs.slice().reverse()), y: ys.concat(ys.slice().reverse().map(v => -v)), type: 'scatter', mode: 'lines', line: { color: COLORS.cl, width: 1, dash: 'dash' }, name: `ζ = ${z.toFixed(3)}`, hoverinfo: 'skip', showlegend: false });
+    }
+    ann.push({ xref: 'paper', yref: 'paper', x: 0.01, y: 0.99, xanchor: 'left', yanchor: 'top', text: `ζ<sub>mín</sub> = ${z.toFixed(3)}${ts > 0 ? `, σ<sub>mín</sub> = ${fmt(4 / ts)}` : ''}`, showarrow: false, font: { size: 11, color: '#444' }, bgcolor: 'rgba(255,255,255,0.85)' });
+  }
+  if (ts > 0) {
+    if (!d) shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: -4 / ts, x1: -4 / ts, y0: 0, y1: 1, line: { color: COLORS.cl, width: 1, dash: 'dash' } });
+    else { const r = Math.exp(-4 * P.Ts / ts); shapes.push({ type: 'circle', xref: 'x', yref: 'y', x0: -r, x1: r, y0: -r, y1: r, line: { color: COLORS.cl, width: 1, dash: 'dash' } }); }
+  }
+  tr.push({ x: LOC.xs, y: LOC.ys, customdata: LOC.ks, type: 'scattergl', mode: 'markers', marker: { size: 3, color: COLORS.T }, name: 'lugar das raízes', hovertemplate: 'σ = %{x:.4g}<br>ω = %{y:.4g}<br>K = %{customdata:.1f} dB<extra></extra>' });
+  const pz = (list, sym, color, name) => tr.push({ x: list.map(r => r[0]), y: list.map(r => r[1]), type: 'scatter', mode: 'markers', name, marker: { symbol: sym, size: 11, color, line: { color, width: 2 } }, hovertemplate: `${name}<br>%{x:.4g} + j%{y:.4g}<extra></extra>` });
+  pz(P.poles.concat(P.padePoles, P.fpoles), 'x-thin-open', COLORS.Gp, 'polos Gp·Gf');
+  pz(P.zeros.concat(P.padeZeros, P.fzeros), 'circle-open', COLORS.Gp, 'zeros Gp·Gf');
+  pz(CS.poles, 'x-thin-open', COLORS.Gc, 'polos Gc');
+  pz(CS.zeros, 'circle-open', COLORS.Gc, 'zeros Gc');
+  const clInfo = R.cl.map(p => clDesc(p));
+  tr.push({ x: R.cl.map(p => p[0]), y: R.cl.map(p => p[1]), text: clInfo, type: 'scatter', mode: 'markers', name: 'polos MF (K atual)', marker: { symbol: 'square', size: 9, color: COLORS.cl, line: { color: '#fff', width: 1.5 } }, hovertemplate: '%{text}<extra>polo MF</extra>' });
+  // faixa dos eixos
+  const ref = P.poles.concat(P.zeros, P.fpoles, P.fzeros, CS.poles, CS.zeros);
+  let rmax = 0; for (const r of ref) rmax = Math.max(rmax, Math.hypot(r[0], r[1]));
+  const lim = Math.max(rmax, d ? 1 : 1e-3) * 10;
+  const pts = ref.concat(R.cl.filter(p => Math.hypot(p[0], p[1]) <= lim));
+  let xr, yr;
+  if (d) {
+    let m = 1.25; for (const p of pts) m = Math.max(m, Math.abs(p[0]) * 1.1, Math.abs(p[1]) * 1.1);
+    m = Math.min(m, 4); xr = [-m, m]; yr = [-m, m];
+  } else {
+    let x0 = Math.min(0, ...pts.map(p => p[0])), x1 = Math.max(0, ...pts.map(p => p[0])), y1 = Math.max(0, ...pts.map(p => Math.abs(p[1])));
+    if (ts > 0) x0 = Math.min(x0, -4 / ts);
+    const spn = Math.max(x1 - x0, 2 * y1, 1e-6);
+    const padd_ = 0.25 * spn;
+    xr = [x0 - padd_, x1 + padd_]; const yy = Math.max(y1 + padd_, (xr[1] - xr[0]) * 0.35); yr = [-yy, yy];
+  }
+  const stable = R.unstable.length === 0 && R.marginal.length === 0;
+  const stTxt = R.unstable.length ? 'Malha fechada INSTÁVEL' : (R.marginal.length ? 'Malha fechada marginalmente estável' : 'Malha fechada estável');
+  ann.push({ xref: 'paper', yref: 'paper', x: 0.99, y: 0.99, xanchor: 'right', yanchor: 'top', text: (stable ? '✓ ' : '✗ ') + stTxt + (P.padeOrder ? ' (Padé)' : ''), showarrow: false, font: { size: 11, color: stable ? '#0a7d24' : '#c62828' }, bgcolor: 'rgba(255,255,255,0.9)' });
+  const lay = {
+    ...baseLayout('Lugar das raízes'),
+    xaxis: { ...AX, range: xr, title: { ...AX.title, text: 'real' } },
+    yaxis: { ...AX, range: yr, title: { ...AX.title, text: 'imaginário' }, scaleanchor: 'x', scaleratio: 1 },
+    shapes, annotations: ann, legend: { orientation: 'h', y: -0.2, yanchor: 'top', x: 0, font: { size: 11 } }, margin: { l: 58, r: 14, t: 34, b: 95 },
+  };
+  Plotly.react('plotRL', tr, lay, PCFG);
+}
+function clDesc(p) {
+  let s = p;
+  if (P.discrete) { const m = Math.hypot(p[0], p[1]); s = m > 0 ? [Math.log(m) / P.Ts, Math.atan2(p[1], p[0]) / P.Ts] : [-Infinity, 0]; }
+  const wn = Math.hypot(s[0], s[1]), z = wn > 0 ? -s[0] / wn : NaN;
+  return `${fmtC(p)}<br>ζ = ${isFinite(z) ? z.toFixed(3) : '—'}, ω<sub>n</sub> = ${fmt(wn)} rad/s`;
+}
+function respLayout(title, yTitle1, yTitle2, xmax, yr1) {
+  return {
+    ...baseLayout(title),
+    xaxis: { ...AX, anchor: 'y', showticklabels: false, range: [0, xmax] },
+    xaxis2: { ...AX, anchor: 'y2', matches: 'x', title: { ...AX.title, text: 'tempo (s)' } },
+    yaxis: { ...AX, domain: [0.38, 1], title: { ...AX.title, text: yTitle1 }, range: yr1 },
+    yaxis2: { ...AX, domain: [0, 0.3], title: { ...AX.title, text: yTitle2 } },
+    hovermode: 'x unified',
+  };
+}
+function yRange(arrs, lo0, hi0) {
+  let lo = lo0, hi = hi0;
+  for (const a of arrs) for (const v of a) { if (isFinite(v)) { if (v < lo) lo = v; if (v > hi) hi = v; } }
+  const p = 0.05 * (hi - lo || 1);
+  return [lo - p, hi + p];
+}
+function plotStep() {
+  const s = R.step, shape = s.discrete ? 'hv' : 'linear';
+  const [t, y, u, yol] = decimate([s.t, s.y, s.u, s.yol]);
+  const ln = (yv, name, color, dash, ax, vis = true) => ({ x: t, y: yv, name, type: 'scatter', mode: 'lines', line: { color, width: 2, dash, shape }, xaxis: ax === 2 ? 'x2' : 'x', yaxis: ax === 2 ? 'y2' : 'y', visible: vis, hovertemplate: '%{y:.4g}' });
+  const tr = [
+    ln(y, 'y (malha fechada)', COLORS.T, 'solid', 1),
+    ln(yol, 'y (malha aberta, Gp)', COLORS.Gp, 'dash', 1, 'legendonly'),
+    ln(u, 'u (esforço de controle)', COLORS.T, 'solid', 2),
+  ];
+  const os = Number(state.req.os), trq = Number(state.req.tr), tsq = Number(state.req.ts);
+  const top = os > 0 ? 1 + os / 100 : 1e9;
+  const shapes = [];
+  const rect = (x0, x1, y0, y1) => shapes.push({ type: 'rect', xref: 'x', yref: 'y', x0, x1, y0, y1, fillcolor: 'rgba(0,0,0,0.09)', line: { width: 0 }, layer: 'below' });
+  if (os > 0) rect(0, 1e9, top, 1e9);
+  if (trq > 0) rect(trq, 1e9, -1e9, 0.9);
+  if (tsq > 0) { rect(tsq, 1e9, 0.9, 0.98); rect(tsq, 1e9, 1.02, top); }
+  shapes.push({ type: 'line', xref: 'x domain', yref: 'y', x0: 0, x1: 1, y0: 1, y1: 1, line: { color: '#999', width: 1, dash: 'dot' } });
+  const yr = yRange([s.y], -0.05, Math.max(1.15, os > 0 ? top + 0.05 : 1.15));
+  const lay = respLayout('Resposta ao degrau (r = 1)', 'y', 'u', s.tf, yr);
+  lay.shapes = shapes;
+  Plotly.react('plotStep', tr, lay, PCFG);
+}
+function plotDist() {
+  const d = R.dist;
+  if (!d.ok) { Plotly.react('plotDist', [], { ...baseLayout('Simulação com distúrbios — ' + d.msg) }, PCFG); return; }
+  const shape = d.discrete ? 'hv' : 'linear';
+  const [t, y, u, r, du, dy, dm] = decimate([d.t, d.y, d.u, d.r, d.du, d.dy, d.dm]);
+  const used = (k) => state.dist.rows.some(row => row.en && row.input === k);
+  const ln = (yv, name, color, dash, ax, vis = true) => ({ x: t, y: yv, name, type: 'scatter', mode: 'lines', line: { color, width: dash === 'solid' ? 2 : 1.5, dash, shape }, xaxis: ax === 2 ? 'x2' : 'x', yaxis: ax === 2 ? 'y2' : 'y', visible: vis, hovertemplate: '%{y:.4g}' });
+  const tr = [
+    ln(y, 'y', COLORS.T, 'solid', 1),
+    ln(r, 'r', COLORS.ref, 'dash', 1, used('r') ? true : 'legendonly'),
+    ln(dy, 'd_y', COLORS.dy, 'dash', 1, used('dy') ? true : 'legendonly'),
+    ln(dm, 'd_m', COLORS.dm, 'dash', 1, used('dm') ? true : 'legendonly'),
+    ln(u, 'u_c (controlador)', COLORS.T, 'solid', 2),
+    ln(du, 'd_u', COLORS.du, 'dash', 2, used('du') ? true : 'legendonly'),
+  ];
+  const lay = respLayout('Simulação com referência e distúrbios', 'y, r, d_y, d_m', 'u_c, d_u', d.t[d.t.length - 1], yRange([d.y, d.r], 0, 0));
+  Plotly.react('plotDist', tr, lay, PCFG);
+}
+
+/* ------------------------- métricas e textos ------------------------- */
+function metric(lbl, val, okState) {
+  const cls = okState === undefined ? '' : (okState ? 'ok' : 'bad');
+  const st = okState === undefined ? '' : `<span class="st">${okState ? '✓' : '✗'}</span>`;
+  return `<div class="metric ${cls}"><span class="lbl">${lbl}</span><b>${val}</b>${st}</div>`;
+}
+function renderMetrics() {
+  const s = R.step, os = Number(state.req.os), trq = Number(state.req.tr), tsq = Number(state.req.ts);
+  const stable = R.unstable.length === 0 && R.marginal.length === 0;
+  let h = '';
+  h += metric('Malha fechada', stable ? 'estável' : (R.unstable.length ? 'instável' : 'marginal'), stable);
+  h += metric('Margem de fase', isFinite(R.mg.pm.pm) ? `${R.mg.pm.pm.toFixed(1)}°` : '∞');
+  h += metric('Margem de ganho', isFinite(R.mg.gm.gm) ? `${R.mg.gm.gm.toFixed(1)} dB` : '∞');
+  h += metric('Freq. de cruzamento', isFinite(R.mg.pm.w) ? fmtFreq(R.mg.pm.w) : '—');
+  if (stable) {
+    h += metric('Sobressinal', `${s.os.toFixed(1)} %`, os > 0 ? s.os <= os : undefined);
+    let riseOk;
+    if (trq > 0) { riseOk = true; for (let k = 0; k < s.t.length; k++) if (s.t[k] >= trq && s.y[k] < 0.9) { riseOk = false; break; } }
+    h += metric('Subida até 90%', isFinite(s.t90) ? `${fmt(s.t90)} s` : '—', riseOk);
+    const tsv = s.tsl === 0 ? 0 : s.tsl;
+    h += metric('Acomodação (2%)', isFinite(tsv) && tsv < s.tf ? `${fmt(tsv)} s` : `> ${fmt(s.tf)} s`, tsq > 0 ? (isFinite(tsv) && tsv <= tsq) : undefined);
+    h += metric('Erro em regime (degrau)', fmt(1 - s.yfin, 3));
+  }
+  document.getElementById('metrics').innerHTML = h;
+}
+function frac(n, d) { return `<span class="frac"><span>${n}</span><span>${d}</span></span>`; }
+function renderTexts() {
+  const v = P.v, K = Kval();
+  const Kstr = `${K < 0 ? '−' : ''}${fmt(Math.abs(K))}`;
+  const gcHtml = `G<sub>c</sub>(${v})·K = ${Kstr} · ${frac(CS.numS.join(' ') || '1', CS.denS.join(' ') || '1')}`;
+  document.getElementById('ctrlTF').innerHTML = gcHtml;
+  const numK = pscale(CS.num, K);
+  document.getElementById('infoGc').innerHTML = `G<sub>c</sub>(${v})·K = ${frac(polyStr(numK, v), polyStr(CS.den, v))}`;
+  const kz = plead(numK) / plead(CS.den);
+  document.getElementById('infoGcZpk').innerHTML =
+    `zeros: ${CS.zeros.length ? CS.zeros.map(fmtC).join(', ') : '—'}<br>polos: ${CS.poles.length ? CS.poles.map(fmtC).join(', ') : '—'}<br>ganho k (forma zpk): ${fmt(kz)}`;
+  const Tn = pprod([numK, P.num, P.fnum]), Td = pprod([CS.den, P.den, P.fden]);
+  document.getElementById('infoT').innerHTML = `T(${v}) = ${frac(polyStr(Tn, v), polyStr(Td, v))}${P.delay > 0 ? ` · e<sup>−${fmt(P.delay)}s</sup>` : ''}`;
+  document.getElementById('infoCL').innerHTML = R.cl.map(p => clDesc(p).replace('<br>', ' → ')).join('<br>') || '—';
+  // código
+  const arr = (p) => '[' + ptrim(p).map(fmtN).join(', ') + ']';
+  const tsA = P.discrete ? `, ${fmtN(P.Ts)}` : '';
+  const gpNum = P.discrete ? P.num : P.num, gpDen = P.discrete ? P.den : P.den;
+  let m = `% Gerado pelo SISO Design App\n`;
+  m += `Gc = tf(${arr(numK)}, ${arr(CS.den)}${tsA});\n`;
+  m += `Gp = tf(${arr(gpNum)}, ${arr(gpDen)}${tsA}${P.delay > 0 ? `, 'InputDelay', ${fmtN(P.delay)}` : ''});\n`;
+  m += `Gf = tf(${arr(P.fnum)}, ${arr(P.fden)}${tsA});\n`;
+  m += `T  = Gc*Gp*Gf;              % malha aberta\nMF = feedback(Gc*Gp, Gf);    % r -> y\nmargin(T); figure; step(MF);\n`;
+  let py = `# Gerado pelo SISO Design App\nimport control as ct\n`;
+  const dtA = P.discrete ? `, dt=${fmtN(P.Ts)}` : '';
+  py += `Gc = ct.tf(${arr(numK)}, ${arr(CS.den)}${dtA})\n`;
+  if (P.delay > 0 && !P.discrete) {
+    py += `num_d, den_d = ct.pade(${fmtN(P.delay)}, ${P.padeOrder})\nGp = ct.tf(${arr(gpNum)}, ${arr(gpDen)}) * ct.tf(num_d, den_d)\n`;
+  } else py += `Gp = ct.tf(${arr(gpNum)}, ${arr(gpDen)}${dtA})\n`;
+  py += `Gf = ct.tf(${arr(P.fnum)}, ${arr(P.fden)}${dtA})\n`;
+  py += `T = Gc*Gp*Gf                  # malha aberta\nMF = ct.feedback(Gc*Gp, Gf)    # r -> y\nprint(ct.stability_margins(T))\n`;
+  document.getElementById('codeM').textContent = m;
+  document.getElementById('codeP').textContent = py;
+}
+function renderPlantInfo() {
+  const v = P.v;
+  let h = `G<sub>p</sub>(${v}) = ${frac(polyStr(P.num, v), polyStr(P.den, v))}`;
+  if (P.delay > 0) h += ` · e<sup>−${fmt(P.delay)}s</sup>`;
+  if (!(P.fnum.length === 1 && P.fden.length === 1 && P.fnum[0] === P.fden[0])) h += `&nbsp;&nbsp;&nbsp; G<sub>f</sub>(${v}) = ${frac(polyStr(P.fnum, v), polyStr(P.fden, v))}`;
+  document.getElementById('plantTF').innerHTML = h;
+  document.getElementById('plantPZ').innerHTML =
+    `polos: ${P.poles.length ? P.poles.map(fmtC).join(', ') : '—'}<br>zeros: ${P.zeros.length ? P.zeros.map(fmtC).join(', ') : '—'}` +
+    (P.discrete ? `<br>Nyquist: ${fmtFreq(Math.PI / P.Ts)}` : '');
+}
+
+/* ------------------------- UI: controlador ------------------------- */
+function freqSliderRange() {
+  let cf = P.poles.concat(P.zeros).map(r => charFreq(r, P.discrete, P.Ts)).filter(w => isFinite(w) && w > 1e-9).map(w => w * fu());
+  if (!cf.length) cf = [1 * fu()];
+  let lo = Math.floor(Math.log10(Math.min(...cf))) - 2, hi = Math.ceil(Math.log10(Math.max(...cf))) + 2;
+  if (P.discrete) hi = Math.log10(0.999 * Math.PI / P.Ts * fu());
+  if (lo >= hi) lo = hi - 3;
+  return [lo, hi];
+}
+function renderRows() {
+  const box = document.getElementById('pzlist');
+  box.innerHTML = '';
+  const [lo, hi] = freqSliderRange();
+  state.ctrl.rows.forEach((r, i) => {
+    const T = PZ_TYPES[r.type];
+    const div = document.createElement('div');
+    div.className = 'pzrow' + (CS && CS.bad.has(i) ? ' bad' : '');
+    const opts = Object.entries(PZ_TYPES).filter(([k, v]) => !v.discreteOnly || P.discrete || k === r.type).map(([k, v]) => `<option value="${k}" ${k === r.type ? 'selected' : ''}>${v.label}</option>`).join('');
+    const fval = r.w * fu();
+    div.innerHTML = `
+      <div class="line1">
+        <input type="checkbox" class="en" ${r.en ? 'checked' : ''} title="Habilitar">
+        <select class="ty">${opts}</select>
+        <label>f <input type="number" class="fq" step="any" min="0" value="${+fval.toPrecision(6)}" ${T.f ? '' : 'disabled'}></label>
+        <label>ζ <input type="number" class="ze" step="0.01" min="0" max="0.999" value="${r.zeta}" style="width:64px" ${T.z ? '' : 'disabled'}></label>
+        <button class="rm" title="Remover">✕</button>
+      </div>
+      <div class="line2" ${T.f ? '' : 'style="display:none"'}>
+        <span>${fuLabel()}</span>
+        <input type="range" class="fs" min="${lo}" max="${hi}" step="${(hi - lo) / 1000}" value="${Math.log10(fval)}">
+      </div>`;
+    const q = (c) => div.querySelector(c);
+    q('.en').addEventListener('change', e => { r.en = e.target.checked; ctrlChanged(); });
+    q('.ty').addEventListener('change', e => { r.type = e.target.value; ctrlChanged(true); });
+    q('.fq').addEventListener('input', e => { const v = Number(e.target.value); if (v > 0) { r.w = v / fu(); q('.fs').value = Math.log10(v); ctrlChanged(); } });
+    q('.fs').addEventListener('input', e => { const v = Math.pow(10, Number(e.target.value)); r.w = v / fu(); q('.fq').value = +v.toPrecision(4); ctrlChanged(); });
+    q('.ze').addEventListener('input', e => { const v = Number(e.target.value); if (v >= 0 && v < 1) { r.zeta = v; ctrlChanged(); } });
+    q('.rm').addEventListener('click', () => { state.ctrl.rows.splice(i, 1); ctrlChanged(true); });
+    box.appendChild(div);
+  });
+}
+function markBadRows() {
+  document.querySelectorAll('#pzlist .pzrow').forEach((d, i) => d.classList.toggle('bad', CS.bad.has(i)));
+}
+function syncGainUI() {
+  const c = state.ctrl;
+  const sl = document.getElementById('kslider');
+  sl.min = Math.min(c.kmin, c.kmax); sl.max = Math.max(c.kmin, c.kmax); sl.value = c.kdb;
+  document.getElementById('kdb').value = +c.kdb.toFixed(2);
+  document.getElementById('klin').value = +(c.sign * Math.pow(10, c.kdb / 20)).toPrecision(5);
+  document.getElementById('ksign').textContent = `sinal: ${c.sign > 0 ? '+' : '−'}`;
+  document.getElementById('kmin').value = c.kmin; document.getElementById('kmax').value = c.kmax;
+}
+
+/* ------------------------- UI: distúrbios ------------------------- */
+function renderDistRows() {
+  const tb = document.getElementById('distRows');
+  tb.innerHTML = '';
+  const discrete = P && P.discrete;
+  document.getElementById('fdDt').style.display = discrete ? 'none' : '';
+  state.dist.rows.forEach((r, i) => {
+    const cfg = DIST_TYPES[r.type];
+    const tr1 = document.createElement('tr'), tr2 = document.createElement('tr');
+    tr1.innerHTML = `
+      <td><input type="checkbox" class="en" ${r.en ? 'checked' : ''}></td>
+      <td><select class="in">${['r', 'du', 'dy', 'dm'].map(k => `<option ${k === r.input ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
+      <td><select class="ty">${Object.entries(DIST_TYPES).map(([k, v]) => `<option value="${k}" ${k === r.type ? 'selected' : ''}>${v.label}</option>`).join('')}</select></td>
+      <td><input type="number" class="f" step="any" min="0" value="${r.f}" ${cfg.f ? '' : 'disabled'}></td>
+      <td><input type="text" class="t" value="${r.t}"></td>
+      <td><input type="text" class="a" value="${r.a}"></td>
+      <td><input type="text" class="rate" value="${r.rate}" placeholder="∞" ${cfg.rate ? '' : 'disabled'} style="width:52px"></td>
+      <td><button class="rm" title="Remover">✕</button></td>`;
+    tr2.innerHTML = `<td></td><td colspan="7" class="distdesc">${r._err ? `<span style="color:var(--bad)">⚠ ${r._err}</span>` : cfg.desc}</td>`;
+    const q = (c) => tr1.querySelector(c);
+    q('.en').addEventListener('change', e => { r.en = e.target.checked; distChanged(); });
+    q('.in').addEventListener('change', e => { r.input = e.target.value; distChanged(); });
+    q('.ty').addEventListener('change', e => { r.type = e.target.value; const c = DIST_TYPES[r.type]; r.t = c.t; r.a = c.a; distChanged(true); });
+    q('.f').addEventListener('change', e => { r.f = Number(e.target.value); distChanged(); });
+    q('.t').addEventListener('change', e => { r.t = e.target.value; distChanged(); });
+    q('.a').addEventListener('change', e => { r.a = e.target.value; distChanged(); });
+    q('.rate').addEventListener('change', e => { r.rate = e.target.value; distChanged(); });
+    q('.rm').addEventListener('click', () => { state.dist.rows.splice(i, 1); distChanged(true); });
+    tb.appendChild(tr1); tb.appendChild(tr2);
+  });
+}
+
+/* ------------------------- ciclo de atualização ------------------------- */
+let pending = 0, raf = 0;
+const LV_GAIN = 1, LV_CTRL = 2, LV_PLANT = 3;
+function schedule(level) { pending = Math.max(pending, level); if (!raf) raf = requestAnimationFrame(run); }
+function setMsg(id, text, cls = 'error') { const el = document.getElementById(id); el.textContent = text; el.className = 'msg ' + (text ? cls : ''); }
+function banner(text) { const b = document.getElementById('banner'); b.style.display = text ? 'block' : 'none'; b.textContent = text; }
+function run() {
+  raf = 0;
+  const lvl = pending; pending = 0;
+  try {
+    if (lvl >= LV_PLANT) {
+      try {
+        P = computePlant(); lastGood.P = P;
+        setMsg('plantMsg', P.warn, 'warn');
+        document.querySelectorAll('#tab-plant input, #tab-plant select').forEach(el => el.classList.remove('err'));
+      } catch (e) {
+        setMsg('plantMsg', 'Erro na planta: ' + e.message);
+        P = lastGood.P;
+        if (!P) { banner('Defina uma planta válida.'); return; }
+      }
+      renderPlantInfo();
+      renderRows();
+      renderDistRows();
+    }
+    if (lvl >= LV_CTRL) {
+      const cs = computeController();
+      if (cs.err) {
+        setMsg('ctrlMsg', cs.err);
+        CS = lastGood.CS && lastGood.CS.discrete === P.discrete && lastGood.CS.Ts === P.Ts ? lastGood.CS : null;
+        if (!CS) { CS = { num: [1], den: [1], zeros: [], poles: [], numS: [], denS: [], bad: cs.bad, discrete: P.discrete, Ts: P.Ts }; }
+        CS = { ...CS, bad: cs.bad };
+      } else {
+        setMsg('ctrlMsg', '');
+        CS = { ...cs, discrete: P.discrete, Ts: P.Ts }; lastGood.CS = CS;
+      }
+      markBadRows();
+      LOC = computeLocus();
+    }
+    analyze();
+    banner('');
+    renderTexts(); renderMetrics();
+    plotBode(); plotRL(); plotStep(); plotDist();
+    setMsg('distMsg', R.dist.msg);
+    if (lvl >= LV_CTRL) {
+      document.querySelectorAll('#distRows .distdesc').forEach((td, i) => {
+        const r = state.dist.rows[i]; if (!r) return;
+        td.innerHTML = r._err ? `<span style="color:var(--bad)">⚠ ${r._err}</span>` : DIST_TYPES[r.type].desc;
+      });
+    }
+  } catch (e) {
+    console.error(e);
+    banner('Erro no cálculo: ' + e.message);
+  }
+}
+function ctrlChanged(rerender = false) { if (rerender) { renderRows(); } schedule(LV_CTRL); }
+function distChanged(rerender = false) { if (rerender) renderDistRows(); schedule(LV_CTRL); }
+function gainChanged() { syncGainUI(); schedule(LV_GAIN); }
+
+/* ------------------------- ligação dos controles ------------------------- */
+function bindPlantUI() {
+  const s = state.plant;
+  const map = { domain: 'domain', Ts: 'Ts', pnum: 'num', pden: 'den', pdelay: 'delay', pade: 'pade', fnum: 'fnum', fden: 'fden' };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    el.value = s[key];
+    el.addEventListener('change', () => { s[key] = el.value; updatePlantVis(); schedule(LV_PLANT); });
+  }
+  updatePlantVis();
+  const pre = document.getElementById('preset');
+  PRESETS.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.name; pre.appendChild(o); });
+  pre.addEventListener('change', () => {
+    const p = PRESETS[pre.value]; if (!p) return;
+    Object.assign(s, { domain: p.domain, num: p.num, den: p.den, delay: p.delay || 0, Ts: p.Ts || s.Ts, fnum: '1', fden: '1' });
+    for (const [id, key] of Object.entries(map)) document.getElementById(id).value = s[key];
+    updatePlantVis(); schedule(LV_PLANT);
+    pre.value = '';
+  });
+}
+function updatePlantVis() {
+  const d = state.plant.domain;
+  document.getElementById('fTs').style.display = d === 'c' ? 'none' : '';
+  document.getElementById('fPade').style.display = d === 'c' ? '' : 'none';
+  document.getElementById('gfhint').innerHTML = d === 'c' ? 'G<sub>f</sub>(s), mesmo domínio do controlador.' : 'G<sub>f</sub>(z) em tempo discreto (mesmo domínio do controlador).';
+}
+function bindCtrlUI() {
+  const c = state.ctrl;
+  document.getElementById('kslider').addEventListener('input', e => { c.kdb = Number(e.target.value); gainChanged(); });
+  document.getElementById('kdb').addEventListener('change', e => { const v = Number(e.target.value); if (isFinite(v)) { c.kdb = v; if (v < c.kmin) c.kmin = Math.floor(v / 10) * 10; if (v > c.kmax) c.kmax = Math.ceil(v / 10) * 10; gainChanged(); schedule(LV_CTRL); } });
+  document.getElementById('klin').addEventListener('change', e => { const v = Number(e.target.value); if (v !== 0 && isFinite(v)) { c.sign = v < 0 ? -1 : 1; c.kdb = 20 * Math.log10(Math.abs(v)); if (c.kdb < c.kmin) c.kmin = Math.floor(c.kdb / 10) * 10; if (c.kdb > c.kmax) c.kmax = Math.ceil(c.kdb / 10) * 10; syncGainUI(); schedule(LV_CTRL); } });
+  document.getElementById('ksign').addEventListener('click', () => { c.sign *= -1; syncGainUI(); schedule(LV_CTRL); });
+  for (const id of ['kmin', 'kmax']) document.getElementById(id).addEventListener('change', e => { const v = Number(e.target.value); if (isFinite(v)) { c[id] = v; c.kdb = Math.min(Math.max(c.kdb, Math.min(c.kmin, c.kmax)), Math.max(c.kmin, c.kmax)); syncGainUI(); schedule(LV_CTRL); } });
+  document.getElementById('addPZ').addEventListener('click', () => {
+    const w = P ? (() => { const cf = P.poles.map(r => charFreq(r, P.discrete, P.Ts)).filter(x => isFinite(x) && x > 1e-9); return cf.length ? Math.min(...cf) : 1; })() : 1;
+    c.rows.push({ en: true, type: 'real pole', w: P && P.discrete ? Math.min(w, 0.1 * Math.PI / P.Ts) : w, zeta: 0.707 });
+    ctrlChanged(true);
+  });
+  document.getElementById('resetC').addEventListener('click', () => { c.rows = []; c.kdb = 0; c.sign = 1; syncGainUI(); ctrlChanged(true); });
+  syncGainUI();
+}
+function bindReqUI() {
+  const map = { reqOS: 'os', reqTr: 'tr', reqTs: 'ts', tStep: 'tstep' };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id); el.value = state.req[key];
+    el.addEventListener('input', () => { state.req[key] = el.value; schedule(LV_GAIN); });
+  }
+}
+function bindDistUI() {
+  const T = document.getElementById('dT'), dt = document.getElementById('dDt');
+  T.value = state.dist.T; dt.value = state.dist.dt;
+  T.addEventListener('change', () => { state.dist.T = Number(T.value); schedule(LV_GAIN); });
+  dt.addEventListener('change', () => { state.dist.dt = Number(dt.value); schedule(LV_GAIN); });
+  document.getElementById('addDist').addEventListener('click', () => { state.dist.rows.push({ en: true, input: 'dy', type: 'steps', f: 1, t: '0, 1', a: '0, 0.1', rate: '' }); distChanged(true); });
+  document.getElementById('dAuto').addEventListener('click', () => {
+    if (!R.step) return;
+    const tf = R.step.tf, Tn = +(3 * tf).toPrecision(2);
+    state.dist.T = Tn; T.value = Tn;
+    if (!P.discrete) { state.dist.dt = +(Tn / 10000).toPrecision(1); dt.value = state.dist.dt; }
+    // reposiciona o degrau de distúrbio para a metade do tempo
+    state.dist.rows.forEach(r => { if (r.type === 'steps' && r.input !== 'r') { const ts = parseList(r.t); if (ts.length === 2 && ts[0] === 0) r.t = `0, ${+(Tn / 2).toPrecision(3)}`; } });
+    renderDistRows(); schedule(LV_GAIN);
+  });
+}
+function bindGlobalUI() {
+  document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('active', x === b));
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + b.dataset.tab));
+  }));
+  const fuSel = document.getElementById('funit');
+  fuSel.value = state.funit;
+  fuSel.addEventListener('change', () => { state.funit = fuSel.value; renderRows(); schedule(LV_PLANT); });
+  document.getElementById('btnLink').addEventListener('click', async () => {
+    const data = { funit: state.funit, plant: state.plant, ctrl: state.ctrl, req: state.req, dist: { T: state.dist.T, dt: state.dist.dt, rows: state.dist.rows.map(({ _err, ...r }) => r) } };
+    const enc = btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const url = location.href.split('#')[0] + '#c=' + enc;
+    history.replaceState(null, '', url);
+    try { await navigator.clipboard.writeText(url); flash('btnLink', 'Link copiado!'); } catch { prompt('Copie o link:', url); }
+  });
+  const copy = (id, btn) => document.getElementById(btn).addEventListener('click', async () => { try { await navigator.clipboard.writeText(document.getElementById(id).textContent); flash(btn, 'Copiado!'); } catch {} });
+  copy('codeM', 'copyM'); copy('codeP', 'copyP');
+}
+function flash(id, txt) { const b = document.getElementById(id), o = b.textContent; b.textContent = txt; setTimeout(() => b.textContent = o, 1500); }
+function loadFromHash() {
+  const m = location.hash.match(/c=([A-Za-z0-9_-]+)/);
+  if (!m) return;
+  try {
+    let s = m[1].replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
+    const d = JSON.parse(decodeURIComponent(escape(atob(s))));
+    if (d.funit) state.funit = d.funit;
+    if (d.plant) Object.assign(state.plant, d.plant);
+    if (d.ctrl) Object.assign(state.ctrl, d.ctrl);
+    if (d.req) Object.assign(state.req, d.req);
+    if (d.dist) Object.assign(state.dist, d.dist);
+  } catch (e) { console.warn('Link inválido', e); }
+}
+
+/* ------------------------- início ------------------------- */
+loadFromHash();
+bindGlobalUI(); bindPlantUI(); bindCtrlUI(); bindReqUI(); bindDistUI();
+schedule(LV_PLANT);
+</script>
+</body>
+</html>

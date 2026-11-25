@@ -1,0 +1,51 @@
+{
+  "files": [
+    {
+      "id": "siso-design",
+      "source": "Control Systems/SisoApp - projeto de controladores.html",
+      "sourceSha256": "ce1b89602dd8379414b91d67c06e4ec167ef30a4d631de250e3c0a062ac05852",
+      "integrated": "simulators/control-systems/siso/app.html",
+      "integratedSha256": "20c42b66611be0453d14ca85ab5bcadac668b1b8a7e9bee974dc2dc611f3b80a",
+      "changes": [
+        "Plotly 2.35.2 CDN URL replaced with the local same-version copy."
+      ]
+    },
+    {
+      "id": "buck-steady",
+      "source": "Power Electronics/simulador_buck.html",
+      "sourceSha256": "449c2e2cc5a2039627a73f5c5a13b5246f53fc4dc9f6372813a529d31498c518",
+      "integrated": "simulators/power-electronics/buck/app.html",
+      "integratedSha256": "449c2e2cc5a2039627a73f5c5a13b5246f53fc4dc9f6372813a529d31498c518",
+      "changes": []
+    },
+    {
+      "id": "dab-battery",
+      "source": "Power Electronics/dab_dinamico.html",
+      "sourceSha256": "3917fc7b9e298609db7c31b69af8874ffa710a0c122594cc75bc31460b7611be",
+      "integrated": "simulators/power-electronics/dab/app.html",
+      "integratedSha256": "3917fc7b9e298609db7c31b69af8874ffa710a0c122594cc75bc31460b7611be",
+      "changes": []
+    },
+    {
+      "id": "opamp-lab",
+      "source": "Fundamental Eletronics and Electrical Circuits/laboratorio_ampop.html",
+      "sourceSha256": "b0a674238f2eb300b15059c3be0f4f7ac0143b70803b611373607f2f38964fba",
+      "integrated": "simulators/analog-electronics/opamp/app.html",
+      "integratedSha256": "b0a674238f2eb300b15059c3be0f4f7ac0143b70803b611373607f2f38964fba",
+      "changes": []
+    },
+    {
+      "id": "buck-pid",
+      "source": "Control Systems/Buck com PID.html",
+      "sourceSha256": "a4bfd85bc22a6bcd8ae4dd5a045d21499324a1cdd878546ad93149d3e5d44608",
+      "integrated": "simulators/control-systems/buck-pid/app.html",
+      "integratedSha256": "a8bf440020a85bf8c7ef91ca4c18844edef9a2b047f4d2dd01f43c6a9c79214a",
+      "changes": [
+        "Removed two external Google Fonts link tags; existing CSS font fallback applies."
+      ]
+    }
+  ],
+  "logoSource": "logoEEVL.svg",
+  "logoSourceSha256": "804ba4cc94cb9d82226ee7fd198b9ca647988ef4290b38523fffd85dbc7d9bc9",
+  "plotlySha256": "6d21266ce1bd7d9e5ab4e115989c70c20de0382fd973a8f26ab58619eba4d603"
+}

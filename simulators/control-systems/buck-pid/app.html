@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16191c">
+<title>Buck com PID</title>
+<style>
+/* VOICE: bancada de laboratório, sóbria e técnica
+   IDEA: um osciloscópio de bancada ligado a uma placa de conversor
+   PICTURE: tela do osciloscópio com Vout, iL e razão cíclica, ao vivo
+   COLOUR and TYPE: painel aço, preto, branco, vermelho de alarme; Inter Tight + Inter
+   LAYOUT: leituras numa faixa, tela grande, depois perturbações e parâmetros */
+:root{color-scheme:light dark;--bg:light-dark(#d5dbe0,#16191c);--panel:light-dark(#eef1f3,#1f2327);--ink:light-dark(#0d0f11,#f2f4f5);--mute:light-dark(#5a636b,#97a1a9);--line:light-dark(#b9c2c9,#30363c);--red:#e8251a;--scr:light-dark(#fbfcfc,#0c0e10);--grid:light-dark(#e3e7ea,#1c2024);--band:light-dark(#aab3ba,#4a535b);--tr:light-dark(#0d0f11,#f2f4f5)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2{font-family:"Inter Tight",Inter,sans-serif;margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(26px,5vw,40px)}h2{font-size:19px}
+.wrap{max-width:1240px;margin:0 auto;padding:16px max(4vw,12px) 40px}
+.top{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:end;justify-content:space-between;margin-bottom:12px}
+.top p{margin:4px 0 0;color:var(--mute);font-size:14px}
+.reads{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.reads div{background:var(--panel);padding:8px 10px}
+.reads b{display:block;font:600 clamp(17px,3.6vw,24px)/1.1 "Inter Tight",sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.reads span{font-size:13px;color:var(--mute)}
+.reads .warn b{color:var(--red)}
+.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;margin-top:14px}
+.scope{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
+.fig{position:relative;height:min(72vh,680px);min-height:340px}
+.fig canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:8px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+button,select,input{font:inherit;font-size:16px;color:var(--ink)}
+button{min-height:44px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--scr);cursor:pointer;font-weight:600}
+button.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.on{background:var(--red);border-color:var(--red);color:#fff}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+select{min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--scr);padding:0 8px}
+label.sel{display:flex;gap:6px;align-items:center;font-size:14px;color:var(--mute)}
+.side{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.card h2{margin-bottom:8px}
+.dist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dist button{padding:4px 6px;font-size:14px;line-height:1.2}
+.dist small{display:block;font-weight:400;font-size:13px;opacity:.85}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+.f label{display:block;font-size:13px;color:var(--mute);margin-bottom:2px}
+.f .in{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--scr)}
+.f input{width:100%;min-height:44px;border:0;background:none;padding:0 8px;font-variant-numeric:tabular-nums}
+.f em{font-style:normal;font-size:13px;color:var(--mute);padding-right:8px;white-space:nowrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px}
+.chk input{width:22px;height:22px;accent-color:var(--red)}
+.sch{width:100%;height:auto;display:block}
+.sch text{font:13px Inter,sans-serif;fill:var(--ink)}
+.sch .w{stroke:var(--ink);stroke-width:2;fill:none}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+details summary{cursor:pointer;font-weight:600;min-height:32px}
+@media(max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.reads{grid-template-columns:repeat(6,minmax(0,1fr))}.reads div{grid-column:span 2}.reads div:nth-child(n+4){grid-column:span 3}.fig{height:58vh;min-height:360px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Conversor Buck com controle PID</h1>
+    <p>Simulação chaveada em tempo real: PWM, diodo, modo descontínuo e PID digital amostrado a cada período.</p></div>
+  </div>
+  <div class="reads" id="reads">
+    <div><span>Vout média</span><b id="rV">–</b></div>
+    <div><span>Ripple Vout</span><b id="rRip">–</b></div>
+    <div><span>iL média</span><b id="rI">–</b></div>
+    <div><span>Razão cíclica</span><b id="rD">–</b></div>
+    <div id="rModeBox"><span>Modo</span><b id="rM">–</b></div>
+  </div>
+
+  <div class="main">
+    <section class="scope">
+      <div class="fig"><canvas id="cv"></canvas></div>
+      <div class="bar">
+        <button class="pri" id="bRun">Pausar</button>
+        <button id="bReset">Reiniciar</button>
+        <label class="sel">Velocidade
+          <select id="sSpeed"><option value="1">1 ms/s</option><option value="5">5 ms/s</option><option value="20" selected>20 ms/s</option><option value="50">50 ms/s</option><option value="100">100 ms/s</option></select></label>
+        <label class="sel">Janela
+          <select id="sWin"><option value="0.5">0,5 ms</option><option value="2">2 ms</option><option value="10">10 ms</option><option value="20" selected>20 ms</option><option value="50">50 ms</option></select></label>
+      </div>
+    </section>
+
+    <div class="side">
+      <section class="card">
+        <h2>Perturbações</h2>
+        <div class="dist">
+          <button id="dR">Carga<small id="dRt">R → R/2</small></button>
+          <button id="dVr">Referência<small id="dVrt">Vref × 1,25</small></button>
+          <button id="dVi">Entrada<small id="dVit">Vin × 0,75</small></button>
+        </div>
+        <p class="note">Toque de novo para voltar ao valor original.</p>
+      </section>
+
+      <section class="card">
+        <h2>Controlador</h2>
+        <div class="grid" id="gCtl"></div>
+        <label class="chk"><input type="checkbox" id="cOpen"> Malha aberta (razão cíclica fixa)</label>
+        <div class="row">
+          <button data-pre="std">Padrão</button>
+          <button data-pre="fast">Agressivo</button>
+          <button data-pre="slow">Lento</button>
+          <button data-pre="pi">Só PI</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Circuito</h2>
+        <svg class="sch" viewBox="0 0 340 120" role="img" aria-label="Esquema do conversor buck">
+          <path class="w" d="M30 30 H70 M110 30 H150 M190 30 H230 V20 M230 30 H300 V45 M300 75 V100 H30 V75 M30 45 V30 M130 30 V58 M130 72 V100 M230 40 V58 M230 72 V100"/>
+          <circle cx="30" cy="60" r="15" class="w"/><text x="22" y="65">V</text>
+          <path class="w" id="swLine" d="M70 30 L106 18"/><circle cx="70" cy="30" r="3" fill="currentColor"/><circle cx="110" cy="30" r="3" fill="currentColor"/>
+          <path class="w" d="M122 72 H138 M122 58 L130 72 L138 58 Z"/>
+          <path class="w" d="M150 30 q5 -12 10 0 q5 -12 10 0 q5 -12 10 0 q5 -12 10 0"/>
+          <path class="w" d="M220 58 H240 M220 72 H240"/>
+          <rect x="292" y="45" width="16" height="30" class="w"/>
+          <text x="6" y="98" id="tVin">Vin</text><text x="74" y="12">S</text><text x="100" y="92">D</text>
+          <text x="160" y="16" id="tL">L</text><text x="244" y="68" id="tC">C</text><text x="312" y="64" id="tR">R</text>
+        </svg>
+        <div class="grid" id="gCir"></div>
+      </section>
+      <p class="note">Modelo: chave com Ron, diodo com queda Vd, indutor com resistência rL, integração RK2 com 100 passos por período. O PID lê Vout no início de cada período e atualiza o PWM no mesmo período (atraso de 1 amostra). Integrador com anti-windup por clamping e derivada filtrada (polo em N rad/s).</p>
+    </div>
+  </div>
+</div>
+
+<script>
+{
+const CTL=[["vref","Vref","V",1],["kp","Kp","1/V",1],["ki","Ki","1/(V·s)",1],["kd","Kd","µs/V",1e-6],["N","Filtro D (N)","rad/s",1],["dmax","D máx","",1],["dol","D malha aberta","",1]];
+const CIR=[["vin","Vin","V",1],["R","Carga R","Ω",1],["L","L","µH",1e-6],["C","C","µF",1e-6],["fsw","fsw","kHz",1e3],["rL","rL","Ω",1],["ron","Ron chave","Ω",1],["vd","Vd diodo","V",1]];
+const DEF={vin:24,vref:12,L:100e-6,C:100e-6,R:6,fsw:20e3,rL:0.05,ron:0.02,vd:0.5,kp:0.02,ki:100,kd:2e-6,N:20000,dmax:0.95,dol:0.52};
+const PRE={std:{kp:0.02,ki:100,kd:2e-6},fast:{kp:0.05,ki:400,kd:5e-6},slow:{kp:0.005,ki:20,kd:0},pi:{kp:0.02,ki:100,kd:0}};
+let p={...DEF};
+try{const s=JSON.parse(localStorage.getItem("buckpid")||"null");if(s)p={...p,...s}}catch(e){}
+const save=()=>{try{localStorage.setItem("buckpid",JSON.stringify(p))}catch(e){}};
+const mult={R:1,vref:1,vin:1};
+let open=false,running=true;
+const $=id=>document.getElementById(id);
+const fmt=v=>{const a=Math.abs(v);return a===0?"0":a>=1e6||a<1e-3?v.toExponential(2):String(+v.toPrecision(4))};
+
+function fields(el,list){
+  el.innerHTML=list.map(([k,l,u])=>`<div class="f"><label for="i_${k}">${l}</label><div class="in"><input id="i_${k}" inputmode="decimal" data-k="${k}"><em>${u}</em></div></div>`).join("");
+}
+fields($("gCtl"),CTL);fields($("gCir"),CIR);
+const SC=Object.fromEntries([...CTL,...CIR].map(([k,,,s])=>[k,s]));
+function fill(){for(const k in SC){const i=$("i_"+k);if(i&&document.activeElement!==i)i.value=fmt(p[k]/SC[k])}
+  $("tVin").textContent=fmt(p.vin*mult.vin)+"V";$("tL").textContent=fmt(p.L*1e6)+"µH";$("tC").textContent=fmt(p.C*1e6)+"µF";$("tR").textContent=fmt(p.R*mult.R)+"Ω";}
+document.querySelectorAll(".f input").forEach(i=>{
+  i.addEventListener("change",()=>{const v=parseFloat(i.value.replace(",","."));const k=i.dataset.k;
+    if(isFinite(v)&&v>=0){let x=v*SC[k];
+      if(["L","C","R","fsw","N"].includes(k)&&x<=0){fill();return}
+      if(k==="dmax"||k==="dol")x=Math.min(1,x);
+      if(k==="fsw")x=Math.min(Math.max(x,1e3),200e3);
+      p[k]=x;save();if(k==="fsw")resetBuf();}
+    fill();});
+});
+document.querySelectorAll("[data-pre]").forEach(b=>b.addEventListener("click",()=>{Object.assign(p,PRE[b.dataset.pre]);save();fill()}));
+$("cOpen").addEventListener("change",e=>{open=e.target.checked});
+
+/* ---- simulação ---- */
+const NS=100,DEC=5; // passos por período, decimação de armazenamento
+let s;
+function resetSim(){s={iL:0,vC:0,t:0,I:0,D:0,eP:0,duty:0,acc:{v:0,i:0,mn:1e9,mx:-1e9,dcm:false,n:0},m:null};s.ePrimed=false;s.mv=0;s.mi=0}
+function pid(){
+  const Ts=1/p.fsw,vref=p.vref*mult.vref,e=vref-s.vC;
+  if(open){s.duty=Math.min(p.dmax,p.dol);s.I=s.duty;s.D=0;s.eP=e;return}
+  if(!s.ePrimed){s.eP=e;s.ePrimed=true}
+  const P=p.kp*e;
+  s.D=(s.D+p.kd*p.N*(e-s.eP))/(1+p.N*Ts);s.eP=e;
+  const It=s.I+p.ki*Ts*e,u=P+It+s.D;
+  if(!((u>p.dmax&&e>0)||(u<0&&e<0)))s.I=It;
+  s.duty=Math.min(p.dmax,Math.max(0,P+s.I+s.D));
+}
+function period(){
+  pid();
+  const Ts=1/p.fsw,dt=Ts/NS,vin=p.vin*mult.vin,R=p.R*mult.R;
+  const a=s.acc;
+  for(let j=0;j<NS;j++){
+    const on=j<s.duty*NS-1e-9;
+    const f=(iL,vC)=>{let di=((on?vin-p.ron*iL:-p.vd)-vC-p.rL*iL)/p.L;if(!on&&iL<=0&&di<0)di=0;return[di,(iL-vC/R)/p.C]};
+    const[a1,b1]=f(s.iL,s.vC),[a2,b2]=f(s.iL+a1*dt/2,s.vC+b1*dt/2);
+    s.iL+=a2*dt;s.vC+=b2*dt;if(!on&&s.iL<0)s.iL=0;
+    if(!on&&s.iL===0)a.dcm=true;
+    s.t+=dt;
+    a.v+=s.vC;a.i+=s.iL;a.n++;if(s.vC<a.mn)a.mn=s.vC;if(s.vC>a.mx)a.mx=s.vC;
+    if(j%DEC===DEC-1)push(s.vC,s.iL,s.duty,p.vref*mult.vref,s.mv,s.mi);
+  }
+  s.m={v:a.v/a.n,i:a.i/a.n,rip:a.mx-a.mn,d:s.duty,dcm:a.dcm};s.mv=s.m.v;s.mi=s.m.i;
+  s.acc={v:0,i:0,mn:1e9,mx:-1e9,dcm:false,n:0};
+}
+
+/* ---- buffer circular ---- */
+let cap,bv,bi,bd,br,bmv,bmi,head,count,win=20e-3;
+function resetBuf(){const dtS=DEC/(p.fsw*NS);cap=Math.max(200,Math.ceil(win/dtS));bv=new Float32Array(cap);bi=new Float32Array(cap);bd=new Float32Array(cap);br=new Float32Array(cap);bmv=new Float32Array(cap);bmi=new Float32Array(cap);head=0;count=0}
+function push(v,i,d,r,mv,mi){bv[head]=v;bi[head]=i;bd[head]=d;br[head]=r;bmv[head]=mv;bmi[head]=mi;head=(head+1)%cap;if(count<cap)count++}
+
+/* ---- desenho ---- */
+const cv=$("cv"),ctx=cv.getContext("2d");
+const probe=document.createElement("i");probe.style.display="none";document.body.appendChild(probe);
+function css(n){probe.style.color="var("+n+")";return getComputedStyle(probe).color||"#888"}
+function range(arr,extra){let mn=1e9,mx=-1e9;for(let k=0;k<count;k++){const x=arr[(head-count+k+cap)%cap];if(x<mn)mn=x;if(x>mx)mx=x}
+  if(extra)for(let k=0;k<count;k++){const x=extra[(head-count+k+cap)%cap];if(x<mn)mn=x;if(x>mx)mx=x}
+  if(!(mx>mn)){mn-=0.5;mx+=0.5}const pad=(mx-mn)*0.12;return[mn-pad,mx+pad]}
+function nice(span){const e=Math.pow(10,Math.floor(Math.log10(span/4)));for(const m of[1,2,5,10])if(span/(m*e)<=5)return m*e;return 10*e}
+function draw(){
+  const dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const scr=css("--scr"),grid=css("--grid"),ink=css("--tr"),mute=css("--mute"),red=css("--red");
+  ctx.fillStyle=scr;ctx.fillRect(0,0,W,H);
+  const L=W<520?40:52,Rm=8,gap=10,top=6,hs=[0.45,0.33,0.22],avail=H-top-22-gap*2;
+  const band=css("--band");const panes=[{a:bv,m:bmv,b:br,lab:"Vout (V)",c:ink,c2:red,fixed:null},{a:bi,m:bmi,lab:"iL (A)",c:ink,fixed:null},{a:bd,lab:"D",c:red,fixed:[-0.05,1.05]}];
+  let y0=top;ctx.font="12px Inter,sans-serif";
+  panes.forEach((pn,ix)=>{
+    const h=avail*hs[ix];const[mn,mx]=pn.fixed||range(pn.a,pn.b);
+    const Y=v=>y0+h-(v-mn)/(mx-mn)*h;
+    ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.fillStyle=mute;
+    const st=nice(mx-mn);ctx.textAlign="right";ctx.textBaseline="middle";
+    for(let v=Math.ceil(mn/st)*st;v<=mx;v+=st){const y=Math.round(Y(v))+.5;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(W-Rm,y);ctx.stroke();ctx.fillText(+v.toPrecision(3),L-5,y)}
+    ctx.strokeStyle=css("--line");ctx.strokeRect(L+.5,y0+.5,W-L-Rm-1,h-1);
+    ctx.textAlign="left";ctx.textBaseline="top";ctx.fillStyle=mute;ctx.fillText(pn.lab,L+6,y0+4);
+    if(ix===0){ctx.fillStyle=red;ctx.fillText("– – Vref",L+64,y0+4);ctx.fillStyle=mute;ctx.fillText("cinza: instantâneo · traço forte: média no período",L+6,y0+18)}
+    const pw=W-L-Rm;
+    const trace=(arr,col,dash,lw)=>{if(!count)return;ctx.strokeStyle=col;ctx.lineWidth=lw||1.5;ctx.setLineDash(dash?[6,4]:[]);ctx.beginPath();
+      const per=cap/pw;let st0=false;
+      for(let x=0;x<pw;x++){const k0=Math.floor(x*per),k1=Math.max(k0+1,Math.floor((x+1)*per));let lo=1e9,hi=-1e9,ok=false;
+        for(let k=k0;k<k1;k++){const idx=k-(cap-count);if(idx<0)continue;const v=arr[(head-count+idx+cap)%cap];ok=true;if(v<lo)lo=v;if(v>hi)hi=v}
+        if(!ok)continue;const X=L+x;if(!st0){ctx.moveTo(X,Y(lo));st0=true}else ctx.lineTo(X,Y(lo));if(hi>lo)ctx.lineTo(X,Y(hi))}
+      ctx.stroke();ctx.setLineDash([])};
+    if(pn.m){trace(pn.a,band,false,1);if(pn.b)trace(pn.b,pn.c2,true);trace(pn.m,pn.c,false,2)}else trace(pn.a,pn.c);
+    y0+=h+gap;
+  });
+  ctx.fillStyle=mute;ctx.textAlign="left";ctx.textBaseline="bottom";
+  const t=s.t*1e3;ctx.fillText((t-win*1e3).toFixed(win<2e-3?2:1)+" ms",L,H-2);ctx.textAlign="right";ctx.fillText(t.toFixed(win<2e-3?2:1)+" ms",W-Rm,H-2);
+  const sw=s.duty>0.5;$("swLine").setAttribute("d",sw?"M70 30 L110 30":"M70 30 L106 18");
+}
+let fr=0;
+function readouts(){const m=s.m;if(!m)return;
+  $("rV").textContent=m.v.toFixed(2)+" V";$("rRip").textContent=(m.rip*1e3).toFixed(0)+" mV";
+  $("rI").textContent=m.i.toFixed(2)+" A";$("rD").textContent=(m.d*100).toFixed(1)+" %";
+  $("rM").textContent=m.dcm?"DCM":"CCM";$("rModeBox").classList.toggle("warn",m.dcm)}
+
+/* ---- laço ---- */
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  if(running){
+    const simT=(+$("sSpeed").value)*1e-3*dt;let n=Math.round(simT*p.fsw);n=Math.max(1,Math.min(n,4000));
+    for(let k=0;k<n;k++)period();
+    if(!isFinite(s.vC)||Math.abs(s.vC)>1e6){resetSim();resetBuf()}
+  }
+  draw();if(++fr%6===0)readouts();
+  requestAnimationFrame(loop);
+}
+$("bRun").addEventListener("click",()=>{running=!running;$("bRun").textContent=running?"Pausar":"Continuar"});
+$("bReset").addEventListener("click",()=>{resetSim();resetBuf()});
+$("sWin").addEventListener("change",e=>{win=+e.target.value*1e-3;resetBuf()});
+const tog=(id,key,val,txt)=>$(id).addEventListener("click",()=>{mult[key]=mult[key]===1?val:1;$(id).classList.toggle("on",mult[key]!==1);fill()});
+tog("dR","R",0.5);tog("dVr","vref",1.25);tog("dVi","vin",0.75);
+resetSim();resetBuf();fill();requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>

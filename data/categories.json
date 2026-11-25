@@ -1,0 +1,14 @@
+[
+  {"id":"power-electronics","icon":"ϟ","name":{"en":"Power Electronics","pt-BR":"Eletrônica de Potência"}},
+  {"id":"analog-electronics","icon":"△","name":{"en":"Analog Electronics","pt-BR":"Eletrônica Analógica"}},
+  {"id":"control-systems","icon":"⌁","name":{"en":"Control Systems","pt-BR":"Sistemas de Controle"}},
+  {"id":"electrical-circuits","icon":"⏚","name":{"en":"Electrical Circuits","pt-BR":"Circuitos Elétricos"}},
+  {"id":"machines-drives","icon":"⊙","name":{"en":"Electrical Machines and Drives","pt-BR":"Máquinas Elétricas e Acionamentos"}},
+  {"id":"power-systems","icon":"⌘","name":{"en":"Power Systems","pt-BR":"Sistemas Elétricos de Potência"}},
+  {"id":"renewable-energy","icon":"☼","name":{"en":"Renewable Energy and Storage","pt-BR":"Energias Renováveis e Armazenamento"}},
+  {"id":"signal-processing","icon":"∿","name":{"en":"Digital Signal Processing","pt-BR":"Processamento Digital de Sinais"}},
+  {"id":"digital-electronics","icon":"▥","name":{"en":"Digital Electronics","pt-BR":"Eletrônica Digital"}},
+  {"id":"electromagnetics","icon":"◎","name":{"en":"Electromagnetics","pt-BR":"Eletromagnetismo"}},
+  {"id":"measurements","icon":"◴","name":{"en":"Electrical Measurements","pt-BR":"Medidas Elétricas"}},
+  {"id":"numerical-methods","icon":"ƒ","name":{"en":"Optimization and Numerical Methods","pt-BR":"Otimização e Métodos Numéricos"}}
+]

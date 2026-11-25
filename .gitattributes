@@ -1,0 +1,5 @@
+# Preserve supplied HTML and hashed dependencies byte for byte on every platform.
+*.html -text
+assets/vendor/** -text
+logoEEVL.svg -text
+*.png binary

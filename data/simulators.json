@@ -1,0 +1,292 @@
+[
+  {
+    "id": "siso-design",
+    "title": {
+      "en": "SISO Controller Design",
+      "pt-BR": "Projeto de Controladores SISO"
+    },
+    "description": {
+      "en": "Investigate Bode plots, root locus and time responses. Design and explore single-input, single-output controllers.",
+      "pt-BR": "Investigue diagramas de Bode, lugar das raízes e respostas no tempo. Projete e explore controladores de uma entrada e uma saída."
+    },
+    "category": "control-systems",
+    "keywords": {
+      "en": [
+        "feedback",
+        "Bode",
+        "root locus",
+        "controller",
+        "SISO"
+      ],
+      "pt-BR": [
+        "realimentação",
+        "controle",
+        "lugar das raízes",
+        "controlador"
+      ]
+    },
+    "path": "simulators/control-systems/siso/index.html",
+    "thumbnail": "assets/images/siso.svg",
+    "authors": [
+      "Lucas V. Bellinaso"
+    ],
+    "contributors": [],
+    "version": "original-2026-11-25",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "advanced",
+    "languages": [
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "Source attribution: PythonSisoDesignApp, Prof. Lucas V. Bellinaso, UFSM. See docs/SISO.md.",
+          "pt-BR": "Atribuição no fonte: PythonSisoDesignApp, Prof. Lucas V. Bellinaso, UFSM. Consulte docs/SISO.md."
+        },
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "buck-steady",
+    "title": {
+      "en": "Buck Converter · Steady State",
+      "pt-BR": "Conversor Buck · Regime Permanente"
+    },
+    "description": {
+      "en": "Explore an ideal switched Buck converter in CCM and DCM, with steady-state waveforms and startup transients.",
+      "pt-BR": "Explore o conversor Buck chaveado ideal em CCM e DCM, com formas de onda em regime permanente e transitórios de partida."
+    },
+    "category": "power-electronics",
+    "keywords": {
+      "en": [
+        "buck",
+        "DC-DC",
+        "steady state"
+      ],
+      "pt-BR": [
+        "buck",
+        "regime permanente",
+        "conversor"
+      ]
+    },
+    "path": "simulators/power-electronics/buck/index.html",
+    "thumbnail": "assets/images/buck.svg",
+    "authors": [],
+    "contributors": [],
+    "version": "original-2026-11-25",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "beginner",
+    "languages": [
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+        },
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "buck-step",
+    "title": {
+      "en": "Buck Converter · Duty Cycle Step",
+      "pt-BR": "Conversor Buck · Degrau de Razão Cíclica"
+    },
+    "description": {
+      "en": "Planned laboratory for transient response to a duty cycle step. Awaiting the original simulator files.",
+      "pt-BR": "Laboratório planejado para resposta transitória a um degrau de razão cíclica. Aguardando os arquivos originais."
+    },
+    "category": "power-electronics",
+    "keywords": {
+      "en": [
+        "buck",
+        "duty cycle",
+        "step response"
+      ],
+      "pt-BR": [
+        "buck",
+        "razão cíclica",
+        "degrau",
+        "transitório"
+      ]
+    },
+    "path": null,
+    "thumbnail": "assets/images/buck-step.svg",
+    "authors": [],
+    "contributors": [],
+    "version": null,
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "intermediate",
+    "languages": [],
+    "status": "planned",
+    "validation": [],
+    "validationEvidence": [],
+    "references": []
+  },
+  {
+    "id": "dab-battery",
+    "title": {
+      "en": "Dual Active Bridge · Battery Interface",
+      "pt-BR": "Dual Active Bridge · Interface de Bateria"
+    },
+    "description": {
+      "en": "Explore a bidirectional battery interface with switching, ohmic losses and output capacitor dynamics.",
+      "pt-BR": "Explore uma interface bidirecional de bateria com chaveamento, perdas ôhmicas e dinâmica do capacitor de saída."
+    },
+    "category": "power-electronics",
+    "keywords": {
+      "en": [
+        "DAB",
+        "battery",
+        "dual active bridge"
+      ],
+      "pt-BR": [
+        "DAB",
+        "bateria",
+        "ponte ativa dupla"
+      ]
+    },
+    "path": "simulators/power-electronics/dab/index.html",
+    "thumbnail": "assets/images/dab.svg",
+    "authors": [],
+    "contributors": [],
+    "version": "original-2026-11-25",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "advanced",
+    "languages": [
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+        },
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "opamp-lab",
+    "title": {
+      "en": "Operational Amplifier Virtual Lab",
+      "pt-BR": "Laboratório Virtual de Amplificadores Operacionais"
+    },
+    "description": {
+      "en": "Investigate ideal amplifier topologies, time responses and small-signal frequency response.",
+      "pt-BR": "Investigue topologias de amplificadores ideais, respostas temporais e resposta em frequência de pequenos sinais."
+    },
+    "category": "analog-electronics",
+    "keywords": {
+      "en": [
+        "op amp",
+        "amplifier",
+        "analog"
+      ],
+      "pt-BR": [
+        "amplificador operacional",
+        "amp op",
+        "analógica"
+      ]
+    },
+    "path": "simulators/analog-electronics/opamp/index.html",
+    "thumbnail": "assets/images/opamp.svg",
+    "authors": [],
+    "contributors": [],
+    "version": "original-2026-11-25",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "beginner",
+    "languages": [
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+        },
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "buck-pid",
+    "title": {
+      "en": "Buck Converter · PID Control",
+      "pt-BR": "Conversor Buck · Controle PID"
+    },
+    "description": {
+      "en": "Investigate a switched Buck converter with sampled digital PID, PWM and discontinuous conduction.",
+      "pt-BR": "Investigue um conversor Buck chaveado com PID digital amostrado, PWM e condução descontínua."
+    },
+    "category": "control-systems",
+    "keywords": {
+      "en": [
+        "buck",
+        "PID",
+        "digital control",
+        "PWM"
+      ],
+      "pt-BR": [
+        "buck",
+        "PID",
+        "controle digital",
+        "PWM"
+      ]
+    },
+    "path": "simulators/control-systems/buck-pid/index.html",
+    "thumbnail": "assets/images/buck.svg",
+    "authors": [],
+    "contributors": [],
+    "version": "original-2026-11-25",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "advanced",
+    "languages": [
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "Equations and assumptions in the supplied original application. See docs/INTEGRATION.md.",
+          "pt-BR": "Equações e hipóteses no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+        },
+        "url": null
+      }
+    ]
+  }
+]
