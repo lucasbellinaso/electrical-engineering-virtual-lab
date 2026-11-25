@@ -24,3 +24,12 @@ test('Updates preserve visited laboratories, remove only EEVL caches',async()=>{
  const h=harness();const old=await h.caches.open('eevl-v0-visited');await old.put(h.root+'simulators/old.html',new Response('saved lab'));await h.caches.open('eevl-v0-shell');await h.caches.open('unrelated-project');
  await h.lifecycle('install');await h.lifecycle('activate');h.offline();assert.equal(await (await h.request('simulators/old.html')).text(),'saved lab');assert.ok(!h.stores.has('eevl-v0-shell'));assert.ok(h.stores.has('unrelated-project'));
 });
+
+test('Shell files are served network-first and fall back to the saved copy offline',async()=>{
+ const h=harness();await h.lifecycle('install');await h.lifecycle('activate');
+ assert.equal(await (await h.request('data/simulators.json','cors')).text(),'network:'+h.root+'data/simulators.json');
+ assert.equal(await (await h.request('index.html')).text(),'network:'+h.root+'index.html');
+ h.offline();
+ assert.equal(await (await h.request('data/simulators.json','cors')).text(),'network:'+h.root+'data/simulators.json');
+ assert.equal((await h.request('index.html')).status,200);
+});

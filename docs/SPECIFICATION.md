@@ -52,7 +52,7 @@ PWA em subdiretório, documentação e CI utilizáveis sem build de produção.
 Relatar explicitamente limites de testes e validação técnica.
 
 ## Atualização durante a implementação
-O usuário reorganizou o SISO em Control Systems e adicionou Buck, DAB, amp-ops e Buck PID. Os cinco foram integrados com originais preservados. O degrau dedicado de razão cíclica continua ausente. Consulte INTEGRATION.md e provenance.json para caminhos, hashes e alterações exatas.
+O usuário reorganizou o SISO em Control Systems e adicionou Buck, DAB, amp-ops e Buck PID. Os cinco foram integrados com originais preservados. O degrau dedicado de razão cíclica (`buck-step`) foi fornecido depois e integrado sem alterações. Consulte INTEGRATION.md e provenance.json para caminhos, hashes e alterações exatas.
 
 ## Extensão autorizada: circuitos de primeira e segunda ordem
 Adicionar dois aplicativos em Circuitos Elétricos: RC/RL e RLC série/paralelo.

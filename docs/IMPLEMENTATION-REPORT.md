@@ -61,8 +61,9 @@ Microsoft Edge local, servidor HTTP sob `/EEVL/` para exercitar um subdiretório
 - Aplicativos herdados continuam somente em português e com tema próprio.
 - Todos os cinco são experimentais. Não foi realizada validação independente
   de seus algoritmos nem comparação com hardware, SPICE ou outro simulador.
-- Arquivo dedicado ao degrau de razão cíclica do Buck ausente; permanece planejado,
-  sem botão executável. O Buck fornecido oferece regime permanente e partida.
+- (Atualizado) O laboratório de degrau de razão cíclica do Buck foi fornecido depois
+  e integrado como `buck-step`, sem alterações no original (somente português,
+  experimental). Não foi aberto em navegador real nesta etapa.
 - Modelos herdados preservam o custo computacional e funções de exportação que
   já possuem. Não foram convertidos silenciosamente a Workers.
 - Offline exige visita com Service Worker ativo e depende da quota do navegador.
@@ -89,3 +90,17 @@ do template e critérios de teste: `VALIDATION.md`.
 - **Não executado**: verificação em navegador real (Worker, gráficos, exportações,
   layout em 390 px, tema escuro, offline) para esses dois aplicativos; sem SPICE
   nem medições; sem push ou publicação.
+
+## Extensão: análise nodal fasorial R, L, C (25/11/2026)
+
+- Novo aplicativo EN/PT-BR `nodal-analysis-ac` em Circuitos Elétricos: regime permanente
+  senoidal por fasores (valores de pico), uma frequência, R, L, C, fontes I e V com fase.
+  Resultados complexos: tensões nodais, correntes de ramo, potência complexa (P, Q) e
+  sistema nodal/MNA complexo (simbólico com os elementos, e numérico).
+- Modelo puro em `simulators/electrical-circuits/nodal-analysis-ac/model.js`; LaTeX em
+  `latex.js`; interface em `ui.js` (reaproveita `nodal-analysis/nodal.css`).
+- Evidência analítica e testes: `docs/validation/nodal-analysis-ac.md`,
+  `tests/nodal-analysis-ac.test.mjs`. Nível declarado: *analytically-verified*.
+- Cache da PWA: VERSION `eevl-v1.0.5`; miniatura `nodal-analysis-ac.svg` no precache.
+- **Não executado**: verificação em navegador real (renderização do esquemático, editor,
+  exportações, tela estreita, tema escuro); sem SPICE nem medições.

@@ -1,0 +1,8 @@
+/* Extras for the phasor nodal-analysis app; the base look comes from ../nodal-analysis/nodal.css. */
+.omega-readout { display: block; margin-top: 3px; color: var(--muted); font-variant-numeric: tabular-nums; }
+#frequency { width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink); margin-top: 5px; }
+.comp-phase { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: center; }
+.comp-phase span { font-size: 10px; color: var(--muted); }
+.comp-row[data-type='L'],
+.comp-row[data-type='C'] { border-left-color: var(--blue); border-left-style: dashed; }
+.nodal-metrics strong { font-size: 16px; overflow-wrap: anywhere; }

@@ -89,7 +89,7 @@
   "experimentText": "Experimentally validated: compared with physical measurements, with evidence.",
   "evidenceText": "A model can carry several levels when each is supported by documented evidence. All five imported laboratories are currently experimental; independent validation has not been supplied.",
   "currentTitle": "What is available today?",
-  "currentText": "Five supplied laboratories are integrated: SISO, Buck (steady state and startup), DAB, operational amplifiers and Buck with PID. A dedicated duty cycle step lab is still awaiting its source. Portal artwork is illustrative, not a computed result.",
+  "currentText": "Six supplied laboratories are integrated unchanged: SISO, Buck (steady state and startup), Buck duty cycle step, DAB, operational amplifiers and Buck with PID. Original EEVL labs (RC/RL, RLC and nodal analysis) are bilingual. Portal artwork is illustrative, not a computed result.",
   "openTemplate": "Explore the RC simulator template ↗",
   "privacyTitle": "Privacy & offline storage",
   "privacyText": "EEVL uses localStorage for language and theme, and Cache Storage for offline resources. No analytics or cookies are added. Clear site data in your browser to remove these preferences and cached files. Installation availability depends on your browser; use its install option when supported.",
@@ -253,5 +253,6 @@
   "circuit_overSolution": "Overdamped case (distinct real roots).",
   "circuit_seriesRecover": "Recovering the circuit variables and the transfer function.",
   "circuit_parallelRecover": "Recovering the circuit variables and the impedance.",
-  "circuit_energyEquation": "Energy stored and its rate of change (source power minus dissipation)."
+  "circuit_energyEquation": "Energy stored and its rate of change (source power minus dissipation).",
+  "credits": "Conceived by Prof. Dr. Lucas Vizzotto Bellinaso · Universidade Federal de Santa Maria, RS, Brazil"
 }

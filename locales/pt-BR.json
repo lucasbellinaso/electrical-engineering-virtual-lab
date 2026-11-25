@@ -89,7 +89,7 @@
   "experimentText": "Validado experimentalmente: comparado com medições físicas, com evidência.",
   "evidenceText": "Um modelo pode ter vários níveis quando cada um possui evidência documentada. Os cinco laboratórios importados são atualmente experimentais; não foi fornecida validação independente.",
   "currentTitle": "O que está disponível hoje?",
-  "currentText": "Cinco laboratórios fornecidos estão integrados: SISO, Buck (regime permanente e partida), DAB, amplificadores operacionais e Buck com PID. Um laboratório dedicado ao degrau de razão cíclica ainda aguarda seu arquivo. Os desenhos do portal são ilustrativos, não resultados calculados.",
+  "currentText": "Seis laboratórios fornecidos estão integrados sem alterações: SISO, Buck (regime permanente e partida), Buck com degrau de razão cíclica, DAB, amplificadores operacionais e Buck com PID. Os laboratórios originais do EEVL (RC/RL, RLC e análise nodal) são bilíngues. Os desenhos do portal são ilustrativos, não resultados calculados.",
   "openTemplate": "Explore o template de simulador RC ↗",
   "privacyTitle": "Privacidade e armazenamento offline",
   "privacyText": "O EEVL usa localStorage para idioma e tema e Cache Storage para recursos offline. Não foram adicionados cookies ou ferramentas de análise. Limpe os dados do site no navegador para remover preferências e arquivos armazenados. A instalação depende do navegador; utilize a opção de instalar quando disponível.",
@@ -253,5 +253,6 @@
   "circuit_overSolution": "Caso superamortecido (raízes reais distintas).",
   "circuit_seriesRecover": "Recuperação das variáveis do circuito e da função de transferência.",
   "circuit_parallelRecover": "Recuperação das variáveis do circuito e da impedância.",
-  "circuit_energyEquation": "Energia armazenada e sua taxa de variação (potência da fonte menos dissipação)."
+  "circuit_energyEquation": "Energia armazenada e sua taxa de variação (potência da fonte menos dissipação).",
+  "credits": "Idealizador: Prof. Dr. Lucas Vizzotto Bellinaso · Universidade Federal de Santa Maria, RS, Brasil"
 }

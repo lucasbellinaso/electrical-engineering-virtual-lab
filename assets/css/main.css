@@ -10,3 +10,4 @@
 .catalog-layout{grid-template-columns:240px minmax(0,1fr)}.category-panel{min-width:0}.catalog-section,.recent-section,.mission{min-width:0}.hero-copy{min-width:0}@media(max-width:1050px){.catalog-layout{grid-template-columns:195px minmax(0,1fr)}}@media(max-width:760px){.catalog-layout{grid-template-columns:minmax(0,1fr)}.hero-inner{grid-template-columns:minmax(0,1fr)}.category-panel{width:100%}}
 
 .curve-inspector{display:grid;gap:5px;font-size:11px;color:var(--muted);margin:8px 0}.curve-inspector input{width:100%;accent-color:var(--blue)}.curve-inspector output{font-variant-numeric:tabular-nums;color:var(--ink)}.plot{touch-action:pan-y}
+footer{flex-wrap:wrap}.credits{flex-basis:100%;text-align:center;padding-top:14px;margin-top:2px;border-top:1px solid var(--line);font-size:11px}

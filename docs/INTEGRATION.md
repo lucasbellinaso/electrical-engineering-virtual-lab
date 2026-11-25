@@ -25,8 +25,16 @@ exportação ausentes aos modelos legados. O template exemplifica essas funçõe
 - **SISO**: consulte `SISO.md`. Espaço de estados, Bode, lugar das raízes e
   respostas. Atribuição no próprio arquivo preservada.
 - **Buck**: modelo chaveado ideal, CCM/DCM, RK4 e localização de cruzamento por
-  zero; regime permanente e partida. Não contém um laboratório dedicado à resposta
-  a degrau de razão cíclica. Este item permanece planejado no catálogo.
+  zero; regime permanente e partida. Não contém a resposta a degrau de razão cíclica,
+  que está no arquivo seguinte.
+- **Buck · degrau de razão cíclica** (`buck-step`, `Power Electronics/buck_degrau.html`):
+  chaveado ideal (CCM/DCM, RK4 com bloqueio aproximado de corrente negativa; condição
+  inicial em regime permanente por iteração de ciclos) e modelo médio linear CCM
+  (L di/dt = d·Vin − v; C dv/dt = i − v/R; G_vd(s) = Vin/(LC s² + Ls/R + 1)). Malha
+  aberta, carga resistiva, componentes ideais. O degrau reinicia a fase do PWM e a
+  decimação de pontos pode ocultar ondulação nos gráficos. Arquivo integrado sem
+  alterações (hashes em `provenance.json`); o hash registrado é o do arquivo recebido
+  como texto na conversa.
 - **DAB**: pontes chaveadas, resistência ôhmica e capacitor com bateria; integração
   RK4 por intervalos de comutação e determinação de condição inicial periódica.
 - **Amp-ops**: modelos ideais, topologias selecionáveis, resposta temporal e
@@ -55,8 +63,9 @@ remain identical.** The provenance and preservation test document these changes.
 
 The independent wrappers are bilingual; inherited applications remain Portuguese-only
 and retain their original appearance, model assumptions and numerical methods.
-Scientific validation is experimental for all five; no independent evidence was
-provided. Startup response in the Buck lab is not advertised as the missing dedicated
-duty-cycle step laboratory. Exports and shared URLs depend on original capabilities.
+Scientific validation is experimental for all six; no independent evidence was
+provided. The duty-cycle step laboratory (`buck-step`) was supplied later and is
+integrated unchanged (Portuguese only). Exports and shared URLs depend on original
+capabilities.
 The RC contributor template demonstrates the complete standard without altering
 legacy numerical models. Large inherited calculations may still block their own UI.

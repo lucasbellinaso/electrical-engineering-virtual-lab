@@ -43,8 +43,8 @@ preservação dos originais e modelo RC. Consulte [validação](docs/VALIDATION.
 
 As páginas de apresentação, catálogo e navegação são EN/PT-BR. Os aplicativos
 legados mantêm sua interface original em português. Um laboratório dedicado ao
-**degrau de razão cíclica** permanece planejado: o transitório de partida do Buck
-e o Buck com PID não foram apresentados como esse simulador ausente.
+**degrau de razão cíclica** (`buck-step`) foi integrado sem alterações, apenas em
+português e com validação experimental.
 
 O [template RC](templates/simulator/index.html) é um exemplo funcional para
 colaboradores, fora do catálogo. Tem algoritmo separado, gráfico SVG, tabela

@@ -109,36 +109,52 @@
       "pt-BR": "Conversor Buck · Degrau de Razão Cíclica"
     },
     "description": {
-      "en": "Planned laboratory for transient response to a duty cycle step. Awaiting the original simulator files.",
-      "pt-BR": "Laboratório planejado para resposta transitória a um degrau de razão cíclica. Aguardando os arquivos originais."
+      "en": "Open-loop transient response of an ideal switched Buck converter (CCM/DCM) and of the averaged CCM model to a duty-cycle step, starting from steady state.",
+      "pt-BR": "Resposta transitória em malha aberta do conversor Buck chaveado ideal (CCM/DCM) e do modelo médio CCM a um degrau de razão cíclica, partindo do regime permanente."
     },
     "category": "power-electronics",
     "keywords": {
       "en": [
         "buck",
         "duty cycle",
-        "step response"
+        "step response",
+        "averaged model",
+        "open loop"
       ],
       "pt-BR": [
         "buck",
         "razão cíclica",
         "degrau",
+        "modelo médio",
+        "malha aberta",
         "transitório"
       ]
     },
-    "path": null,
+    "path": "simulators/power-electronics/buck-step/index.html",
     "thumbnail": "assets/images/buck-step.svg",
     "authors": [],
     "contributors": [],
-    "version": null,
+    "version": "original-2026-11-25",
     "created": "2026-11-25",
     "updated": "2026-11-25",
     "difficulty": "intermediate",
-    "languages": [],
-    "status": "planned",
-    "validation": [],
+    "languages": [
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
     "validationEvidence": [],
-    "references": []
+    "references": [
+      {
+        "title": {
+          "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+        },
+        "url": null
+      }
+    ]
   },
   {
     "id": "dab-battery",
@@ -471,6 +487,71 @@
           "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL)."
         },
         "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/"
+      }
+    ]
+  },
+  {
+    "id": "nodal-analysis-ac",
+    "title": {
+      "en": "Phasor Nodal Analysis · R, L, C",
+      "pt-BR": "Análise Nodal Fasorial · R, L, C"
+    },
+    "description": {
+      "en": "Build AC circuits with resistors, inductors, capacitors and sinusoidal sources. Compute node-voltage and branch-current phasors, complex power and the complex nodal/MNA system.",
+      "pt-BR": "Monte circuitos CA com resistores, indutores, capacitores e fontes senoidais. Calcule fasores de tensão nodal e corrente de ramo, potência complexa e o sistema nodal/MNA complexo."
+    },
+    "category": "electrical-circuits",
+    "keywords": {
+      "en": [
+        "phasors",
+        "AC analysis",
+        "nodal analysis",
+        "MNA",
+        "impedance",
+        "resonance",
+        "complex power"
+      ],
+      "pt-BR": [
+        "fasores",
+        "análise CA",
+        "análise nodal",
+        "MNA",
+        "impedância",
+        "ressonância",
+        "potência complexa"
+      ]
+    },
+    "path": "simulators/electrical-circuits/nodal-analysis-ac/index.html",
+    "thumbnail": "assets/images/nodal-analysis-ac.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-25",
+    "updated": "2026-11-25",
+    "difficulty": "intermediate",
+    "languages": [
+      "en",
+      "pt-BR"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/nodal-analysis-ac.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS.",
+          "pt-BR": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS."
+        },
+        "url": null
       }
     ]
   }

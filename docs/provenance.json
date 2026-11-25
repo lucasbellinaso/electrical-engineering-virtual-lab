@@ -43,6 +43,14 @@
       "changes": [
         "Removed two external Google Fonts link tags; existing CSS font fallback applies."
       ]
+    },
+    {
+      "id": "buck-step",
+      "source": "Power Electronics/buck_degrau.html",
+      "sourceSha256": "5fb7d02a558f318490bb6e57a5552a780370dcff94f519385345a3596ba976af",
+      "integrated": "simulators/power-electronics/buck-step/app.html",
+      "integratedSha256": "5fb7d02a558f318490bb6e57a5552a780370dcff94f519385345a3596ba976af",
+      "changes": []
     }
   ],
   "logoSource": "logoEEVL.svg",
