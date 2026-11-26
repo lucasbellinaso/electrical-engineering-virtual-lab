@@ -26,6 +26,7 @@ validação; não integram os requisitos de execução dos aplicativos.
 | Idiomas | pt-BR, en, es no portal; fallback inglês; idiomas reais por aplicativo |
 | Navegação de legados | apresentações com iframe; arquivo de execução separado |
 | Modelos puros | template RC, RC/RL/RLC, análise nodal resistiva e fasorial |
+| Núcleo matemático | `assets/js/core/`: polynomial, matrix, control, numeric, complex, residue, timeresp, design, riccati, analysis, solvers, eigen, models (sem consumidores ainda; fixtures SciPy) |
 | Compartilhamento | modelo, Worker, gráficos e deduções em electrical-circuits/shared |
 | PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
 | Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
@@ -61,9 +62,9 @@ de variáveis a objetos 3D é planejamento, não requisito de todo laboratório.
 já estão separados da UI nos aplicativos originais. Consulte as interfaces reais em
 [docs/API.md](docs/API.md) antes de implementar matemática semelhante.
 
-Uma futura `assets/js/core/` pode reunir matrix, complex, polynomial, control,
+`assets/js/core/` já contém polynomial, matrix, control, numeric e complex; podem vir
 simulation, identification, optimization, signal-processing, symbolic, interpreter
-e project. **Esses nomes não são módulos existentes**; não criar arquivos vazios.
+e project. **Estes últimos não são módulos existentes**; não criar arquivos vazios.
 Extrair quando houver necessidade real e contrato testável. Dependências de UI não
 podem contaminar o modelo puro. Gráficos e 3D também devem ter interfaces próprias.
 
