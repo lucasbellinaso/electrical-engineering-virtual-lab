@@ -55,7 +55,8 @@
       {
         "title": {
           "en": "Source attribution: PythonSisoDesignApp, Prof. Lucas V. Bellinaso, UFSM. See docs/SISO.md.",
-          "pt-BR": "Atribuição no fonte: PythonSisoDesignApp, Prof. Lucas V. Bellinaso, UFSM. Consulte docs/SISO.md."
+          "pt-BR": "Atribuição no fonte: PythonSisoDesignApp, Prof. Lucas V. Bellinaso, UFSM. Consulte docs/SISO.md.",
+          "es": "Atribución en el código fuente: PythonSisoDesignApp, Prof. Lucas V. Bellinaso, UFSM. Consulte docs/SISO.md."
         },
         "url": null
       }
@@ -111,7 +112,8 @@
       {
         "title": {
           "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
-          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md.",
+          "es": "Ecuaciones, métodos y limitaciones en la aplicación original suministrada. Consulte docs/INTEGRATION.md."
         },
         "url": null
       }
@@ -172,7 +174,8 @@
       {
         "title": {
           "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
-          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md.",
+          "es": "Ecuaciones, métodos y limitaciones en la aplicación original suministrada. Consulte docs/INTEGRATION.md."
         },
         "url": null
       }
@@ -227,7 +230,8 @@
       {
         "title": {
           "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
-          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md.",
+          "es": "Ecuaciones, métodos y limitaciones en la aplicación original suministrada. Consulte docs/INTEGRATION.md."
         },
         "url": null
       }
@@ -282,7 +286,8 @@
       {
         "title": {
           "en": "Equations, methods and limitations in the supplied original application. See docs/INTEGRATION.md.",
-          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+          "pt-BR": "Equações, métodos e limitações no aplicativo original fornecido. Consulte docs/INTEGRATION.md.",
+          "es": "Ecuaciones, métodos y limitaciones en la aplicación original suministrada. Consulte docs/INTEGRATION.md."
         },
         "url": null
       }
@@ -340,7 +345,8 @@
       {
         "title": {
           "en": "Equations and assumptions in the supplied original application. See docs/INTEGRATION.md.",
-          "pt-BR": "Equações e hipóteses no aplicativo original fornecido. Consulte docs/INTEGRATION.md."
+          "pt-BR": "Equações e hipóteses no aplicativo original fornecido. Consulte docs/INTEGRATION.md.",
+          "es": "Ecuaciones e hipótesis en la aplicación original suministrada. Consulte docs/INTEGRATION.md."
         },
         "url": null
       }
@@ -412,7 +418,8 @@
       {
         "title": {
           "en": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS.",
-          "pt-BR": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS."
+          "pt-BR": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS.",
+          "es": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS."
         },
         "url": null
       }
@@ -483,7 +490,8 @@
       {
         "title": {
           "en": "MIT OpenCourseWare 6.002 Circuits and Electronics, lecture notes (general background; derivations and code are original to EEVL).",
-          "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL)."
+          "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL).",
+          "es": "MIT OpenCourseWare 6.002 Circuits and Electronics, apuntes de clase (apoyo general; las deducciones y el código son originales de EEVL)."
         },
         "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/"
       }
@@ -554,7 +562,8 @@
       {
         "title": {
           "en": "MIT OpenCourseWare 6.002 Circuits and Electronics, lecture notes (general background; derivations and code are original to EEVL).",
-          "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL)."
+          "pt-BR": "MIT OpenCourseWare 6.002 Circuits and Electronics, notas de aula (apoio geral; deduções e código são originais do EEVL).",
+          "es": "MIT OpenCourseWare 6.002 Circuits and Electronics, apuntes de clase (apoyo general; las deducciones y el código son originales de EEVL)."
         },
         "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/"
       }
@@ -628,7 +637,8 @@
       {
         "title": {
           "en": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS.",
-          "pt-BR": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS."
+          "pt-BR": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS.",
+          "es": "Ho, Ruehli & Brennan (1975), The Modified Nodal Approach to Network Analysis, IEEE Trans. CAS."
         },
         "url": null
       }

@@ -137,6 +137,18 @@ export const messages = {
     "Input 2 amplitude (V)",
     "Amplitud de entrada 2 (V)"
   ],
+  "Offset entrada 2 (V)": [
+    "Input 2 offset (V)",
+    "Offset de la entrada 2 (V)"
+  ],
+  "Vref × 1,25": [
+    "Vref × 1.25",
+    "Vref × 1,25"
+  ],
+  "Vin × 0,75": [
+    "Vin × 0.75",
+    "Vin × 0,75"
+  ],
   "Trilho positivo (V)": [
     "Positive supply rail (V)",
     "Riel positivo (V)"
