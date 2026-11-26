@@ -13,7 +13,7 @@ test('Legacy full-page button opens the translated wrapper mode, not the raw ori
   const html=await read(item.path);
   assert.match(html,/<a class="button primary" href="\?full=1" data-i18n="fullscreen">/,item.id);
   assert.doesNotMatch(html,/<a [^>]*href="\.\/app\.html"/,item.id);
-  assert.match(html,/<iframe class="legacy-frame" src="\.\/app\.html"/,item.id);
+  assert.match(html,/<iframe class="legacy-frame" src="\.\/app\.html(?:\?[^"<>]*)?"/,item.id);
   assert.ok(html.includes('assets/js/legacy-i18n.js'),item.id);
  }
 });

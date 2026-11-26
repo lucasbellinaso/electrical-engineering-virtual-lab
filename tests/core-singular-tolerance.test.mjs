@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {msolve, inv} from '../assets/js/core/matrix.js';
 import {csolve, cinv, fromReal} from '../assets/js/core/cmatrix.js';
-import {solveLinearSystem, LIMITS as LIM_DC} from '../simulators/electrical-circuits/nodal-analysis/model.js';
+import {solveLinearSystem} from './helpers/nodal-dc-reference.mjs';
+import {LIMITS as LIM_DC} from '../simulators/electrical-circuits/nodal-analysis/model.js';
+import {solveComplexSystem as frozenSolveComplexSystem} from './helpers/nodal-ac-reference.mjs';
 import {solveComplexSystem, LIMITS as LIM_AC} from '../simulators/electrical-circuits/nodal-analysis-ac/model.js';
 
 // Opção de singularidade { absTol, relTol } de msolve/inv/csolve/cinv.
@@ -143,7 +145,7 @@ test('nodal AC: csolve com relTol igual ao limite do modelo reproduz solveComple
     for (let rep = 0; rep < 20; rep++) {
       const A = Array.from({length: n}, (_, i) => Array.from({length: n}, (_, j) => ({re: rnd() + (i === j ? n : 0), im: rnd()})));
       const b = Array.from({length: n}, () => ({re: rnd(), im: rnd()}));
-      const antigo = solveComplexSystem(A, b);
+      const antigo = frozenSolveComplexSystem(A, b);
       const novo = csolve(A, b.map((z) => [z]), {relTol: LIM_AC.singularRelTol}).map((r) => r[0]);
       for (let i = 0; i < n; i++) {
         near(novo[i].re, antigo[i].re, 1e-12, `n=${n} rep=${rep} re[${i}]`);
@@ -162,7 +164,7 @@ test('nodal AC: a classificação de singularidade coincide para pivôs relativo
       [{re: 0, im: 0}, {re: frac * escala, im: 0}],
     ];
     const b = [{re: 1, im: 0}, {re: 1, im: 0}];
-    const nodalLanca = (() => { try { solveComplexSystem(A, b); return false; } catch { return true; } })();
+    const nodalLanca = (() => { try { frozenSolveComplexSystem(A, b); return false; } catch { return true; } })();
     const nucleoLanca = (() => { try { csolve(A, b.map((z) => [z]), {relTol: rel}); return false; } catch (e) { return e.code === 'SINGULAR_MATRIX'; } })();
     assert.equal(nucleoLanca, nodalLanca, `pivô relativo ${frac}`);
   }

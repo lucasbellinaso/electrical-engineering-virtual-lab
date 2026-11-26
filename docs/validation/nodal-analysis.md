@@ -17,7 +17,7 @@ $$
 \begin{bmatrix} \mathbf{i} \\ \mathbf{e} \end{bmatrix}
 $$
 
-When $M = 0$, the system reduces to pure nodal analysis $\mathbf{G}\mathbf{v} = \mathbf{i}$. The linear system is solved using Gaussian elimination with partial pivoting in IEEE-754 double precision (`singularPivotTol = 1e-12`).
+When $M = 0$, the system reduces to pure nodal analysis $\mathbf{G}\mathbf{v} = \mathbf{i}$. The assembled system is solved by the shared `msolve` kernel using Gauss-Jordan elimination with partial pivoting in IEEE-754 double precision. The DC model passes `{absTol: LIMITS.singularPivotTol, relTol: 0}` (`singularPivotTol = 1e-12`) and maps only the kernel's `SINGULAR_MATRIX` error to its public `SINGULAR_SYSTEM` error. The previous solver used forward Gaussian elimination followed by back substitution; the different operation order can change floating-point rounding, so results are compared within tolerances rather than bitwise.
 
 ## Analytical Test Cases
 

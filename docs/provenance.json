@@ -40,9 +40,11 @@
       "source": "Control Systems/Buck com PID.html",
       "sourceSha256": "a4bfd85bc22a6bcd8ae4dd5a045d21499324a1cdd878546ad93149d3e5d44608",
       "integrated": "simulators/control-systems/buck-pid/app.html",
-      "integratedSha256": "a8bf440020a85bf8c7ef91ca4c18844edef9a2b047f4d2dd01f43c6a9c79214a",
+      "integratedSha256": "6e167afb3340ed453e5d26c552760f762439ffe62d0f90ee8b3ad403e153be61",
       "changes": [
-        "Removed two external Google Fonts link tags; existing CSS font fallback applies."
+        "Removed two external Google Fonts link tags; existing CSS font fallback applies.",
+        "Added local cumulative Y-scale presentation helper. Observe the existing decimated samples after each period, use accumulated voltage/current bounds in draw, and clear those bounds on explicit/automatic simulation reset. PID, RK2, period, push and reset function bodies and the original source are unchanged. Exact allowed transforms are verified in tests/helpers/buck-pid-reference.mjs.",
+        "Added a translated visible cumulative-scale policy note beside the canvas. The wrapper uses a versioned iframe URL and laboratory cache fetches revalidate online to avoid stale preview code."
       ]
     },
     {

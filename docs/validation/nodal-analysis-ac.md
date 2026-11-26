@@ -30,6 +30,7 @@ converts to SI internally. Phasors are **peak** values: x(t) = Re{X e^{jωt}}.
 
 Complex MNA system  [Y B; Bᵀ 0][V; I_V] = [I; E], solved by Gaussian elimination with partial
 pivoting in double precision; a pivot below 10⁻¹² · max|A| raises `SINGULAR_SYSTEM`.
+The shared `csolve` kernel uses absolute tolerance 0 and relative tolerance 1e-12. Shared complex division uses Smith scaling; regression tests compare the adapter to the frozen former implementation.
 Absorbed complex power of an element: S = ½·ΔV·I* (ΔV = V_from − V_to, I From → To); P = Re S, Q = Im S.
 
 ## Reproducible analytical cases · Casos analíticos reproduzíveis

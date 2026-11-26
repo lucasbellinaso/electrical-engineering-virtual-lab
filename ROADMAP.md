@@ -6,36 +6,44 @@ ou implementar toda esta lista antecipadamente.
 
 ## 0. Consolidar o que existe
 
-- Esta entrega consolida documentos e adiciona espanhol aos textos gerais, seleção,
-  fallback, metadados do catálogo e cache. Não traduz integralmente nem integra aplicativos.
-- Próximos passos opcionais: revisar traduções próprias dos aplicativos, melhorar
-  testes de UI e incluir comparações numéricas reproduzíveis, sem inventar certificações.
+**Estado em 26/11/2026:** documentação consolidada; portal com seleção de idioma,
+fallback, metadados localizados do catálogo e cache; textos gerais disponíveis em
+pt-BR/en/es. Os aplicativos de circuito RC/RL/RLC, nodal DC/AC, LT, magnetostática e
+eletrostática têm interface, ajuda e conteúdo documentado em pt-BR/en/es. Os seis
+aplicativos legados têm tradução parcial em seus wrappers; o conteúdo original continua
+em português. Os aplicativos não estão integrados entre si. Contratos e cobertura:
+[docs/API.md](docs/API.md) e [docs/I18N.md](docs/I18N.md).
+
+Próximos passos opcionais: revisar traduções próprias dos aplicativos, melhorar testes
+de UI e incluir comparações numéricas reproduzíveis, sem inventar certificações.
 
 ## 1. Reutilização e contratos
 
-**Status: em andamento.** O núcleo numérico em `assets/js/core/` já cobre matemática,
-complexos (incluindo `sinh`, `cosh`, `tanh` e o auxiliar `sinhc`), matrizes reais e complexas
-(`matrix.js`, `cmatrix.js`), polinômios e controle, com testes e fixtures. O laboratório
-de LT é o primeiro consumidor (complex/cmatrix/numeric). A extração das funções do
-SISO e dos modelos nodais/RC/RLC continua pendente.
+**Status: em andamento.** `assets/js/core/` já oferece módulos importáveis para matemática,
+complexos, matrizes reais e complexas, polinômios, sistemas e análise de controle, resposta
+temporal, projeto, cálculo de polos e zeros e solvers não lineares. Há testes e fixtures;
+contratos, convenções e limites estão em [docs/API.md](docs/API.md). O laboratório de LT é o
+primeiro consumidor do núcleo. A extração/adaptação das funções legadas do SISO e dos modelos
+nodais e de circuitos para o núcleo continua pendente; funções equivalentes no núcleo não
+significam que esses aplicativos já as importem.
 
 ### Inventário de extração
 
-Levantamento por leitura do código; o novo aplicativo de LT importa `assets/js/core/`.
-As equivalências abaixo vêm dos nomes e das assinaturas das funções. Antes de trocar
-qualquer implementação, comparar o algoritmo e a ordem dos argumentos, e só então migrar.
+Inventário de funções legadas e de funcionalidades relacionadas já disponíveis no núcleo.
+Uma equivalência indicada não significa que o aplicativo legado já importe essa função;
+compare algoritmos, contratos e convenções antes de cada migração.
 
-| Origem | Funções numéricas independentes de DOM | Núcleo equivalente |
+| Origem | Funções numéricas independentes de DOM | Disponibilidade no núcleo / situação |
 |---|---|---|
-| `nodal-analysis/model.js` | `solveLinearSystem` (Gauss real) | `matrix.js`: `msolve` (conferir pivotamento e tolerâncias) |
-| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | `complex.js` e `cmatrix.js` (`csolve`) |
-| `electrical-circuits/shared/model.js` | RK4 e solução analítica de RC/RL/RLC | sem equivalente direto; avaliar `timeresp.js` |
-| `siso/app.html` (protegido) | polinômios e raízes (`pmul`, `roots`, `aberth`, `matchRoots`) | `polynomial.js` |
-| `siso/app.html` | matrizes (`msolve`, `expm`, `charpoly`) | `matrix.js` |
-| `siso/app.html` | `tf2ss`, `c2d`, `pade`, `makeFR`, `bisect`, `margins` | `control.js` |
-| `siso/app.html` | `logspace` | `numeric.js` (conferir a ordem dos argumentos) |
-| `siso/app.html` | `charFreq`, `stepResponse`, `distResponse`, `computeLocus`, `factorPoly` | sem equivalente exato; comparar com `timeresp.js` e `analysis.js` |
-| `magnetostatics/model.js`, `electrostatics/model.js` | campo, linhas de campo, contornos | sem equivalente; específicos de eletromagnetismo |
+| `nodal-analysis/model.js` | DC MNA solve | Migrated to `matrix.js` `msolve(A,B,{absTol: LIMITS.singularPivotTol, relTol: 0})`; public `SINGULAR_SYSTEM` is preserved. |
+| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | `complex.js` e `cmatrix.js`: `csolve(A,B,opts)`; tolerância AC equivalente disponível. Convenções angulares e divisão diferem; ainda usa código próprio. |
+| `electrical-circuits/shared/model.js` | RK4 e solução analítica de RC/RL/RLC | O próprio modelo já exporta `rk4Step` e soluções locais; `timeresp.js` oferece resposta de sistemas LTI, não substituto direto do modelo de circuito. |
+| `siso/app.html` (protegido) | polinômios e raízes (`pmul`, `roots`, `aberth`, `matchRoots`) | Equivalentes em `polynomial.js`; o SISO integrado mantém as funções internas. |
+| `siso/app.html` | matrizes (`msolve`, `expm`, `charpoly`) | Equivalentes em `matrix.js`; o SISO integrado mantém as funções internas. |
+| `siso/app.html` | `tf2ss`, `c2d`, `pade`, `makeFR`, `bisect`, `margins` | Equivalentes em `control.js`; o SISO integrado mantém as funções internas. |
+| `siso/app.html` | `logspace` | `numeric.js`; verificar a ordem dos argumentos antes de adaptar consumidores. |
+| `siso/app.html` | `charFreq`, `stepResponse`, `distResponse`, `computeLocus`, `factorPoly` | Há funções relacionadas em `timeresp.js`, `analysis.js` e `polynomial.js`; não são equivalências exatas comprovadas. Comparar contratos e resultados antes de migrar. |
+| `magnetostatics/model.js`, `electrostatics/model.js` | campo, linhas de campo, contornos | Sem equivalente no núcleo; são específicos de eletromagnetismo. |
 
 Sem sobreposição com o núcleo: parsers de expressão do SISO e todo o código de apresentação.
 Os cinco legados restantes (`buck`, `buck-step`, `dab`, `opamp`, `buck-pid`) não têm nenhuma
@@ -45,41 +53,27 @@ e só o `buck-pid` é formatado. O padrão que se repete é o integrador RK4 (`b
 Só `simulate` do `buck-step` e do `dab` são puras; as do `buck` e do `buck-pid` leem estado
 global ou escrevem no DOM e precisam ser separadas antes de qualquer extração.
 
-### Pré-requisitos medidos para trocar os solucionadores do nodal
+### Nodal solver compatibility with the shared core
 
-A troca por `msolve`/`csolve` **não é direta**; as diferenças abaixo precisam ser resolvidas
-antes, com testes que comparem a saída antiga e a nova.
+The DC and AC nodal models now call the shared `msolve` and `csolve` kernels, respectively.
+The DC adapter preserves the existing `SINGULAR_SYSTEM` error and maps only `SINGULAR_MATRIX`.
+The former DC elimination routine is frozen in `tests/helpers/nodal-dc-reference.mjs` for
+compatibility checks. `solveLinearSystem` also inherits shared input shape and finite-value
+validation.
 
-| Aspecto | Nodal (`solveLinearSystem`, `solveComplexSystem`) | Núcleo (`msolve`, `csolve`) |
+| Aspect | Nodal DC | Shared core |
 |---|---|---|
-| Algoritmo | eliminação para frente e substituição reversa | Gauss–Jordan; os resultados podem diferir nos últimos bits |
-| Critério de singularidade | pivô ≤ 1e-12 (DC); pivô ≤ tolerância relativa × maior módulo da matriz (AC) | só pivô exatamente zero |
-| Erro | `SINGULAR_SYSTEM` com mensagem específica do circuito | `Error('Matriz singular')` |
-| Aritmética complexa (AC) | `cx.div` ingênuo (módulo ao quadrado); `fromPolar` e `polar` em graus | divisão de Smith; ângulos em radianos; entradas não finitas lançam erro |
-| Validação | assume entradas já validadas | valida forma e valores finitos |
+| Algorithm | Gauss-Jordan via `msolve` | Gauss-Jordan with partial pivoting |
+| Singularity | `{absTol: LIMITS.singularPivotTol, relTol: 0}` | Optional `{absTol, relTol}` |
+| Error | `SINGULAR_SYSTEM` | `SINGULAR_MATRIX`, adapted by the DC model |
 
-Caminho proposto: antes de migrar, o núcleo precisaria aceitar uma tolerância de singularidade
-opcional (compatível com o comportamento atual) e o nodal mapearia o erro do núcleo para o seu
-`SINGULAR_SYSTEM`. Sem isso, um circuito quase singular que hoje é rejeitado passaria a devolver
-um resultado numérico sem aviso.
+`tests/core-singular-tolerance.test.mjs` compares both adapters with frozen independent
+references and checks threshold behavior. The AC adapter uses `{absTol: 0, relTol: 1e-12}`,
+maps only `SINGULAR_MATRIX`, and preserves degrees and peak phasors. Shared complex division
+uses Smith scaling instead of the former naive formula; low-level validation can differ.
 
-Ordem proposta, da menor para a maior superfície de risco, condicionada aos pré-requisitos
-acima: (1) tolerância de singularidade opcional no núcleo e `solveLinearSystem` do nodal sobre
-`msolve`; (2) `cx` e `solveComplexSystem` do nodal AC sobre `complex.js` e `cmatrix.js`;
-(3) RC/RL/RLC e um RK4 no núcleo, consumido por `buck`, `buck-step` e `dab` depois de separar
-a parte pura; (4) SISO em
-etapas pequenas (polinômios e raízes, depois matrizes, depois controle), cada etapa com
-teste que compare a saída antiga e a nova; (5) eletromagnetismo por último, por não
-depender do núcleo. Alterar o `app.html` do SISO exige atualizar a proveniência
-(`docs/provenance.json`) na mesma mudança.
-
-Inventariar SISO e modelos nodais/RC/RLC; extrair funções independentes quando outro
-consumidor justificar. Priorizar matemática, complexos, matrizes, polinômios e controle;
-uniformizar convenções MATLAB/Octave por adaptadores e testes, preservando referência.
-Avaliar bibliotecas existentes antes de reimplementar. Não duplicar o SISO.
-
-Porta de saída: contratos documentados, módulos importáveis sem DOM, testes de regressão,
-licenças avaliadas e nenhuma alteração silenciosa de método ou convenção.
+Later steps can evaluate shared RC/RL/RLC
+models, SISO functions and suitable legacy consumers with regression tests for each migration.
 
 ## 2. Arquivos e projetos locais
 
@@ -152,21 +146,24 @@ Jacobianas, modelos médios, sensibilidade e domínios adicionais (magnético, e
 só entram quando um caso didático os exigir. Não complicar a implementação inicial para
 antecipar todos os domínios.
 
-## Biblioteca planejada
+## API MATLAB/Octave futura
 
-Os nomes abaixo indicam convenções pretendidas; **não são uma API disponível**:
+O núcleo já implementa parte dos nomes abaixo; isso não implica compatibilidade integral
+com MATLAB/Octave. A coluna de disponibilidade é um resumo: contratos, limites e exceções
+estão em [docs/API.md](docs/API.md). Os demais nomes continuam propostas, não uma API
+disponível.
 
-| Família | Nomes previstos |
-|---|---|
-| Matemática | zeros, ones, eye, diag, linspace, logspace, reshape, sum, mean, std, diff, norm, eig, svd, rank, inv, pinv, expm |
-| Sistemas | tf, ss, zpk, tf2ss, ss2tf, c2d, d2c, feedback, series, parallel, ctrb, obsv |
-| Análise | step, impulse, lsim, bode, nyquist, margin, rlocus, pole, zero |
-| Projeto | place, acker, lqr, dlqr, care, dare, lyap, dlyap, lqi, kalman |
-| Identificação | iddata, arx, tfest, ssest, compare |
-| Otimização | fminsearch, fminunc, fmincon, lsqnonlin |
-| Sinais | fft, ifft, filter, conv |
-| Integração | trapz, cumtrapz, ode45 |
-| Simbólico | sym, diff (sobre `sym`), jacobian, simplify, solve |
+| Família | Já disponível em `assets/js/core/` | Ainda proposto |
+|---|---|---|
+| Matemática | zeros, eye, linspace, logspace, sum, mean, std, diff, norm, eig, inv, expm | ones, diag, reshape, svd, rank, pinv |
+| Sistemas | tf, ss, zpk, tf2ss, ss2tf, c2d, d2c, feedback, series, parallel, ctrb, obsv | — |
+| Análise | step, impulse, lsim, bode, nyquist, margin, rlocus, pole, zero | — |
+| Projeto | place, acker, lqr, dlqr, care, dare, lyap, dlyap | lqi, kalman |
+| Identificação | — | iddata, arx, tfest, ssest, compare |
+| Otimização | — | fminsearch, fminunc, fmincon, lsqnonlin |
+| Sinais | `conv` (convolução de vetores/coefs em `polynomial.js`; não é um módulo genérico de sinais) | fft, ifft, filter |
+| Integração | trapz, cumtrapz | ode45 |
+| Simbólico | — | sym, diff (sobre `sym`), jacobian, simplify, solve |
 
 Funções com nomes semelhantes existem encapsuladas no SISO, em modelos locais ou em
 `assets/js/core/` (ver [docs/API.md](docs/API.md));
@@ -181,4 +178,4 @@ ainda não implementados.
 Importar dados → identificar planta → salvar modelo → projetar controle → programar
 implementação discreta → otimizar → simular referências, perturbações, ruído e saturação
 → salvar/compartilhar projeto. Depende de formatos comuns e módulos anteriores;
-não foi implementado nesta entrega. Prioridades podem mudar conforme uso didático real.
+não está implementado no estado de 26/11/2026. Prioridades podem mudar conforme uso didático real.

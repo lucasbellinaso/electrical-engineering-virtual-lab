@@ -19,6 +19,8 @@
  *
  * This module is DOM-free and has no side effects.
  */
+import { csolve } from '../../../assets/js/core/cmatrix.js';
+import * as complex from '../../../assets/js/core/complex.js';
 
 export const LIMITS = Object.freeze({
   minNodes: 2,
@@ -41,21 +43,9 @@ export const TYPES = Object.freeze(['R', 'L', 'C', 'I', 'V']);
 
 /* ------------------------------------------------------------------ complex helpers */
 export const cx = Object.freeze({
-  make: (re = 0, im = 0) => ({ re, im }),
-  add: (a, b) => ({ re: a.re + b.re, im: a.im + b.im }),
-  sub: (a, b) => ({ re: a.re - b.re, im: a.im - b.im }),
-  mul: (a, b) => ({ re: a.re * b.re - a.im * b.im, im: a.re * b.im + a.im * b.re }),
-  div: (a, b) => {
-    const d = b.re * b.re + b.im * b.im;
-    return { re: (a.re * b.re + a.im * b.im) / d, im: (a.im * b.re - a.re * b.im) / d };
-  },
-  conj: a => ({ re: a.re, im: -a.im }),
-  scale: (a, k) => ({ re: a.re * k, im: a.im * k }),
-  abs: a => Math.hypot(a.re, a.im),
-  fromPolar: (mag, deg) => {
-    const rad = (deg * Math.PI) / 180;
-    return { re: mag * Math.cos(rad), im: mag * Math.sin(rad) };
-  }
+  make: complex.make, add: complex.add, sub: complex.sub, mul: complex.mul,
+  div: complex.div, conj: complex.conj, scale: complex.scale, abs: complex.abs,
+  fromPolar: complex.fromPolarDeg
 });
 
 /** Magnitude and phase in degrees (phase 0 for an exactly zero phasor). */
@@ -225,34 +215,12 @@ export const sourcePhasor = comp => cx.fromPolar(comp.value, comp.phase);
 
 /* ------------------------------------------------------------------ complex linear solver */
 export function solveComplexSystem(matrix, rhs) {
-  const n = rhs.length;
-  const A = matrix.map((row, i) => [...row.map(z => ({ ...z })), { ...rhs[i] }]);
-  let scale = 0;
-  for (const row of matrix) for (const z of row) scale = Math.max(scale, cx.abs(z));
-  const tolerance = LIMITS.singularRelTol * scale;
-
-  for (let col = 0; col < n; col++) {
-    let pivotRow = col;
-    let best = cx.abs(A[col][col]);
-    for (let row = col + 1; row < n; row++) {
-      const v = cx.abs(A[row][col]);
-      if (v > best) { best = v; pivotRow = row; }
-    }
-    if (!(best > tolerance)) throw modelError('SINGULAR_SYSTEM');
-    if (pivotRow !== col) [A[col], A[pivotRow]] = [A[pivotRow], A[col]];
-    for (let row = col + 1; row < n; row++) {
-      const factor = cx.div(A[row][col], A[col][col]);
-      if (factor.re === 0 && factor.im === 0) continue;
-      for (let j = col; j <= n; j++) A[row][j] = cx.sub(A[row][j], cx.mul(factor, A[col][j]));
-    }
+  try {
+    return csolve(matrix, rhs.map(z => [z]), { absTol: 0, relTol: LIMITS.singularRelTol }).map(row => row[0]);
+  } catch (error) {
+    if (error?.code !== 'SINGULAR_MATRIX') throw error;
+    throw modelError('SINGULAR_SYSTEM');
   }
-  const x = new Array(n);
-  for (let i = n - 1; i >= 0; i--) {
-    let sum = A[i][n];
-    for (let j = i + 1; j < n; j++) sum = cx.sub(sum, cx.mul(A[i][j], x[j]));
-    x[i] = cx.div(sum, A[i][i]);
-  }
-  return x;
 }
 
 /* ------------------------------------------------------------------ main solver */

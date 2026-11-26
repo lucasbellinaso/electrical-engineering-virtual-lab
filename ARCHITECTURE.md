@@ -26,7 +26,7 @@ validação; não integram os requisitos de execução dos aplicativos.
 | Idiomas | pt-BR, en, es no portal; fallback inglês; idiomas reais por aplicativo |
 | Navegação de legados | apresentações com iframe; arquivo de execução separado |
 | Modelos puros | template RC, RC/RL/RLC, análise nodal resistiva e fasorial, magnetostática (fios, espira e solenoide em `simulators/electromagnetics/magnetostatics/`), eletrostática (cargas, esfera, fio e placas em `simulators/electromagnetics/electrostatics/`) |
-| Núcleo matemático | `assets/js/core/`: polynomial, matrix, cmatrix, control, numeric, complex, residue, timeresp, design, riccati, analysis, solvers, eigen, models; LT consome complex/cmatrix/numeric; fixtures SciPy |
+| Núcleo matemático | `assets/js/core/`: polynomial, matrix, cmatrix, control, numeric, complex, residue, timeresp, design, riccati, analysis, solvers, eigen, models; LT consome complex/cmatrix/numeric; DC nodal analysis uses shared `msolve`; AC nodal analysis uses shared `complex`/`csolve`; fixtures SciPy |
 | Compartilhamento | modelo, Worker, gráficos e deduções em electrical-circuits/shared |
 | PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
 | Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
@@ -160,6 +160,12 @@ comparando comportamento antes/depois. Não criar outro app que duplique o SISO.
 Interface funcional não prova validação completa; nenhuma extração extensa foi feita.
 
 ## PWA, transparência e validação
+
+As [convenções de apresentação](docs/UI-CONVENTIONS.md) exigem equações e variáveis
+renderizadas a partir de LaTeX em toda a interface, inclusive controles e desenhos,
+e escala Y estável nos gráficos atualizados continuamente, com reenquadramento
+explícito e indicação de valores fora da faixa. O documento define o padrão;
+a adequação dos aplicativos existentes é progressiva e deve ser verificada.
 
 Preservar manifesto, ícones, escopo relativo, instalação opcional e atualização.
 O shell usa rede primeiro com cache offline; módulos, bibliotecas e simuladores são
