@@ -1,7 +1,7 @@
 # Arquitetura do EEVL
 
 Referência normativa de princípios, decisões e contratos. Estado inspecionado em
-26/11/2026, base `78f7f9b`; evolução proposta em [ROADMAP.md](ROADMAP.md).
+26/11/2026, base `2167d2f`; evolução proposta em [ROADMAP.md](ROADMAP.md).
 
 ## Propósito e limites
 

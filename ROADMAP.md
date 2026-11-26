@@ -6,14 +6,16 @@ ou implementar toda esta lista antecipadamente.
 
 ## 0. Consolidar o que existe
 
-- Portal estático, PWA, catálogo, temas, seis legados preservados e quatro aplicativos
-  originais de circuitos já existem. Regressão e evidências específicas continuam necessárias.
 - Esta entrega consolida documentos e adiciona espanhol aos textos gerais, seleção,
   fallback, metadados do catálogo e cache. Não traduz integralmente nem integra aplicativos.
 - Próximos passos opcionais: revisar traduções próprias dos aplicativos, melhorar
   testes de UI e incluir comparações numéricas reproduzíveis, sem inventar certificações.
 
 ## 1. Reutilização e contratos
+
+**Status: em andamento.** O núcleo numérico em `assets/js/core/` já cobre matemática,
+complexos, matrizes, polinômios e controle, com testes e fixtures, ainda sem consumidores
+nos aplicativos. A extração das funções do SISO e dos modelos nodais/RC/RLC continua pendente.
 
 Inventariar SISO e modelos nodais/RC/RLC; extrair funções independentes quando outro
 consumidor justificar. Priorizar matemática, complexos, matrizes, polinômios e controle;
@@ -100,7 +102,7 @@ Os nomes abaixo indicam convenções pretendidas; **não são uma API disponíve
 
 | Família | Nomes previstos |
 |---|---|
-| Matemática | zeros, ones, eye, diag, linspace, logspace, reshape, sum, mean, std, norm, eig, svd, rank, inv, pinv, expm |
+| Matemática | zeros, ones, eye, diag, linspace, logspace, reshape, sum, mean, std, diff, norm, eig, svd, rank, inv, pinv, expm |
 | Sistemas | tf, ss, zpk, tf2ss, ss2tf, c2d, d2c, feedback, series, parallel, ctrb, obsv |
 | Análise | step, impulse, lsim, bode, nyquist, margin, rlocus, pole, zero |
 | Projeto | place, acker, lqr, dlqr, care, dare, lyap, dlyap, lqi, kalman |
@@ -108,12 +110,15 @@ Os nomes abaixo indicam convenções pretendidas; **não são uma API disponíve
 | Otimização | fminsearch, fminunc, fmincon, lsqnonlin |
 | Sinais | fft, ifft, filter, conv |
 | Integração | trapz, cumtrapz, ode45 |
-| Simbólico | sym, diff, jacobian, simplify, solve |
+| Simbólico | sym, diff (sobre `sym`), jacobian, simplify, solve |
 
 Funções com nomes semelhantes existem encapsuladas no SISO, em modelos locais ou em
 `assets/js/core/` (ver [docs/API.md](docs/API.md));
 isso não significa que a API MATLAB/Octave inteira esteja implementada. Contratos,
 compatibilidade, casos não suportados e testes devem preceder cada disponibilização.
+Como no MATLAB, `diff` calcula diferenças entre elementos adjacentes de vetores
+(numérico, já em `assets/js/core/`); a derivada simbólica só se aplica a objetos `sym`,
+ainda não implementados.
 
 ## Integração futura entre aplicativos
 
