@@ -93,3 +93,11 @@ não altera classificação experimental, proveniência ou evidências científi
 7. Só ampliar a API depois de regressão e revisão. Não duplicar o aplicativo SISO.
 
 Nenhuma extração ou mudança de algoritmo foi realizada nesta consolidação documental.
+
+## Extração em andamento (branch feat/core-math)
+
+Passos 1–5 aplicados às funções numéricas puras: pmul/padd/polyFromRoots/roots/aberth/matchRoots,
+mmul/msolve/expm/charpoly, tf2ss/c2d/pade e makeFR/bisect/margins agora existem em
+`assets/js/core/` ([API.md](API.md)), com regressão por igualdade exata contra o `app.html`
+preservado. O SISO integrado **não foi migrado** (passo 6 pendente): continua com suas
+cópias internas. Pendentes: closedLoopSS, simulate, computeLocus, stepResponse.

@@ -1,7 +1,7 @@
 # API disponível
 
 Inventário inspecionado em 26/11/2026. Somente código existente e importável é
-descrito como API aqui; não há ainda `assets/js/core/` nem API MATLAB/Octave genérica.
+descrito como API aqui; `assets/js/core/` existe (abaixo), mas não há API MATLAB/Octave genérica.
 Propostas estão em [ROADMAP.md](../ROADMAP.md). Caminhos abaixo são relativos à raiz;
 imports do consumidor devem ajustar a profundidade. Modelos numéricos não dependem do DOM.
 
@@ -127,6 +127,66 @@ console.log(result.frequency, result.nodeVoltages, result.maxKclResidual);
 Helpers KaTeX em nodal-analysis-ac/latex.js (latexComplex, idLatex, phasorLatex,
 sumLatex, unknownsLatex, symbolicSystemLatex, numericSystemLatex, kclRowsLatex)
 formatam dados do solver; não calculam nem validam o circuito.
+
+## Núcleo matemático: assets/js/core/
+
+Módulos ESM puros (sem DOM, sem dependências, importáveis em Node e no navegador),
+extraídos gradualmente do SISO. **Nenhum aplicativo os consome ainda**; o SISO integrado
+continua usando suas funções internas, intactas. As funções portadas mantêm a aritmética
+original e são comparadas por igualdade exata com `app.html` (tests/helpers/siso-reference.mjs).
+Convenções: polinômios em ordem decrescente, matrizes por linhas, raízes e pontos `s`
+como `[re, im]`, frequências em rad/s, fase em graus. Entradas inválidas lançam
+TypeError/RangeError; os kernels portados não validam resultados intermediários
+(podem produzir Infinity/NaN como o original).
+
+| Módulo | Exportações (★ = nova, não existe no SISO) |
+|---|---|
+| polynomial.js | ptrim, pmul, padd, pscale, pdeg, plead, pprod, polyFromRoots (só parte real), roots, aberth, matchRoots; ★polyval, polyvalComplex, polyder, polyint, conv, deconv→{q,r} |
+| matrix.js | zeros, eye, mmul, madd, mscale, msolve (lança em singular), expm (Padé 6), charpoly; ★transpose, trace, det, inv, norm1, normInf, isSquare, logm (log principal real; lança RangeError com autovalor real ≤ 0) |
+| control.js | tf2ss, c2d (ZOH), pade, makeFR, bisect, margins; ★ss2tf, series, parallel, feedback, dcgain, evalTF, d2c (`d2c(sys, 'zoh'\|'tustin')`, `sys` = `{A,B,C,D,dt}` MIMO ou `{num,den,dt}` SISO, `dt > 0`; ZOH usa Γ = ∫e^{Aτ}dτ e funciona com integrador) |
+| numeric.js | logspace (n≥2, como o SISO); ★linspace, trapz, cumtrapz, cumsum, sum, mean, std (N−1), norm, diff, interp1 (NaN fora do intervalo) |
+| complex.js | ★objetos `{re,im}`: make, add, sub, mul, div, conj, scale, abs, arg, fromPolar/fromPolarDeg, toPolar/toPolarDeg, exp, sqrt, pow, fromPair/toPair, equalsWithin |
+
+| residue.js | ★residue, residuez, invres, invresz (porte de scipy.signal 1.18.1; polos agrupados por distância absoluta como o SciPy; precisão de resíduos cai com multiplicidade: ~1e-8 duplo, ~3e-6 triplo) |
+| timeresp.js | ★tfToSS, lsim (entrada ZOH, passo uniforme; discreto = dlsim), step, impulse (C·e^{At}·B; D·δ ignorado), initial, stepinfo, defaultTime |
+| design.js | ★ctrb, obsv, acker, place (**só entrada única**; multi-entrada lança RangeError), lyap, dlyap (n ≤ 12, Kronecker) |
+| solvers.js | ★fsolve (F(x) = 0, n×n, retorno `{x, fval, exitflag, output}` como o MATLAB; `algorithm: 'newton-raphson'` (padrão; Jacobiano analítico via `options.jacobian` ou diferenças finitas; `lineSearch` opcional) ou `'gauss-seidel'` (Newton escalar por componente, ou forma de ponto fixo via `options.update(x, i)`; `accel` = fator de aceleração/SOR; convergência linear, só condicional); `output.history` guarda ‖F‖∞ por iteração), numjac |
+| eigen.js | ★eig (`{values, vectors}`, como `[V,D] = eig(A)`), eigvals (como `e = eig(A)`). A real n×n; autovalores `[re, im]` e `vectors[i][k] = [re, im]`. Balanceamento + Hessenberg + QR de Francis (forma de Schur real) + autovetores por Schur complexa; simétrica → autovalores crescentes e V ortonormal; autovetores com norma 1 e maior componente real positiva. Autovalores múltiplos de matriz defeituosa perdem precisão (ε^(1/m)) |
+| riccati.js | ★care (função sinal matricial), dare (dobramento SDA), lqr, dlqr (com N), lqe, dlqe; autovalores de E via eigvals (eigen.js), precisos também para n ≥ 5 |
+| analysis.js | ★pole, zero (SS só SISO), damp, tfdata, tf2zpk, zpk2tf, zpk2ss, ss2zpk, freqresp, bode, nyquist, evalfr, margin, minreal, rlocus, gangof4, mag2db, db2mag, unwrap |
+| models.js | ★tf, ss, zpk (construtores: validam e devolvem `{num,den}`, `{A,B,C,D}` com D matricial, `{z,p,k}`; `dt` só gravado se > 0; zpk aceita raiz como número ou `[re, im]`), negate (−sys: TF nega num, ZPK nega k, SS nega C e D), append (sempre devolve SS em blocos diagonais, MIMO; exige mesmo dt), modred (`elim` = índices base 0 ou máscara; `'matchdc'` padrão ou `'truncate'`; matchdc discreto usa (I − A₂₂)⁻¹, que o python-control 0.10.2 não implementa) |
+
+**Referências numéricas.** Os módulos novos são comparados com fixtures JSON em
+`tests/fixtures/core-*.json`, geradas por `scripts/reference/gen_*.py` (Python 3.10, NumPy 2.2.6,
+SciPy 1.15.1, 26/11/2026) e conferidas contra o **python-control 0.10.2** real por
+`scripts/reference/check_control.py` (`pip install control==0.10.2`; rode
+`python3 scripts/reference/check_control.py` na raiz; sai com código 1 se algo passar de 1e-9).
+Conferidos: `damp`, `margin`, `pole`, `zero`, `tf2zpk`, `ss2zpk`, `zpk2ss`, `freqresp`, `bode`,
+`evalfr`, `rlocus`, `lqr/dlqr/lqe/dlqe`, `acker`, `place` (só casos de entrada única), `ctrb`, `obsv`,
+`lyap`, `dlyap`, `stepinfo`, `lsim`, `impulse`, `initial` e `c2d`. Sem equivalente no control (SciPy/NumPy):
+`residue*`, `invres*`, `unwrap`. Sem fixture contra o control: `minreal` e `gangof4` (testes analíticos).
+`d2c` não existe no python-control: a referência é a função do autor (`scripts/reference/gen_d2c.py`),
+validada por `c2d(d2c(sys)) = sys` (ZOH) e pela FT do protótipo (Tustin), e conferida de novo contra `ct.c2d`.
+`fsolve` é comparado com `scipy.optimize.root` (`scripts/reference/gen_solvers.py`), inclusive um fluxo de
+potência de 2 barras com Jacobiano analítico; o Gauss–Seidel/SOR é comparado varredura a varredura com um
+laço NumPy em Ax = b; `numjac` é conferido contra o Jacobiano analítico de cada problema.
+`eig`/`eigvals` são comparados com `scipy.linalg.eig`/`eigh` (`scripts/reference/gen_eig.py`: 27 matrizes, incluindo
+defeituosas, repetidas, mal escaladas e simétricas) e por propriedades (A·V = V·D, Σλ = tr A, Πλ = det A, n até 30).
+Convenções que diferem do control de propósito: `lsim` contínuo usa ZOH (o control interpola a entrada
+linearmente, FOH; coincide com `scipy.signal.lsim(interp=True)`); `impulse` discreto usa delta de
+Kronecker (o control usa impulso de área unitária, `u[0] = 1/dt`); em `stepinfo`, `settlingMin/Max` seguem
+o control (mínimo e máximo de y a partir do fim da subida, limitados por yfinal). `margin` não reutiliza
+`control.margins`, porque este, portado verbatim do SISO, acusa cruzamento de fase espúrio
+quando o atan2 salta (zero de fase não mínima); o caso está coberto por teste e a função do
+SISO original permanece intacta.
+
+Diferenças deliberadas: `logspace(a,b,1)` devolve `[10^b]` (o SISO devolve NaN);
+`mean`/`std` de vetor vazio lançam erro (MATLAB devolve NaN); `dcgain` devolve ±Infinity
+ou NaN conforme o sinal do numerador em s=0; `complex.fromPolar` usa **radianos**, ao passo
+que `cx.fromPolar` de nodal-analysis-ac usa graus. Ainda **não extraídos** do SISO: closedLoopSS,
+simulate, computeLocus, stepResponse (acoplados ao estado/UI do SISO). Testes:
+tests/core-*.test.mjs. Comparações analíticas e de regressão não validam o SISO
+cientificamente (classificação continua experimental).
 
 ## Legados encapsulados
 
