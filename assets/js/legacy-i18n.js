@@ -244,10 +244,10 @@ function renderCoverage(language) {
     sourceNotice.insertAdjacentElement('afterend', notice);
   }
   notice.textContent = language === 'es'
-    ? 'Vista previa EN/ES: controles, ayuda, gráficos y mensajes traducidos mediante una capa independiente. El archivo original y el código exportado se conservan. La página completa abre el original en portugués.'
+    ? 'Vista previa EN/ES: controles, ayuda, gráficos y mensajes traducidos mediante una capa independiente. El archivo original y el código exportado se conservan. La página completa conserva la traducción.'
     : language === 'pt-BR'
-      ? 'Prévia EN/ES: controles, ajuda, gráficos e mensagens traduzidos por uma camada independente. O arquivo original e o código exportado são preservados. A página inteira abre o original em português.'
-      : 'EN/ES preview: controls, help, plots and messages are translated by an independent layer. The original file and exported code are preserved. Full-page view opens the Portuguese original.';
+      ? 'Prévia EN/ES: controles, ajuda, gráficos e mensagens traduzidos por uma camada independente. O arquivo original e o código exportado são preservados. A página inteira mantém a tradução.'
+      : 'EN/ES preview: controls, help, plots and messages are translated by an independent layer. The original file and exported code are preserved. Full-page view keeps the translation.';
 }
 if (frame) {
   let selected = document.querySelector('#language')?.value || 'en';

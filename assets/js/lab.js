@@ -10,6 +10,7 @@ function render(){
  document.querySelector('#lab-metadata').textContent=`${simulator.authors.join(' · ') || t('authorUnspecified')} · ${simulator.version} · ${simulator.languages.map(languageLabel).join(' / ')}`;
  document.querySelector('#lab-references').textContent=simulator.references.map(r=>localized(r.title)).join(' · ');
 }
+if(new URLSearchParams(location.search).has('full'))document.body.classList.add('is-full');
 document.addEventListener('languagechange',render);
 try{
  await initialize();const responses=await Promise.all(['data/simulators.json','data/categories.json'].map(p=>fetch(new URL(p,siteRoot))));
