@@ -110,7 +110,8 @@ Os nomes abaixo indicam convenções pretendidas; **não são uma API disponíve
 | Integração | trapz, cumtrapz, ode45 |
 | Simbólico | sym, diff, jacobian, simplify, solve |
 
-Funções com nomes semelhantes existem encapsuladas no SISO ou em modelos locais;
+Funções com nomes semelhantes existem encapsuladas no SISO, em modelos locais ou em
+`assets/js/core/` (ver [docs/API.md](docs/API.md));
 isso não significa que a API MATLAB/Octave inteira esteja implementada. Contratos,
 compatibilidade, casos não suportados e testes devem preceder cada disponibilização.
 

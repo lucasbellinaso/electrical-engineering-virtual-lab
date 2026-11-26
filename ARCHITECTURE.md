@@ -25,14 +25,15 @@ validação; não integram os requisitos de execução dos aplicativos.
 | Catálogo | JSON de simuladores/categorias, busca, dificuldade, estado e ordenação |
 | Idiomas | pt-BR, en, es no portal; fallback inglês; idiomas reais por aplicativo |
 | Navegação de legados | apresentações com iframe; arquivo de execução separado |
-| Modelos puros | template RC, RC/RL/RLC, análise nodal resistiva e fasorial |
+| Modelos puros | template RC, RC/RL/RLC, análise nodal resistiva e fasorial, magnetostática (fios, espira e solenoide em `simulators/electromagnetics/magnetostatics/`) |
 | Núcleo matemático | `assets/js/core/`: polynomial, matrix, control, numeric, complex, residue, timeresp, design, riccati, analysis, solvers, eigen, models (sem consumidores ainda; fixtures SciPy) |
 | Compartilhamento | modelo, Worker, gráficos e deduções em electrical-circuits/shared |
 | PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
 | Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
 
-Há dez entradas disponíveis no catálogo desta base: seis legados em português e quatro
-aplicativos originais EN/PT-BR. O espanhol das descrições **não** muda essa classificação.
+Há onze entradas disponíveis no catálogo desta base: seis legados declarados em português
+e cinco aplicativos originais EN/PT-BR/ES. O espanhol das descrições, sozinho, **não** muda
+essa classificação; vale o campo `languages` de cada entrada.
 O template RC fica fora do catálogo. A lista atualizável de arquivos e metadados é
 [data/simulators.json](data/simulators.json), não este inventário datado.
 
@@ -62,7 +63,7 @@ de variáveis a objetos 3D é planejamento, não requisito de todo laboratório.
 já estão separados da UI nos aplicativos originais. Consulte as interfaces reais em
 [docs/API.md](docs/API.md) antes de implementar matemática semelhante.
 
-`assets/js/core/` já contém polynomial, matrix, control, numeric e complex; podem vir
+`assets/js/core/` já contém os módulos listados em “Estado implementado”; podem vir
 simulation, identification, optimization, signal-processing, symbolic, interpreter
 e project. **Estes últimos não são módulos existentes**; não criar arquivos vazios.
 Extrair quando houver necessidade real e contrato testável. Dependências de UI não
