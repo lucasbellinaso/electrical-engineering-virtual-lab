@@ -82,10 +82,17 @@ limites de viabilidade e critérios de parada; não prometer ótimo global.
 ## 7. Modelagem simbólica e multifísica
 
 A MNA resistiva/fasorial existente é um ponto de partida, não o ambiente completo.
-Evoluir para equações algébricas/diferenciais, SS/TF, equilíbrios, Jacobianas,
-linearização, modelos médios, discretização e sensibilidade. Considerar domínios
-elétrico, térmico, mecânico, magnético, eletroquímico e eletrotérmico e acoplamentos
-bidirecionais. Não complicar a implementação inicial para antecipar todos os domínios.
+Evoluir de forma incremental e enxuta para equações algébricas/diferenciais, SS/TF,
+equilíbrios, linearização e discretização.
+
+Multifísica não exige um motor próprio: tratar os domínios por analogia, com uma variável
+de esforço e uma de fluxo (tensão/corrente, temperatura/fluxo de calor, torque/velocidade),
+reaproveitando a MNA e o motor da seção 4. Começar por poucos casos didáticos concretos,
+como circuito RC térmico, motor CC (elétrico + mecânico) e aquecimento de semicondutores
+(perdas → temperatura), com acoplamento simples por entradas e saídas entre blocos.
+Jacobianas, modelos médios, sensibilidade e domínios adicionais (magnético, eletroquímico)
+só entram quando um caso didático os exigir. Não complicar a implementação inicial para
+antecipar todos os domínios.
 
 ## Biblioteca planejada
 
