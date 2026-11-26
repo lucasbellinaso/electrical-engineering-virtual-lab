@@ -146,6 +146,7 @@ TypeError/RangeError; os kernels portados não validam resultados intermediário
 | control.js | tf2ss, c2d (ZOH), pade, makeFR, bisect, margins; ★ss2tf, series, parallel, feedback, dcgain, evalTF, d2c (`d2c(sys, 'zoh'\|'tustin')`, `sys` = `{A,B,C,D,dt}` MIMO ou `{num,den,dt}` SISO, `dt > 0`; ZOH usa Γ = ∫e^{Aτ}dτ e funciona com integrador) |
 | numeric.js | logspace (n≥2, como o SISO); ★linspace, trapz, cumtrapz, cumsum, sum, mean, std (N−1), norm, diff, interp1 (NaN fora do intervalo) |
 | complex.js | ★objetos `{re,im}`: make, add, sub, mul, div, conj, scale, abs, arg, fromPolar/fromPolarDeg, toPolar/toPolarDeg, exp, sqrt, pow, fromPair/toPair, equalsWithin |
+| cmatrix.js | ★matrizes complexas: array de linhas de `{re,im}` (mesmo formato de complex.js; aritmética importada dele). czeros, ceye, fromReal, fromParts(Re, Im), realPart, imagPart, cadd, csub, cscale(A, z) (z real ou `{re,im}`), cmmul (retangulares), ctranspose (sem conjugar), chermitian (conjugada), ctrace, cdet, cinv, csolve(A, B) (lança `Error('Matriz singular')`), cnorm1, cnormInf, cnormFro |
 
 | residue.js | ★residue, residuez, invres, invresz (porte de scipy.signal 1.18.1; polos agrupados por distância absoluta como o SciPy; precisão de resíduos cai com multiplicidade: ~1e-8 duplo, ~3e-6 triplo) |
 | timeresp.js | ★tfToSS, lsim (entrada ZOH, passo uniforme; discreto = dlsim), step, impulse (C·e^{At}·B; D·δ ignorado), initial, stepinfo, defaultTime |
