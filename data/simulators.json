@@ -395,7 +395,8 @@
     "difficulty": "beginner",
     "languages": [
       "en",
-      "pt-BR"
+      "pt-BR",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -422,12 +423,12 @@
     "title": {
       "en": "RC & RL · First-Order Circuits",
       "pt-BR": "RC e RL · Circuitos de 1ª Ordem",
-      "es": "RC y RL · Circuitos de Primer Orden"
+      "es": "RC y RL: Circuitos de primer orden"
     },
     "description": {
       "en": "Charge, discharge and natural response of ideal RC and RL circuits with a step-by-step derivation, analytical overlay and exports.",
       "pt-BR": "Carga, descarga e resposta natural de circuitos RC e RL ideais, com dedução passo a passo, sobreposição analítica e exportações.",
-      "es": "Configura la respuesta al escalón y la respuesta natural de circuitos RC y RL con ecuaciones, condiciones iniciales y comparación analítica."
+      "es": "Carga, descarga y respuesta natural de circuitos RC y RL ideales, con deducción paso a paso, comparación analítica y exportaciones."
     },
     "category": "electrical-circuits",
     "keywords": {
@@ -446,10 +447,11 @@
         "primeira ordem"
       ],
       "es": [
-        "primer orden",
+        "RC",
+        "RL",
         "constante de tiempo",
-        "capacitor",
-        "inductor"
+        "transitorio",
+        "primer orden"
       ]
     },
     "path": "simulators/electrical-circuits/rl-rc/index.html",
@@ -460,11 +462,12 @@
     "contributors": [],
     "version": "1.0.0",
     "created": "2026-11-25",
-    "updated": "2026-11-25",
+    "updated": "2026-11-26",
     "difficulty": "beginner",
     "languages": [
       "en",
-      "pt-BR"
+      "pt-BR",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -491,12 +494,12 @@
     "title": {
       "en": "RLC · Second-Order Circuits",
       "pt-BR": "RLC · Circuitos de 2ª Ordem",
-      "es": "RLC · Circuitos Serie y Paralelo"
+      "es": "RLC: Circuitos de segundo orden"
     },
     "description": {
       "en": "Series and parallel RLC: underdamped, critically damped and overdamped responses, energy exchange and a derivation with KaTeX.",
       "pt-BR": "RLC série e paralelo: respostas subamortecida, criticamente amortecida e superamortecida, troca de energia e dedução com KaTeX.",
-      "es": "Explora circuitos RLC configurables, regímenes de amortiguamiento, intercambio de energía y deducciones en LaTeX."
+      "es": "Circuitos RLC serie y paralelo: respuestas subamortiguadas, críticamente amortiguadas y sobreamortiguadas, intercambio de energía y deducción con KaTeX."
     },
     "category": "electrical-circuits",
     "keywords": {
@@ -515,11 +518,11 @@
         "transitório"
       ],
       "es": [
-        "segundo orden",
+        "RLC",
         "amortiguamiento",
         "resonancia",
-        "serie",
-        "paralelo"
+        "segundo orden",
+        "transitorio"
       ]
     },
     "path": "simulators/electrical-circuits/rlc-series-parallel/index.html",
@@ -530,11 +533,12 @@
     "contributors": [],
     "version": "1.0.0",
     "created": "2026-11-25",
-    "updated": "2026-11-25",
+    "updated": "2026-11-26",
     "difficulty": "intermediate",
     "languages": [
       "en",
-      "pt-BR"
+      "pt-BR",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -607,7 +611,8 @@
     "difficulty": "intermediate",
     "languages": [
       "en",
-      "pt-BR"
+      "pt-BR",
+      "es"
     ],
     "status": "available",
     "validation": [

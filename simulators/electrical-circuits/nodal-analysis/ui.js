@@ -6,6 +6,8 @@ import { LIMITS, PRESETS, defaults, solveNodalCircuit, symbolicTerms } from './m
 const TEXT = {
   en: {
     docTitle: 'Nodal Analysis · EEVL',
+    mnaOr: 'or',
+    nodeWord: 'Node',
     eyebrow: 'EEVL / ELECTRICAL CIRCUITS / NODAL ANALYSIS · v1.0.0',
     title: 'Nodal Analysis of Resistive Circuits',
     desc: 'Build linear DC circuits with resistors, current sources and voltage sources. Compute node voltages, branch currents, power balance and the exact nodal / MNA matrix.',
@@ -40,6 +42,7 @@ const TEXT = {
       { value: 5, label: '5 (Nodes 1 … 5)' }
     ],
     componentsLabel: 'Components',
+    typeLabel: 'Type',
     compCount: '{n} / {max}',
     conventionHint: 'For I: current flows From → To. For V: (+) at From, (−) at To. Node 0 is Ground (GND).',
     fromNode: 'From',
@@ -55,6 +58,7 @@ const TEXT = {
     exportSvg: 'Export SVG',
     exportPng: 'Export PNG',
     shareBtn: 'Copy configuration link',
+    shareUrlLabel: 'Configuration URL',
     copied: 'Configuration link copied.',
     copyFallback: 'Copy the URL shown below.',
     exportError: 'Export failed. Try exporting SVG instead.',
@@ -103,6 +107,9 @@ const TEXT = {
   },
   'pt-BR': {
     docTitle: 'Análise Nodal · EEVL',
+    mnaOr: 'ou',
+    nodeWord: 'Nó',
+    typeLabel: 'Tipo',
     eyebrow: 'EEVL / CIRCUITOS ELÉTRICOS / ANÁLISE NODAL · v1.0.0',
     title: 'Análise Nodal de Circuitos Resistivos',
     desc: 'Monte circuitos CC lineares com resistores, fontes de corrente e fontes de tensão. Calcule tensões nodais, correntes de ramo, balanço de potência e o sistema matricial nodal / MNA.',
@@ -152,6 +159,7 @@ const TEXT = {
     exportSvg: 'Exportar SVG',
     exportPng: 'Exportar PNG',
     shareBtn: 'Copiar link da configuração',
+    shareUrlLabel: 'URL da configuração do circuito',
     copied: 'Link da configuração copiado.',
     copyFallback: 'Copie o link exibido abaixo.',
     exportError: 'Falha na exportação. Tente exportar SVG.',
@@ -196,6 +204,70 @@ const TEXT = {
       VOLTAGE_RANGE: 'A fonte de tensão deve estar entre −10⁴ V e 10⁴ V.',
       DISCONNECTED_NODE: 'Todos os nós precisam ter caminho até o terra (nó 0).',
       SINGULAR_SYSTEM: 'Matriz singular: verifique se há malha de fontes de tensão ou nós sem caminho CC ao terra.'
+    }
+  },
+  es: {
+    docTitle: 'Análisis nodal · EEVL',
+    mnaOr: 'o',
+    nodeWord: 'Nodo',
+    typeLabel: 'Tipo',
+    eyebrow: 'EEVL / CIRCUITOS ELÉCTRICOS / ANÁLISIS NODAL · v1.0.0',
+    title: 'Análisis nodal de circuitos resistivos',
+    desc: 'Construya circuitos lineales de CC con resistencias y fuentes de corriente y tensión. Calcule tensiones nodales, corrientes de rama, balance de potencia y la matriz nodal / MNA.',
+    badge: 'Verificado analíticamente · LCK y MNA',
+    configHeading: 'Editor de circuitos', presetsLabel: 'Ejemplos',
+    presets: {
+      'two-node-current': '2 nodos · Fuentes de corriente', 'wheatstone-bridge': '3 nodos · Puente de Wheatstone',
+      'supernode-dc': '3 nodos · Supernodo (V + I)', 'ladder-4node': '4 nodos · Red en escalera',
+      'voltage-divider': '2 nodos · Divisor de tensión', 'current-divider': '2 nodos · Divisor de corriente',
+      'mixed-sources': '2 nodos · Fuentes V e I', 'ring-5node': '5 nodos · Red mallada'
+    },
+    presetDescriptions: {
+      'two-node-current': 'Dos fuentes de corriente alimentan una red resistiva en T.',
+      'wheatstone-bridge': 'Puente equilibrado: no circula corriente por la resistencia central.',
+      'supernode-dc': 'Una fuente de tensión flotante conecta los nodos 1 y 2 (supernodo, MNA).',
+      'ladder-4node': 'Red en escalera: cada etapa divide la tensión.',
+      'voltage-divider': 'Dos resistencias en serie: V2 = V1·R2/(R1+R2) = 7,5 V.',
+      'current-divider': 'La corriente se divide entre resistencias en paralelo y una rama en serie: V1 = 60/11 V, V2 = V1/2.',
+      'mixed-sources': 'Una fuente de tensión y otra de corriente actúan juntas.',
+      'ring-5node': 'Cinco nodos con una resistencia de puente para comprobar el esquema y la matriz.'
+    },
+    nodeCountLabel: 'Nodos no de referencia (sin contar GND = 0)',
+    nodeOptions: [{value:2,label:'2 (nodos 1, 2)'},{value:3,label:'3 (nodos 1, 2, 3)'},{value:4,label:'4 (nodos 1, 2, 3, 4)'},{value:5,label:'5 (nodos 1 … 5)'}],
+    componentsLabel: 'Componentes', compCount: '{n} / {max}',
+    conventionHint: 'Para I: la corriente va de Desde → Hacia. Para V: (+) en Desde, (−) en Hacia. El nodo 0 es tierra (GND).',
+    fromNode: 'Desde', toNode: 'Hacia', gndOption: '0 (GND)', nodeOption: 'Nodo {n}', valueLabel: 'Valor',
+    removeTitle: 'Eliminar componente', solveBtn: 'Resolver circuito', resetBtn: 'Restablecer',
+    resultsHeading: 'Esquema y solución nodal', exportCsv: 'Exportar CSV', exportSvg: 'Exportar SVG', exportPng: 'Exportar PNG',
+    shareBtn: 'Copiar enlace de configuración', copied: 'Enlace de configuración copiado.', copyFallback: 'Copie la URL que aparece abajo.',
+    shareUrlLabel: 'URL de configuración del circuito',
+    exportError: 'Error al exportar. Pruebe a exportar como SVG.', queryError: 'La configuración de la URL no es válida. Se restauró el circuito predeterminado.',
+    solvedStatus: 'Resueltos {nodes} nodo(s), {branches} rama(s) · Residuo máximo de LCK: {kcl} A · Diferencia de balance de potencia: {pdiff} W.',
+    schTitle: 'Esquema del circuito resistivo con tensiones nodales calculadas', schDesc: 'Diagrama SVG interactivo con nodos 0 a N, componentes, tensiones nodales y corrientes de rama.',
+    totalDissipated: 'Potencia disipada en resistencias', totalSupplied: 'Potencia suministrada por fuentes', maxKcl: 'Residuo máximo de LCK',
+    matrixHeading: 'Sistema de ecuaciones nodales',
+    matrixPure: 'Formulación nodal pura G·v = i (conductancias en S, corrientes en A, tensiones en V):',
+    matrixMna: 'Sistema de análisis nodal modificado (MNA) con fuente(s) de tensión (G en S, B adimensional):',
+    matrixLegend: 'Arriba: el sistema escrito con los elementos del circuito; cada fila es la LCK de un nodo: 1/R de las resistencias en la diagonal, −1/R fuera de ella, ±1 para los terminales de fuentes de tensión (+ en Desde, − en Hacia), corrientes I (entran +, salen −) y tensiones V a la derecha. Abajo: las mismas ecuaciones con valores numéricos.',
+    kclSummary: 'Ecuaciones de LCK nodo por nodo (corriente saliente = 0)', branchSummary: 'Corrientes, tensiones y potencias de rama',
+    branchHeaders: ['ID','Tipo','Desde → Hacia','Valor','V_desde − V_hacia (V)','Corriente (A)','Potencia (W)'],
+    typeNames: {R:'Resistencia (Ω)',I:'Fuente de corriente (A)',V:'Fuente de tensión (V)'},
+    powerDissipatedTag: 'disipada', powerSuppliedTag: 'suministrada', powerAbsorbedTag: 'absorbida',
+    docEqTitle: 'Ecuaciones y convenciones',
+    docEqText: 'En cada nodo no de referencia k ∈ {1,…,N}, la ley de corrientes de Kirchhoff (LCK) exige que la suma algebraica de las corrientes salientes sea cero. Cada resistencia R entre los nodos a y b aporta una conductancia g = 1/R a G. Las fuentes independientes de corriente forman el vector i. Las fuentes independientes de tensión añaden incógnitas auxiliares de corriente i_V mediante la matriz de incidencia B (análisis nodal modificado, MNA), que trata de forma uniforme las fuentes conectadas a tierra y flotantes (supernodos).',
+    docMethodTitle: 'Método numérico',
+    docMethodText: 'El sistema lineal se ensambla en coma flotante IEEE-754 de doble precisión (unidades SI internas: Ω, S, A, V, W) y se resuelve mediante eliminación gaussiana con pivoteo parcial. Se detectan topologías singulares o mal condicionadas cuando el pivote es menor que 10⁻¹².',
+    docLimitsTitle: 'Hipótesis y limitaciones', docLimitsText: 'Régimen permanente lineal de CC con componentes ideales concentrados. No se modelan fuentes dependientes, componentes no lineales, elementos reactivos (L, C) ni tolerancias. Máximo de 5 nodos no de referencia y 24 componentes.',
+    docRefTitle: 'Referencias y verificación', docRefText: 'Formulación basada en Ho, Ruehli y Brennan (1975), «The Modified Nodal Approach to Network Analysis», IEEE Trans. Circuits and Systems, y textos clásicos de análisis de circuitos (Sadiku, Nilsson y Riedel). Pruebas y evidencia de verificación analítica:',
+    validationLink: 'docs/validation/nodal-analysis.md ↗',
+    errors: {
+      INVALID_CIRCUIT:'Configuración de circuito no válida.', INVALID_NODE_COUNT:'El número de nodos debe estar entre 2 y 5.',
+      INVALID_COMPONENT_COUNT:'Añada entre 1 y 24 componentes.', INVALID_COMPONENT:'Entrada de componente no válida.',
+      INVALID_TYPE:'Tipo de componente no compatible.', INVALID_NODE:'El componente hace referencia a un nodo no válido.',
+      SELF_LOOP:'Un componente no puede conectar un nodo consigo mismo.', NON_FINITE_VALUE:'Todos los valores deben ser números finitos.',
+      RESISTANCE_RANGE:'La resistencia debe estar entre 0,001 Ω y 10⁹ Ω.', CURRENT_RANGE:'La fuente de corriente debe estar entre −10⁴ A y 10⁴ A.',
+      VOLTAGE_RANGE:'La fuente de tensión debe estar entre −10⁴ V y 10⁴ V.', DISCONNECTED_NODE:'Todos los nodos deben tener un camino a tierra (nodo 0).',
+      SINGULAR_SYSTEM:'Matriz singular: compruebe si hay lazos de fuentes de tensión o nodos sin camino de CC a tierra.'
     }
   }
 };
@@ -322,7 +394,7 @@ function renderComponentList() {
     idInput.addEventListener('change', renderPresets);
 
     const typeSel = document.createElement('select');
-    typeSel.setAttribute('aria-label', 'Type');
+    typeSel.setAttribute('aria-label', tr().typeLabel);
     for (const tCode of ['R', 'I', 'V']) {
       const o = document.createElement('option');
       o.value = tCode;
@@ -424,6 +496,7 @@ function renderStaticTexts() {
   $('#export-svg').textContent = dict.exportSvg;
   $('#export-png').textContent = dict.exportPng;
   $('#share-btn').textContent = dict.shareBtn;
+  $('#share-url').setAttribute('aria-label', dict.shareUrlLabel);
   $('#sch-title').textContent = dict.schTitle;
   $('#sch-desc').textContent = dict.schDesc;
   $('#matrix-heading').textContent = dict.matrixHeading;
@@ -450,7 +523,7 @@ function renderStaticTexts() {
   $('#validation-link').textContent = dict.validationLink;
 
   katex.render(
-    String.raw`\mathbf{G}\mathbf{v} = \mathbf{i} \quad\text{or (MNA)}\quad \begin{bmatrix}\mathbf{G} & \mathbf{B}\\\mathbf{B}^T & \mathbf{0}\end{bmatrix}\begin{bmatrix}\mathbf{v}\\\mathbf{i}_V\end{bmatrix} = \begin{bmatrix}\mathbf{i}\\\mathbf{e}\end{bmatrix}`,
+    String.raw`\mathbf{G}\mathbf{v} = \mathbf{i} \quad\text{${dict.mnaOr} (MNA)}\quad \begin{bmatrix}\mathbf{G} & \mathbf{B}\\\mathbf{B}^T & \mathbf{0}\end{bmatrix}\begin{bmatrix}\mathbf{v}\\\mathbf{i}_V\end{bmatrix} = \begin{bmatrix}\mathbf{i}\\\mathbf{e}\end{bmatrix}`,
     $('#doc-katex'),
     { displayMode: true, throwOnError: false }
   );
@@ -785,7 +858,7 @@ function renderMatrixMath(solution) {
     const rhs = latexNum(m.b[r]);
     const div = document.createElement('div');
     div.className = 'kcl-item';
-    katex.render(`\\text{Node } ${r + 1}:\\quad ${lhs} = ${rhs}`, div, { displayMode: false, throwOnError: false });
+    katex.render(`\\text{${dict.nodeWord} } ${r + 1}:\\quad ${lhs} = ${rhs}`, div, { displayMode: false, throwOnError: false });
     kclContainer.appendChild(div);
   }
 }

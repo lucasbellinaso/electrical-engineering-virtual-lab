@@ -16,8 +16,14 @@ Todos foram preservados; veja hashes SHA-256 em `provenance.json`.
 | Power Electronics/buck_degrau.html | simulators/power-electronics/buck-step/app.html | Nenhuma; cópia idêntica |
 
 **Nenhum script numérico inline foi modificado.** O teste de preservação compara
-todos esses scripts e as transformações exatas. A interface herdada não acompanha
-o tema/idioma do portal. Cada `index.html` fornece apresentação no portal, retorno,
+todos esses scripts e as transformações exatas. Os wrappers agora carregam
+`assets/js/legacy-i18n.js`, uma camada parcial EN/ES por correspondência exata de
+textos e atributos acessíveis no iframe de mesma origem. A seleção PT-BR restaura
+os textos originais mapeados. Fórmulas, scripts, valores de entrada e autoria são
+preservados; gráficos SVG/canvas, diálogos e textos ainda não mapeados permanecem
+no idioma original. O aviso visível informa a cobertura parcial e os seis registros
+continuam declarando PT-BR no catálogo. A aparência herdada não acompanha o tema.
+Cada `index.html` fornece apresentação no portal, retorno,
 metadados, aviso de validação e iframe; abrir página inteira mantém as funções de
 URL e exportação que cada original já oferece. Não foram adicionadas funções de
 exportação ausentes aos modelos legados. O template exemplifica essas funções.
@@ -63,11 +69,22 @@ SISO changes only the Plotly script URL to a vendored copy of the same version;
 Buck PID removes only two Google Fonts link tags. **All inline numerical scripts
 remain identical.** The provenance and preservation test document these changes.
 
-The independent wrappers use the shared portal translations; inherited applications remain Portuguese-only
-and retain their original appearance, model assumptions and numerical methods.
+The independent wrappers use the shared portal translations and a partial EN/ES
+overlay inside the same-origin iframe. Unmapped strings, plots and dialogs can
+remain Portuguese. Direct `app.html` access preserves the Portuguese original.
+The six catalog entries therefore still list PT-BR only. Original appearance,
+model assumptions and numerical methods are preserved.
 Scientific validation is experimental for all six; no independent evidence was
 provided. The duty-cycle step laboratory (`buck-step`) was supplied later and is
 integrated unchanged (Portuguese only). Exports and shared URLs depend on original
 capabilities.
 The RC contributor template demonstrates the complete standard without altering
 legacy numerical models. Large inherited calculations may still block their own UI.
+
+## Español
+
+Los seis archivos originales y sus copias protegidas conservan los hashes registrados.
+Los marcos cargan una capa parcial EN/ES, reversible a PT-BR, sin editar algoritmos.
+Los gráficos, diálogos y textos sin mapa pueden seguir en portugués; abrir `app.html`
+directamente muestra el original. Los metadatos siguen declarando solamente PT-BR.
+La clasificación experimental y las limitaciones científicas no cambian.

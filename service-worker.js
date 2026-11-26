@@ -1,10 +1,10 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.1.0';
+const VERSION='eevl-v1.1.2';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
  './','index.html','about.html','contribute.html','manifest.json',
- 'assets/css/main.css','assets/js/app.js','assets/js/common.js','assets/js/i18n.js','assets/js/document.js','assets/js/lab.js',
+ 'assets/css/main.css','assets/js/app.js','assets/js/common.js','assets/js/i18n.js','assets/js/document.js','assets/js/lab.js','assets/js/legacy-i18n.js',
  'data/config.json','data/categories.json','data/simulators.json','locales/en.json','locales/pt-BR.json','locales/es.json',
  'assets/branding/logo-icon.svg','assets/branding/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png',
  'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg','assets/images/nodal-analysis.svg','assets/images/rc-rl.svg','assets/images/rlc.svg','assets/images/nodal-analysis-ac.svg'

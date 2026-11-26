@@ -7,6 +7,7 @@ import { symbolicSystemLatex, numericSystemLatex, kclRowsLatex } from './latex.j
 const TEXT = {
   en: {
     docTitle: 'Phasor Nodal Analysis · EEVL',
+    typeLabel: 'Type',
     eyebrow: 'EEVL / ELECTRICAL CIRCUITS / PHASOR NODAL ANALYSIS · v1.0.0',
     title: 'Nodal Analysis in Sinusoidal Steady State',
     desc: 'Build linear AC circuits with R, L, C and sinusoidal sources at one frequency. Compute node-voltage and branch-current phasors, complex power and the complex nodal / MNA system.',
@@ -56,6 +57,7 @@ const TEXT = {
     exportSvg: 'Export SVG',
     exportPng: 'Export PNG',
     shareBtn: 'Copy configuration link',
+    shareUrlLabel: 'Configuration URL',
     copied: 'Configuration link copied.',
     copyFallback: 'Copy the URL shown below.',
     exportError: 'Export failed. Try exporting SVG instead.',
@@ -106,6 +108,7 @@ const TEXT = {
   },
   'pt-BR': {
     docTitle: 'Análise Nodal Fasorial · EEVL',
+    typeLabel: 'Tipo',
     eyebrow: 'EEVL / CIRCUITOS ELÉTRICOS / ANÁLISE NODAL FASORIAL · v1.0.0',
     title: 'Análise Nodal em Regime Permanente Senoidal',
     desc: 'Monte circuitos CA lineares com R, L, C e fontes senoidais em uma frequência. Calcule fasores de tensão nodal e corrente de ramo, potência complexa e o sistema nodal / MNA complexo.',
@@ -155,6 +158,7 @@ const TEXT = {
     exportSvg: 'Exportar SVG',
     exportPng: 'Exportar PNG',
     shareBtn: 'Copiar link da configuração',
+    shareUrlLabel: 'URL da configuração do circuito',
     copied: 'Link da configuração copiado.',
     copyFallback: 'Copie a URL exibida abaixo.',
     exportError: 'Falha na exportação. Tente exportar SVG.',
@@ -201,6 +205,43 @@ const TEXT = {
       INVALID_PHASE: 'A fase da fonte deve estar entre −360° e 360°.',
       DISCONNECTED_NODE: 'Todo nó precisa de caminho até o terra por R, L, C ou fontes de tensão (não apenas fontes de corrente).',
       SINGULAR_SYSTEM: 'Matriz do circuito singular: verifique laços de fontes de tensão ou nós sem caminho até o terra.'
+    }
+  },
+  es: {
+    docTitle: 'Análisis nodal fasorial · EEVL', eyebrow: 'EEVL / CIRCUITOS ELÉCTRICOS / ANÁLISIS NODAL FASORIAL · v1.0.0',
+    typeLabel: 'Tipo',
+    title: 'Análisis nodal en régimen sinusoidal permanente',
+    desc: 'Construya circuitos lineales de CA con R, L, C y fuentes sinusoidales a una frecuencia. Calcule fasores de tensión nodal y corriente de rama, potencia compleja y el sistema nodal / MNA complejo.',
+    badge: 'Verificado analíticamente · fasores y MNA', configHeading: 'Editor de circuitos', presetsLabel: 'Ejemplos',
+    presets: {'rc-lowpass':'2 nodos · Filtro RC paso bajo','rl-highpass':'2 nodos · Filtro RL paso alto','series-resonance':'3 nodos · Resonancia RLC serie','parallel-resonance':'2 nodos · Resonancia RLC paralelo','rc-two-stage':'3 nodos · Filtro RC de dos etapas','two-sources-phase':'3 nodos · Dos fuentes desfasadas'},
+    presetDescriptions: {'rc-lowpass':'En la frecuencia de corte, la salida es V/√2 ∠ −45°.','rl-highpass':'En la frecuencia de corte, la tensión de la resistencia es V/√2 ∠ −45°.','series-resonance':'En f₀, la corriente está en fase y vale V/R; V_C y V_L alcanzan Q·V.','parallel-resonance':'En f₀, las corrientes de L y C se cancelan: el tanque se comporta como circuito abierto.','rc-two-stage':'Etapas en cascada: la segunda carga a la primera.','two-sources-phase':'Dos fuentes de 120 V con 30° de desfase alimentan un inductor a través de resistencias.'},
+    frequencyLabel: 'Frecuencia f (Hz)', omegaReadout: 'ω = 2πf = {omega} rad/s', nodeCountLabel: 'Nodos no de referencia (sin contar GND = 0)',
+    nodeOptions: [{value:2,label:'2 (nodos 1, 2)'},{value:3,label:'3 (nodos 1, 2, 3)'},{value:4,label:'4 (nodos 1 … 4)'},{value:5,label:'5 (nodos 1 … 5)'}],
+    componentsLabel: 'Componentes', compCount: '{n} / {max}', conventionHint: 'Las amplitudes son valores pico. I: corriente de referencia Desde → Hacia. V: (+) en Desde, (−) en Hacia; fase en grados. El nodo 0 es GND.',
+    fromNode: 'Desde', toNode: 'Hacia', gndOption: '0 (GND)', nodeOption: 'Nodo {n}', valueLabel: 'Valor', phaseLabel: 'Fase (°)', removeTitle: 'Eliminar componente',
+    typeOptions: {R:'R (Ω)',L:'L (mH)',C:'C (µF)',I:'I (A)',V:'V (V)'}, solveBtn: 'Resolver circuito', resetBtn: 'Restablecer',
+    resultsHeading: 'Esquema y solución fasorial', exportCsv: 'Exportar CSV', exportSvg: 'Exportar SVG', exportPng: 'Exportar PNG', shareBtn: 'Copiar enlace de configuración',
+    shareUrlLabel: 'URL de configuración del circuito',
+    copied: 'Enlace de configuración copiado.', copyFallback: 'Copie la URL que aparece abajo.', exportError: 'Error al exportar. Pruebe a exportar como SVG.', queryError: 'La configuración de la URL no es válida. Se restauró el circuito predeterminado.',
+    solvedStatus: 'Resueltos {nodes} nodo(s), {branches} rama(s) a ω = {omega} rad/s · Residuo máximo de LCK: {kcl} A · Diferencia de balance de potencia: {pdiff} VA.',
+    schTitle: 'Esquema del circuito de CA con fasores de tensión nodal y corriente de rama', schDesc: 'Diagrama SVG con nodos 0 a N, componentes, fasores de tensión nodal y fasores de corriente de rama con sus sentidos de referencia.',
+    totalActive: 'Potencia activa en resistencias', totalInductive: 'Potencia reactiva en inductores', totalCapacitive: 'Potencia reactiva en condensadores', totalSupplied: 'Potencia compleja de las fuentes', maxKcl: 'Residuo máximo de LCK',
+    matrixHeading: 'Sistema de ecuaciones nodales (complejo)', matrixSubtitle: 'Sistema nodal / MNA complejo. Arriba: expresado con los elementos del circuito. Abajo: con valores numéricos (j = √−1, fasores en forma rectangular, valores pico).',
+    matrixLegend: 'Cada fila es la LCK de un nodo: la diagonal suma las admitancias conectadas al nodo (1/R, 1/(jωL), jωC); los términos fuera de la diagonal son la admitancia negativa entre nodos; ±1 marca los terminales de fuentes de tensión (+ en Desde, − en Hacia). El lado derecho contiene los fasores de corriente (entran +, salen −) y de tensión de las fuentes.',
+    kclSummary: 'Ecuaciones de LCK nodo por nodo (corriente saliente = 0)', branchSummary: 'Fasores de rama y potencia compleja',
+    branchHeaders: ['ID','Tipo','Desde → Hacia','Valor','V_desde − V_hacia (V, ∠°)','Corriente Desde → Hacia (A, ∠°)','P (W)','Q (var)'],
+    typeNames: {R:'Resistencia',L:'Inductor',C:'Condensador',I:'Fuente de corriente',V:'Fuente de tensión'},
+    docEqTitle: 'Ecuaciones y convenciones',
+    docEqText: 'En régimen sinusoidal permanente, cada tensión y corriente es x(t) = |X| cos(ωt + φ) y se representa mediante el fasor de pico X = |X|∠φ. Los elementos se expresan como admitancias: Y_R = 1/R, Y_L = 1/(jωL), Y_C = jωC. La LCK en cada nodo no de referencia produce el sistema lineal complejo; las fuentes de tensión añaden incógnitas auxiliares de corriente de rama (análisis nodal modificado). Para una caída ΔV (Desde − Hacia) y corriente I (Desde → Hacia), la potencia compleja absorbida es S = ½·ΔV·I*, con P = Re S (W) y Q = Im S (var). El teorema de Tellegen establece ΣS = 0 para todos los elementos.',
+    docMethodTitle: 'Método numérico', docMethodText: 'El sistema complejo se ensambla en coma flotante IEEE-754 de doble precisión y se resuelve mediante eliminación gaussiana con pivoteo parcial. Si un pivote es menor que 10⁻¹² del mayor elemento de la matriz, el circuito se considera singular. Unidades públicas: Ω, mH, µF, V y A (pico), grados y Hz; los cálculos internos usan SI.',
+    docLimitsTitle: 'Hipótesis y limitaciones', docLimitsText: 'Circuito lineal e invariante en el tiempo con componentes ideales concentrados; todas las fuentes comparten una sola frecuencia (f de 0,001 Hz a 1 GHz). No incluye CC (use el laboratorio de análisis nodal resistivo), transitorios, inductancia mutua, fuentes dependientes, dispositivos no lineales, pérdidas ni tolerancias. Máximo de 5 nodos no de referencia y 24 componentes.',
+    docRefTitle: 'Referencias y verificación', docRefText: 'Formulación basada en Ho, Ruehli y Brennan (1975), «The Modified Nodal Approach to Network Analysis», IEEE Trans. Circuits and Systems, y textos habituales de análisis de circuitos. Evidencia de verificación analítica (frecuencia de corte, resonancia, balance de Tellegen, escalado y reducción al caso resistivo):',
+    validationLink: 'docs/validation/nodal-analysis-ac.md ↗',
+    errors: {
+      INVALID_CIRCUIT:'Configuración de circuito no válida.', INVALID_NODE_COUNT:'El número de nodos debe estar entre 2 y 5.', INVALID_FREQUENCY:'La frecuencia debe estar entre 0,001 Hz y 10⁹ Hz.',
+      INVALID_COMPONENT_COUNT:'Añada entre 1 y 24 componentes.', INVALID_COMPONENT:'Entrada de componente no válida.', INVALID_TYPE:'Tipo de componente no compatible.', INVALID_NODE:'El componente hace referencia a un nodo no válido.', SELF_LOOP:'Un componente no puede conectar un nodo consigo mismo.', NON_FINITE_VALUE:'Todos los valores deben ser números finitos.',
+      RESISTANCE_RANGE:'La resistencia debe estar entre 0,001 Ω y 10⁹ Ω.', INDUCTANCE_RANGE:'La inductancia debe estar entre 0,001 mH y 10⁶ mH.', CAPACITANCE_RANGE:'La capacitancia debe estar entre 0,001 µF y 10⁶ µF.', CURRENT_RANGE:'La fuente de corriente debe estar entre −10⁴ A y 10⁴ A.', VOLTAGE_RANGE:'La fuente de tensión debe estar entre −10⁴ V y 10⁴ V.', INVALID_PHASE:'La fase de la fuente debe estar entre −360° y 360°.',
+      DISCONNECTED_NODE:'Cada nodo debe tener un camino a tierra mediante R, L, C o fuentes de tensión (no solo fuentes de corriente).', SINGULAR_SYSTEM:'Matriz singular: compruebe si hay lazos de fuentes de tensión o nodos sin camino a tierra.'
     }
   }
 };
@@ -334,7 +375,7 @@ function renderComponentList() {
     idInput.addEventListener('change', renderPresets);
 
     const typeSel = document.createElement('select');
-    typeSel.setAttribute('aria-label', 'Type');
+    typeSel.setAttribute('aria-label', dict.typeLabel);
     for (const code of ['R', 'L', 'C', 'I', 'V']) {
       const o = document.createElement('option');
       o.value = code;
@@ -434,6 +475,7 @@ function renderStaticTexts() {
   set('#node-count-label', dict.nodeCountLabel); set('#components-label', dict.componentsLabel); set('#convention-hint', dict.conventionHint);
   set('#solve-btn', dict.solveBtn); set('#reset-btn', dict.resetBtn); set('#results-heading', dict.resultsHeading);
   set('#export-csv', dict.exportCsv); set('#export-svg', dict.exportSvg); set('#export-png', dict.exportPng); set('#share-btn', dict.shareBtn);
+  $('#share-url').setAttribute('aria-label', dict.shareUrlLabel);
   set('#sch-title', dict.schTitle); set('#sch-desc', dict.schDesc);
   set('#matrix-heading', dict.matrixHeading); set('#matrix-subtitle', dict.matrixSubtitle);
   set('#kcl-summary', dict.kclSummary); set('#branch-summary', dict.branchSummary);
