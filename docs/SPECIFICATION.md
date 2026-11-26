@@ -59,18 +59,3 @@ Relatar explicitamente limites de testes e validação técnica.
 
 ## Atualização durante a implementação
 O usuário reorganizou o SISO em Control Systems e adicionou Buck, DAB, amp-ops e Buck PID. Os cinco foram integrados com originais preservados. O degrau dedicado de razão cíclica (`buck-step`) foi fornecido depois e integrado sem alterações. Consulte INTEGRATION.md e provenance.json para caminhos, hashes e alterações exatas.
-
-## Extensão autorizada: circuitos de primeira e segunda ordem
-Adicionar dois aplicativos em Circuitos Elétricos: RC/RL e RLC série/paralelo.
-Parâmetros: R, L, C conforme topologia, fonte CC aplicada em t=0 ou resposta
-natural, condições iniciais e duração. RLC paralelo excitado por corrente;
-demais por tensão. Diagramas devem indicar polaridades e sentidos de corrente.
-Dedução própria EN/PT-BR em LaTeX renderizada localmente com KaTeX e MathML.
-Modelo puro compartilhado, integração RK4 em Worker, solução analítica de
-referência, gráficos de tensão/corrente com inspeção, CSV, SVG/PNG e URL.
-Limitar custo e rejeitar parâmetros que exigem resolução excessiva, sem alterar
-silenciosamente o passo. Testar soluções fechadas, regimes de amortecimento,
-condições iniciais, energia, convergência, KVL/KCL e entradas inválidas.
-Registrar evidência analítica própria sem atribuir validação experimental.
-Atualizar catálogo, documentação e versão da PWA, testar e fazer push conforme
-solicitação explícita do usuário em 25/11/2026. Preservar todos os legados.
