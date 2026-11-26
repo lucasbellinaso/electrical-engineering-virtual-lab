@@ -169,3 +169,105 @@ export function equalsWithin(a, b, tol) {
   if (tol < 0) throw new RangeError('tol deve ser ≥ 0.');
   return Math.hypot(a.re - b.re, a.im - b.im) <= tol;
 }
+
+/* ---------- Funções hiperbólicas de argumento complexo ---------- */
+
+/**
+ * Produto que devolve 0 quando um dos fatores é 0. Evita 0·∞ = NaN quando sinh ou cosh estouram
+ * e a outra componente é exatamente nula (por exemplo, sen y = 0 em z real grande).
+ */
+const prod = (a, b) => (a === 0 || b === 0 ? 0 : a * b);
+
+/** Garante +0 no lugar de −0 nas componentes devolvidas. */
+const norm = (z) => ({ re: z.re + 0, im: z.im + 0 });
+
+/**
+ * sinh(x+iy) = sinh x·cos y + i·cosh x·sen y.
+ * Estouro (|x| ≳ 710): as componentes viram ±Infinity, como exp, sem lançar erro. Diferente de
+ * exp (que pode gerar NaN quando sen y = 0), a componente com seno nulo sai exatamente 0.
+ */
+export function sinh(z) {
+  complexo(z, 'z');
+  const c = Math.cos(z.im), s = Math.sin(z.im);
+  return { re: prod(Math.sinh(z.re), c), im: prod(Math.cosh(z.re), s) };
+}
+
+/**
+ * cosh(x+iy) = cosh x·cos y + i·sinh x·sen y.
+ * Mesma convenção de estouro de sinh (±Infinity, sem NaN).
+ */
+export function cosh(z) {
+  complexo(z, 'z');
+  const c = Math.cos(z.im), s = Math.sin(z.im);
+  return { re: prod(Math.cosh(z.re), c), im: prod(Math.sinh(z.re), s) };
+}
+
+/** Limite de |x| acima do qual tanh usa a forma assintótica (ver JSDoc de tanh). */
+const LIMITE_ASSINTOTICO_TANH = 20;
+
+/**
+ * tanh(x+iy) = (sinh x·cosh x + i·sen y·cos y) / (sinh²x + cos²y).
+ *
+ * Não se usa sinh/cosh: a forma acima tem denominador soma de quadrados não negativos, sem
+ * cancelamento, então continua precisa perto dos polos z = i(π/2 + kπ), onde o denominador tende a 0.
+ *
+ * Para |x| grande: seja t = e^{−2|x|}. Como sinh x·cosh x = sgn(x)·(e^{2|x|}/4)(1 − t²) e
+ * sinh²x = (e^{2|x|}/4)(1 − t)², dividindo numerador e denominador por e^{2|x|}/4 obtém-se
+ *   re = sgn(x)(1 − t²)/[(1 − t)² + 4t·cos²y],   im = 4t·sen y·cos y/[(1 − t)² + 4t·cos²y].
+ * Para |x| > 20, t < e^{−40} ≈ 4,2e-18. Então |re − sgn(x)| ≤ 3t ≈ 1,3e-17 < ulp(1)/2 ≈ 1,1e-16
+ * e re arredonda para ±1, e o denominador é 1 + O(t). Logo a forma assintótica
+ *   tanh ≈ sgn(x) + i·4·e^{−2|x|}·sen y·cos y
+ * tem erro relativo O(e^{−2|x|}) ≤ 1e-17 e não calcula sinh/cosh grandes (sem estouro).
+ *
+ * Polo exato (denominador nulo) lança RangeError, como div. Com números de dupla precisão o
+ * denominador nunca é zero (cos y de um double nunca é exatamente 0), então o guarda é defensivo:
+ * tanh(i·fl(π/2)) devolve um valor finito grande (≈1,6e16i).
+ */
+export function tanh(z) {
+  complexo(z, 'z');
+  const x = z.re, cy = Math.cos(z.im), sy = Math.sin(z.im);
+  if (Math.abs(x) > LIMITE_ASSINTOTICO_TANH) {
+    const t = Math.exp(-2 * Math.abs(x));
+    return norm({ re: Math.sign(x), im: 4 * t * sy * cy });
+  }
+  const sh = Math.sinh(x), ch = Math.cosh(x);
+  const den = sh * sh + cy * cy;
+  if (den === 0) throw new RangeError('tanh: polo exato (denominador nulo).');
+  return norm({ re: (sh * ch) / den, im: (sy * cy) / den });
+}
+
+/**
+ * AUXILIAR, API AINDA INSTÁVEL (exportada só para permitir testes). sinhc(z) = sinh(z)/z, com sinhc(0) = 1.
+ *
+ * - |z| < 1: série de Taylor Σ_{k≥0} w^k/(2k+1)! com w = z², avaliada por Horner. Trunca em k = 8.
+ *   Resto ≤ |w|⁹/19! ≤ 8,2e-18 (|w| < 1). Como |sinhc| ≥ 1 − (sinh 1 − 1) ≈ 0,82 em |z| < 1,
+ *   o erro relativo fica ≤ 1e-17 < 1e-16. Os zeros de sinhc são iπk (k ≠ 0), com |iπ| > 1.
+ * - |z| ≥ 1: sinh(z)/z pela divisão de Smith (div). Para |x| > ~710 o sinh estoura; então usa-se
+ *   sinhc ≈ e^z/(2z), cujas componentes têm sinal de (x·cos y + y·sen y) e (x·sen y − y·cos y) e
+ *   magnitude ∞ (±Infinity, sem NaN). Isso também ocorre em alguns |x| ≲ 710 com resultado
+ *   finito muito grande, que é a mesma convenção de exp/sinh.
+ *
+ * Simetria: sinhc é par, então z com x < 0 é tratado como −z.
+ * Para z puramente real ou puramente imaginário a parte imaginária é exatamente 0.
+ */
+const SINHC_COEF = [1, 1 / 6, 1 / 120, 1 / 5040, 1 / 362880, 1 / 39916800,
+  1 / 6227020800, 1 / 1307674368000, 1 / 355687428096000];
+
+export function sinhc(z) {
+  complexo(z, 'z');
+  const r2 = z.re * z.re + z.im * z.im;
+  if (r2 < 1) {
+    const w = { re: z.re * z.re - z.im * z.im, im: 2 * z.re * z.im };
+    let p = { re: SINHC_COEF[8], im: 0 };
+    for (let k = 7; k >= 0; k--) p = add(mul(p, w), { re: SINHC_COEF[k], im: 0 });
+    return norm(p);
+  }
+  const x = Math.abs(z.re), y = z.re < 0 ? -z.im : z.im;
+  if (!Number.isFinite(Math.sinh(x)) || !Number.isFinite(Math.cosh(x))) {
+    const c = Math.cos(y), s = Math.sin(y);
+    const sg = (v) => (v === 0 ? 0 : v > 0 ? Infinity : -Infinity);
+    return { re: sg(x * c + y * s), im: sg(x * s - y * c) };
+  }
+  const q = { re: x, im: y };
+  return norm(div(sinh(q), q));
+}
