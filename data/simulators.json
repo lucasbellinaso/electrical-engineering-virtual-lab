@@ -633,5 +633,80 @@
         "url": null
       }
     ]
+  },
+  {
+    "id": "magnetostatics",
+    "title": {
+      "pt-BR": "Campos Magnetostáticos",
+      "en": "Magnetostatic Fields",
+      "es": "Campos Magnetostáticos"
+    },
+    "description": {
+      "pt-BR": "Explore campos B e H de fios infinitos, espira circular e solenoide finito, com linhas de campo, sonda, deduções e exportação.",
+      "en": "Explore B and H fields of infinite wires, a circular loop and a finite solenoid, with field lines, a probe, derivations and exports.",
+      "es": "Explora campos B y H de hilos infinitos, una espira circular y un solenoide finito, con líneas de campo, sonda, deducciones y exportación."
+    },
+    "category": "electromagnetics",
+    "keywords": {
+      "pt-BR": [
+        "magnetostática",
+        "Biot–Savart",
+        "Ampère",
+        "campo magnético",
+        "espira",
+        "solenoide"
+      ],
+      "en": [
+        "magnetostatics",
+        "Biot–Savart",
+        "Ampère",
+        "magnetic field",
+        "loop",
+        "solenoid"
+      ],
+      "es": [
+        "magnetostática",
+        "Biot–Savart",
+        "Ampère",
+        "campo magnético",
+        "espira",
+        "solenoide"
+      ]
+    },
+    "path": "simulators/electromagnetics/magnetostatics/index.html",
+    "thumbnail": "assets/images/magnetostatics.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-26",
+    "updated": "2026-11-26",
+    "difficulty": "intermediate",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/magnetostatics.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "OpenStax University Physics Volume 2, The Biot–Savart Law",
+          "pt-BR": "OpenStax University Physics Volume 2, Lei de Biot–Savart",
+          "es": "OpenStax University Physics Volume 2, Ley de Biot–Savart"
+        },
+        "url": "https://openstax.org/books/university-physics-volume-2/pages/12-1-the-biot-savart-law"
+      }
+    ]
   }
 ]
