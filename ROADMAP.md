@@ -14,7 +14,8 @@ ou implementar toda esta lista antecipadamente.
 ## 1. Reutilização e contratos
 
 **Status: em andamento.** O núcleo numérico em `assets/js/core/` já cobre matemática,
-complexos, matrizes, polinômios e controle, com testes e fixtures, ainda sem consumidores
+complexos (incluindo `sinh`, `cosh`, `tanh` e o auxiliar `sinhc`), matrizes reais e complexas
+(`matrix.js`, `cmatrix.js`), polinômios e controle, com testes e fixtures, ainda sem consumidores
 nos aplicativos. A extração das funções do SISO e dos modelos nodais/RC/RLC continua pendente.
 
 ### Inventário de extração
@@ -26,7 +27,7 @@ qualquer implementação, comparar o algoritmo e a ordem dos argumentos, e só e
 | Origem | Funções numéricas independentes de DOM | Núcleo equivalente |
 |---|---|---|
 | `nodal-analysis/model.js` | `solveLinearSystem` (Gauss real) | `matrix.js`: `msolve` (conferir pivotamento e tolerâncias) |
-| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | `complex.js`; sem solucionador complexo no núcleo |
+| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | `complex.js` e `cmatrix.js` (`csolve`) |
 | `electrical-circuits/shared/model.js` | RK4 e solução analítica de RC/RL/RLC | sem equivalente direto; avaliar `timeresp.js` |
 | `siso/app.html` (protegido) | polinômios e raízes (`pmul`, `roots`, `aberth`, `matchRoots`) | `polynomial.js` |
 | `siso/app.html` | matrizes (`msolve`, `expm`, `charpoly`) | `matrix.js` |
@@ -36,10 +37,36 @@ qualquer implementação, comparar o algoritmo e a ordem dos argumentos, e só e
 | `magnetostatics/model.js`, `electrostatics/model.js` | campo, linhas de campo, contornos | sem equivalente; específicos de eletromagnetismo |
 
 Sem sobreposição com o núcleo: parsers de expressão do SISO e todo o código de apresentação.
-Ainda não inventariados: `buck-pid`, `power-electronics/*` e `opamp`.
+Os cinco legados restantes (`buck`, `buck-step`, `dab`, `opamp`, `buck-pid`) não têm nenhuma
+função cujo nome e corpo coincidam com o núcleo. Quatro deles são minificados em poucas linhas
+e só o `buck-pid` é formatado. O padrão que se repete é o integrador RK4 (`buck`, `buck-step` e
+`dab`, sem cópia literal; o `buck-pid` usa ponto médio), e o núcleo ainda não exporta um RK4.
+Só `simulate` do `buck-step` e do `dab` são puras; as do `buck` e do `buck-pid` leem estado
+global ou escrevem no DOM e precisam ser separadas antes de qualquer extração.
 
-Ordem proposta, da menor para a maior superfície de risco: (1) `solveLinearSystem` do
-nodal para `msolve`; (2) `cx` do nodal AC para `complex.js`; (3) RC/RL/RLC; (4) SISO em
+### Pré-requisitos medidos para trocar os solucionadores do nodal
+
+A troca por `msolve`/`csolve` **não é direta**; as diferenças abaixo precisam ser resolvidas
+antes, com testes que comparem a saída antiga e a nova.
+
+| Aspecto | Nodal (`solveLinearSystem`, `solveComplexSystem`) | Núcleo (`msolve`, `csolve`) |
+|---|---|---|
+| Algoritmo | eliminação para frente e substituição reversa | Gauss–Jordan; os resultados podem diferir nos últimos bits |
+| Critério de singularidade | pivô ≤ 1e-12 (DC); pivô ≤ tolerância relativa × maior módulo da matriz (AC) | só pivô exatamente zero |
+| Erro | `SINGULAR_SYSTEM` com mensagem específica do circuito | `Error('Matriz singular')` |
+| Aritmética complexa (AC) | `cx.div` ingênuo (módulo ao quadrado); `fromPolar` e `polar` em graus | divisão de Smith; ângulos em radianos; entradas não finitas lançam erro |
+| Validação | assume entradas já validadas | valida forma e valores finitos |
+
+Caminho proposto: antes de migrar, o núcleo precisaria aceitar uma tolerância de singularidade
+opcional (compatível com o comportamento atual) e o nodal mapearia o erro do núcleo para o seu
+`SINGULAR_SYSTEM`. Sem isso, um circuito quase singular que hoje é rejeitado passaria a devolver
+um resultado numérico sem aviso.
+
+Ordem proposta, da menor para a maior superfície de risco, condicionada aos pré-requisitos
+acima: (1) tolerância de singularidade opcional no núcleo e `solveLinearSystem` do nodal sobre
+`msolve`; (2) `cx` e `solveComplexSystem` do nodal AC sobre `complex.js` e `cmatrix.js`;
+(3) RC/RL/RLC e um RK4 no núcleo, consumido por `buck`, `buck-step` e `dab` depois de separar
+a parte pura; (4) SISO em
 etapas pequenas (polinômios e raízes, depois matrizes, depois controle), cada etapa com
 teste que compare a saída antiga e a nova; (5) eletromagnetismo por último, por não
 depender do núcleo. Alterar o `app.html` do SISO exige atualizar a proveniência
