@@ -81,6 +81,10 @@ export const messages = {
     "Conduction mode",
     "Modo de conducción"
   ],
+  "DCM / limite": [
+    "DCM / limit",
+    "DCM / límite"
+  ],
   "Tensão média": [
     "Average voltage",
     "Tensión media"
