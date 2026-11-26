@@ -9,8 +9,9 @@
  * - ctranspose NÃO conjuga; chermitian é a transposta conjugada A^H.
  * - Erros: TypeError se o tipo de entrada não é array, objeto {re, im} ou número; RangeError se a forma
  *   (não retangular, dimensões incompatíveis, não quadrada onde exigido) ou o valor (não finito, dimensão
- *   não inteira ou negativa) é inválido. csolve e cinv lançam Error('Matriz singular') com a mesma regra
- *   de msolve em matrix.js: singular quando o maior módulo do pivô de alguma coluna é exatamente zero.
+ *   não inteira ou negativa) é inválido. csolve e cinv lançam Error('Matriz singular') (code 'SINGULAR_MATRIX') com a mesma regra
+ *   de msolve em matrix.js: por padrão, singular quando o maior módulo do pivô de alguma coluna é exatamente zero;
+ *   a opção { absTol, relTol } exige mais: singular se o maior pivô ≤ max(absTol, relTol·máx|aᵢⱼ|).
  * - Pivotamento parcial pelo módulo (abs de complex.js). Não se altera a entrada.
  * - Complexidade: cmmul, csolve, cinv e cdet são O(n³) (acumulação direta, sem blocagem).
  *   cnorm1, cnormInf e cnormFro são O(r·c).
@@ -83,6 +84,31 @@ function assertSameShape(a, b, op) {
 }
 
 /* ------------------------- kernels internos ------------------------- */
+
+/** Erro de matriz singular, com code para o chamador distinguir de outros erros. */
+function erroSingular() {
+  const e = new Error('Matriz singular');
+  e.code = 'SINGULAR_MATRIX';
+  return e;
+}
+
+/**
+ * Limite de pivô abaixo do qual a matriz é tratada como singular. Sem opts: 0 (só o pivô exatamente nulo).
+ * Com opts: max(absTol, relTol·máx|aᵢⱼ|), com absTol e relTol finitos e ≥ 0 (padrão 0). Mesma regra de matrix.js.
+ * @param {{re:number,im:number}[][]} A já validada @param {{absTol?:number, relTol?:number}} [opts]
+ */
+function limiteSingular(A, opts) {
+  if (opts === undefined) return 0;
+  if (opts === null || typeof opts !== 'object') throw new TypeError('opts deve ser um objeto { absTol, relTol }');
+  const { absTol = 0, relTol = 0 } = opts;
+  for (const [nome, v] of [['absTol', absTol], ['relTol', relTol]]) {
+    checkReal(v, `opts.${nome}`);
+    if (v < 0) throw new RangeError(`opts.${nome} deve ser não negativo (recebido ${v})`);
+  }
+  let escala = 0;
+  if (relTol > 0) for (const row of A) for (const z of row) escala = Math.max(escala, abs(z));
+  return Math.max(absTol, relTol * escala);
+}
 
 const zeroC = () => ({ re: 0, im: 0 });
 const copiaC = (z) => ({ re: z.re, im: z.im });
@@ -251,13 +277,15 @@ export function cdet(A) {
 /**
  * Resolve A X = B por Gauss–Jordan com pivotamento parcial pelo módulo. O(n³) para n×n com B n×m.
  * @param {{re:number,im:number}[][]} A quadrada n x n @param {{re:number,im:number}[][]} B n x m
+ * @param {{absTol?:number, relTol?:number}} [opts] tolerância de singularidade (padrão 0 e 0), como em msolve
  * @returns {{re:number,im:number}[][]} X n x m
- * @throws {Error} 'Matriz singular' se A é singular (mesma regra de msolve)
+ * @throws {Error} 'Matriz singular' (code 'SINGULAR_MATRIX') se A é singular
  */
-export function csolve(A, B) {
+export function csolve(A, B, opts) {
   const n = assertSquare(A, 'A');
   const mb = assertComplex(B, 'B');
   if (mb.r !== n) throw new RangeError(`csolve: B deve ter ${n} linhas (recebido ${mb.r})`);
+  const tol = limiteSingular(A, opts);
   if (n === 0) return [];
   const m = mb.c;
   const M = A.map((row, i) => row.concat(B[i]));
@@ -267,7 +295,7 @@ export function csolve(A, B) {
       const q = abs(M[r][col]);
       if (q > mx) { mx = q; piv = r; }
     }
-    if (mx === 0) throw new Error('Matriz singular');
+    if (mx <= tol) throw erroSingular();   // tol = 0: equivale a mx === 0 (mx ≥ 0)
     [M[col], M[piv]] = [M[piv], M[col]];
     for (let r = 0; r < n; r++) {
       if (r === col) continue;
@@ -281,11 +309,12 @@ export function csolve(A, B) {
 
 /**
  * Inversa de A quadrada, via csolve(A, I). O(n³).
- * @throws {Error} 'Matriz singular' se A é singular
+ * @param {{absTol?:number, relTol?:number}} [opts] como em csolve
+ * @throws {Error} 'Matriz singular' (code 'SINGULAR_MATRIX') se A é singular
  */
-export function cinv(A) {
+export function cinv(A, opts) {
   const n = assertSquare(A, 'A');
-  return csolve(A, ceye(n));
+  return csolve(A, ceye(n), opts);
 }
 
 /* ------------------------- normas ------------------------- */
