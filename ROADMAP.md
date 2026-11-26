@@ -17,6 +17,34 @@ ou implementar toda esta lista antecipadamente.
 complexos, matrizes, polinômios e controle, com testes e fixtures, ainda sem consumidores
 nos aplicativos. A extração das funções do SISO e dos modelos nodais/RC/RLC continua pendente.
 
+### Inventário de extração
+
+Levantamento por leitura do código; nenhum aplicativo importa `assets/js/core/` hoje.
+As equivalências abaixo vêm dos nomes e das assinaturas das funções. Antes de trocar
+qualquer implementação, comparar o algoritmo e a ordem dos argumentos, e só então migrar.
+
+| Origem | Funções numéricas independentes de DOM | Núcleo equivalente |
+|---|---|---|
+| `nodal-analysis/model.js` | `solveLinearSystem` (Gauss real) | `matrix.js`: `msolve` (conferir pivotamento e tolerâncias) |
+| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | `complex.js`; sem solucionador complexo no núcleo |
+| `electrical-circuits/shared/model.js` | RK4 e solução analítica de RC/RL/RLC | sem equivalente direto; avaliar `timeresp.js` |
+| `siso/app.html` (protegido) | polinômios e raízes (`pmul`, `roots`, `aberth`, `matchRoots`) | `polynomial.js` |
+| `siso/app.html` | matrizes (`msolve`, `expm`, `charpoly`) | `matrix.js` |
+| `siso/app.html` | `tf2ss`, `c2d`, `pade`, `makeFR`, `bisect`, `margins` | `control.js` |
+| `siso/app.html` | `logspace` | `numeric.js` (conferir a ordem dos argumentos) |
+| `siso/app.html` | `charFreq`, `stepResponse`, `distResponse`, `computeLocus`, `factorPoly` | sem equivalente exato; comparar com `timeresp.js` e `analysis.js` |
+| `magnetostatics/model.js`, `electrostatics/model.js` | campo, linhas de campo, contornos | sem equivalente; específicos de eletromagnetismo |
+
+Sem sobreposição com o núcleo: parsers de expressão do SISO e todo o código de apresentação.
+Ainda não inventariados: `buck-pid`, `power-electronics/*` e `opamp`.
+
+Ordem proposta, da menor para a maior superfície de risco: (1) `solveLinearSystem` do
+nodal para `msolve`; (2) `cx` do nodal AC para `complex.js`; (3) RC/RL/RLC; (4) SISO em
+etapas pequenas (polinômios e raízes, depois matrizes, depois controle), cada etapa com
+teste que compare a saída antiga e a nova; (5) eletromagnetismo por último, por não
+depender do núcleo. Alterar o `app.html` do SISO exige atualizar a proveniência
+(`docs/provenance.json`) na mesma mudança.
+
 Inventariar SISO e modelos nodais/RC/RLC; extrair funções independentes quando outro
 consumidor justificar. Priorizar matemática, complexos, matrizes, polinômios e controle;
 uniformizar convenções MATLAB/Octave por adaptadores e testes, preservando referência.
