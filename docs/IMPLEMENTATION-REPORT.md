@@ -64,7 +64,7 @@ Microsoft Edge local, servidor HTTP sob `/EEVL/` para exercitar um subdiretório
 
 ## Limitações explícitas
 
-- Aplicativos herdados continuam somente em português e com tema próprio.
+- Aplicativos herdados preservam o original em português, com apresentação EN/ES parcial, e têm tema próprio.
 - Todos os cinco são experimentais. Não foi realizada validação independente
   de seus algoritmos nem comparação com hardware, SPICE ou outro simulador.
 - (Atualizado) O laboratório de degrau de razão cíclica do Buck foi fornecido depois
