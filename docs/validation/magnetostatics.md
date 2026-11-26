@@ -57,4 +57,4 @@ Checked over local HTTP: wires, loop and finite solenoid complete their Worker
 calculations and show probe values; switching PT-BR/EN/ES updates the interface
 and rendered equations. Cartesian/cylindrical probe coordinates and downloaded
 CSV/PNG were exercised. Layouts at 1366 and 390 px had no horizontal page overflow.
-The full repository check and all 90 tests pass.
+The full repository check (`npm test`) passes.
