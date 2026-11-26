@@ -805,5 +805,68 @@
         "url": "https://openstax.org/books/university-physics-volume-2/pages/5-introduction"
       }
     ]
+  },
+  {
+    "id": "transmission-line",
+    "title": {
+      "pt-BR": "Linha de transmissão: do quadripolo à carga",
+      "en": "Transmission line: from two-port to load",
+      "es": "Línea de transmisión: del cuadripolo a la carga"
+    },
+    "description": {
+      "pt-BR": "Qual tensão e corrente precisamos na origem para alimentar a carga? Explore uma linha trifásica equilibrada, conectando parâmetros distribuídos, quadripolo ABCD e circuito π equivalente.",
+      "en": "What sending voltage and current are needed to supply the load? Explore a balanced three-phase line, connecting distributed parameters, the ABCD two-port and the equivalent π circuit.",
+      "es": "¿Qué tensión y corriente se necesitan en el origen para alimentar la carga? Explora una línea trifásica equilibrada, relacionando parámetros distribuidos, cuadripolo ABCD y circuito π equivalente."
+    },
+    "category": "power-systems",
+    "keywords": {
+      "pt-BR": [
+        "ABCD",
+        "RMS",
+        "Ferranti",
+        "Quadripolo ABCD",
+        "π equivalente exato"
+      ],
+      "en": [
+        "ABCD",
+        "RMS",
+        "Ferranti",
+        "ABCD two-port",
+        "Exact equivalent π"
+      ],
+      "es": [
+        "ABCD",
+        "RMS",
+        "Ferranti",
+        "Cuadripolo ABCD",
+        "π equivalente exacto"
+      ]
+    },
+    "path": "simulators/power-systems/transmission-line/index.html",
+    "thumbnail": "assets/images/transmission-line.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-26",
+    "updated": "2026-11-26",
+    "difficulty": "intermediate",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/transmission-line.md"
+      }
+    ],
+    "references": []
   }
 ]

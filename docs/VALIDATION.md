@@ -29,6 +29,7 @@ versionados abaixo; o histórico de interface não é validação científica.
 | RC/RL/RLC | [linear-circuits.md](validation/linear-circuits.md) | comparação analítica, energia e convergência |
 | Nodal resistivo | [nodal-analysis.md](validation/nodal-analysis.md) | soluções conhecidas, KCL e potência |
 | Nodal fasorial | [nodal-analysis-ac.md](validation/nodal-analysis-ac.md) | fasores analíticos, ressonância e potência complexa |
+| LT como quadripolo | [transmission-line.md](validation/transmission-line.md) | linha sem perdas, Ferranti, limites, π/cascata, resíduos e balanço de potência; sem medições ou simulador independente |
 | Magnetostática | [magnetostatics.md](validation/magnetostatics.md) | soluções analíticas (Ampère, Biot–Savart), simetria, superposição e convergência; sem FEM nem medições |
 | Eletrostática | [electrostatics.md](validation/electrostatics.md) | soluções analíticas (Coulomb, Gauss), E = −∇V, simetria e superposição; sem FEM nem medições |
 | Legados | [INTEGRATION.md](INTEGRATION.md) e [SISO.md](SISO.md) | preservação; classificação experimental |

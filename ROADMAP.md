@@ -15,12 +15,13 @@ ou implementar toda esta lista antecipadamente.
 
 **Status: em andamento.** O núcleo numérico em `assets/js/core/` já cobre matemática,
 complexos (incluindo `sinh`, `cosh`, `tanh` e o auxiliar `sinhc`), matrizes reais e complexas
-(`matrix.js`, `cmatrix.js`), polinômios e controle, com testes e fixtures, ainda sem consumidores
-nos aplicativos. A extração das funções do SISO e dos modelos nodais/RC/RLC continua pendente.
+(`matrix.js`, `cmatrix.js`), polinômios e controle, com testes e fixtures. O laboratório
+de LT é o primeiro consumidor (complex/cmatrix/numeric). A extração das funções do
+SISO e dos modelos nodais/RC/RLC continua pendente.
 
 ### Inventário de extração
 
-Levantamento por leitura do código; nenhum aplicativo importa `assets/js/core/` hoje.
+Levantamento por leitura do código; o novo aplicativo de LT importa `assets/js/core/`.
 As equivalências abaixo vêm dos nomes e das assinaturas das funções. Antes de trocar
 qualquer implementação, comparar o algoritmo e a ordem dos argumentos, e só então migrar.
 
