@@ -44,7 +44,9 @@
     "updated": "2026-11-25",
     "difficulty": "advanced",
     "languages": [
-      "pt-BR"
+      "pt-BR",
+      "en",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -101,7 +103,9 @@
     "updated": "2026-11-25",
     "difficulty": "beginner",
     "languages": [
-      "pt-BR"
+      "pt-BR",
+      "en",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -163,7 +167,9 @@
     "updated": "2026-11-25",
     "difficulty": "intermediate",
     "languages": [
-      "pt-BR"
+      "pt-BR",
+      "en",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -219,7 +225,9 @@
     "updated": "2026-11-25",
     "difficulty": "advanced",
     "languages": [
-      "pt-BR"
+      "pt-BR",
+      "en",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -275,7 +283,9 @@
     "updated": "2026-11-25",
     "difficulty": "beginner",
     "languages": [
-      "pt-BR"
+      "pt-BR",
+      "en",
+      "es"
     ],
     "status": "available",
     "validation": [
@@ -334,7 +344,9 @@
     "updated": "2026-11-25",
     "difficulty": "advanced",
     "languages": [
-      "pt-BR"
+      "pt-BR",
+      "en",
+      "es"
     ],
     "status": "available",
     "validation": [

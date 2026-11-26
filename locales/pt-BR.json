@@ -146,7 +146,7 @@
   "ready": "Simulação concluída: {count} amostras.",
   "exportError": "Falha na exportação. Tente exportar SVG.",
   "queryError": "A URL de configuração contém valores inválidos. Os parâmetros padrão foram restaurados.",
-  "originalNotice": "Laboratório original · somente em português. Modelo e interface fornecidos preservados. Validação científica: experimental; não foram fornecidas evidências independentes.",
+  "originalNotice": "Laboratório original · interface original em português, com apresentação EN/ES parcial. Modelo e interface fornecidos preservados. Validação científica: experimental; não foram fornecidas evidências independentes.",
   "fullscreen": "Abrir original em português ↗",
   "integrationNotes": "Notas de integração",
   "legacyLimitations": "Consulte equações, métodos e limitações dentro do aplicativo original. Estes modelos herdados não foram verificados independentemente nesta integração. O iframe oferece tradução parcial EN/ES; o tema e o modelo numérico são preservados. A página inteira abre o original em português.",

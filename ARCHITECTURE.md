@@ -31,8 +31,8 @@ validação; não integram os requisitos de execução dos aplicativos.
 | PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
 | Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
 
-Há doze entradas disponíveis no catálogo desta base: seis legados declarados em português
-e seis aplicativos originais EN/PT-BR/ES. O espanhol das descrições, sozinho, **não** muda
+Há doze entradas disponíveis no catálogo desta base: seis legados e seis aplicativos originais, todos
+declarados em EN/PT-BR/ES; nos legados a tradução é parcial e o original segue em português. O espanhol das descrições, sozinho, **não** muda
 essa classificação; vale o campo `languages` de cada entrada.
 O template RC fica fora do catálogo. A lista atualizável de arquivos e metadados é
 [data/simulators.json](data/simulators.json), não este inventário datado.

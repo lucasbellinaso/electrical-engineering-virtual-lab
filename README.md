@@ -30,16 +30,16 @@ Não é necessário `npm install` nem build de produção. A suíte inclui verif
 
 Novos laboratórios de Eletromagnetismo: **[Campo Eletrostático 2D](simulators/electromagnetics/electrostatics/index.html)** (cargas pontuais, esfera, fio infinito e placas paralelas; consulte [o modelo](docs/ELECTROSTATICS.md) e [as evidências](docs/validation/electrostatics.md)) e **[Campos Magnetostáticos](simulators/electromagnetics/magnetostatics/index.html)**, em Eletromagnetismo, disponível em PT-BR, inglês e espanhol. Inclui fios infinitos, espira e solenoide, mapa B/H, sonda e deduções. Consulte [o modelo](docs/MAGNETOSTATICS.md) e [as evidências de validação](docs/validation/magnetostatics.md).
 
-O catálogo contém doze aplicativos: seis legados declarados em PT-BR e seis aplicativos com interface em português, inglês e espanhol.
+O catálogo contém doze aplicativos: todos declarados em português, inglês e espanhol. Nos seis legados, o original preservado continua em português e a apresentação EN/ES é parcial.
 
 | Aplicativo | Idiomas do app |
 |---|---|
-| Projeto de Controladores SISO | PT-BR (legado) |
-| Conversor Buck — Regime Permanente | PT-BR (legado) |
-| Conversor Buck — Degrau de Razão Cíclica | PT-BR (legado) |
-| DAB — Interface de Bateria | PT-BR (legado) |
-| Amplificadores Operacionais | PT-BR (legado) |
-| Conversor Buck — Controle PID | PT-BR (legado) |
+| Projeto de Controladores SISO | EN, PT-BR, ES (legado, tradução parcial) |
+| Conversor Buck — Regime Permanente | EN, PT-BR, ES (legado, tradução parcial) |
+| Conversor Buck — Degrau de Razão Cíclica | EN, PT-BR, ES (legado, tradução parcial) |
+| DAB — Interface de Bateria | EN, PT-BR, ES (legado, tradução parcial) |
+| Amplificadores Operacionais | EN, PT-BR, ES (legado, tradução parcial) |
+| Conversor Buck — Controle PID | EN, PT-BR, ES (legado, tradução parcial) |
 | Análise Nodal — Circuitos Resistivos | EN, PT-BR, ES |
 | RC e RL — Circuitos de 1ª Ordem | EN, PT-BR, ES |
 | RLC — Circuitos de 2ª Ordem | EN, PT-BR, ES |
@@ -80,6 +80,6 @@ Plotly 2.35.2 e KaTeX são distribuídos localmente; veja as licenças em `asset
 
 Interpretador MATLAB/Octave, sistema genérico de projetos e motor genérico de simulação são propostas futuras, ainda não implementadas. Consulte [ROADMAP.md](ROADMAP.md) para o escopo planejado.
 
-> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The twelve catalog apps include six legacy apps declared in Portuguese and six apps in EN/PT-BR/ES, including magnetostatics and electrostatics. See the linked architecture and validation documents before contributing.
+> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The twelve catalog apps include all declared in EN/PT-BR/ES, including magnetostatics and electrostatics; the six legacy apps keep the original Portuguese application and offer a partial EN/ES presentation. See the linked architecture and validation documents before contributing.
 >
-> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye doce aplicaciones: seis heredadas declaradas en portugués y seis en inglés/portugués/español, incluidas magnetostática y electrostática.
+> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye doce aplicaciones: todas declaradas en inglés/portugués/español, incluidas magnetostática y electrostática; las seis heredadas conservan la aplicación original en portugués y ofrecen una presentación EN/ES parcial.
