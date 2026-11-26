@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PRESETS, defaults, solveNodalCircuit, validateCircuit, symbolicTerms } from '../simulators/electrical-circuits/nodal-analysis/model.js';
+import { PRESETS, LIMITS, defaults, solveLinearSystem, solveNodalCircuit, validateCircuit, symbolicTerms } from '../simulators/electrical-circuits/nodal-analysis/model.js';
 
 test('Two-node current-source circuit matches exact analytical solution', () => {
   const res = solveNodalCircuit(defaults);
@@ -42,6 +42,43 @@ test('All presets satisfy KCL conservation and power balance', () => {
     assert.ok(res.powerBalanceError < 1e-11, `${preset.id} power balance error too high`);
     assert.ok(res.totalDissipated > 0);
   }
+});
+
+test('DC solver uses shared matrix kernel without mutating the caller circuit', () => {
+  const input = structuredClone(PRESETS[2]);
+  const before = structuredClone(input);
+  input.components.forEach(Object.freeze);
+  Object.freeze(input.components);
+  Object.freeze(input);
+  const result = solveNodalCircuit(input);
+  assert.deepEqual(input, before);
+  assert.ok(result.kclResiduals.every(Number.isFinite));
+  assert.ok(result.maxKclResidual < 1e-12);
+  for (let r = 0; r < result.matrix.A.length; r++) {
+    const residual = result.matrix.A[r].reduce((sum, value, c) => sum + value * result.matrix.solution[c], -result.matrix.b[r]);
+    assert.ok(Math.abs(residual) < 1e-12, `MNA residual row ${r}: ${residual}`);
+  }
+});
+
+test('DC singular pivot threshold keeps the public SINGULAR_SYSTEM error contract', () => {
+  const lim = LIMITS.singularPivotTol;
+  assert.throws(() => solveLinearSystem([[1, 0], [0, lim / 2]], [1, 1]), { code: 'SINGULAR_SYSTEM' });
+  assert.throws(() => solveLinearSystem([[1, 0], [0, lim]], [1, 1]), { code: 'SINGULAR_SYSTEM' });
+  assert.throws(() => solveLinearSystem([[1, 2]], [1]), error => error instanceof RangeError && error.code !== 'SINGULAR_SYSTEM');
+  assert.doesNotThrow(() => solveLinearSystem([[1, 0], [0, lim * 2]], [1, 1]));
+  const singular = {
+    nodeCount: 2,
+    components: [
+      { id: 'V1', type: 'V', from: 1, to: 0, value: 5 },
+      { id: 'V2', type: 'V', from: 1, to: 0, value: 5 },
+      { id: 'R1', type: 'R', from: 2, to: 0, value: 10 }
+    ]
+  };
+  assert.throws(() => solveNodalCircuit(singular), error =>
+    error.code === 'SINGULAR_SYSTEM' &&
+    error.detail === 'Circuit matrix is singular (check for voltage source loops or floating subcircuits).' &&
+    error.message === 'SINGULAR_SYSTEM: Circuit matrix is singular (check for voltage source loops or floating subcircuits).'
+  );
 });
 
 test('Linearity: scaling all independent sources scales voltages and currents linearly', () => {

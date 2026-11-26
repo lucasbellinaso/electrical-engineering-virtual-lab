@@ -2,6 +2,9 @@
 
 Este guia resume o fluxo de contribuição. As regras completas de arquitetura, idioma, APIs e validação estão em [ARCHITECTURE.md](ARCHITECTURE.md), [docs/I18N.md](docs/I18N.md), [docs/API.md](docs/API.md) e [docs/VALIDATION.md](docs/VALIDATION.md).
 
+Para apresentação matemática e gráficos, seguir as [convenções de interface](docs/UI-CONVENTIONS.md):
+LaTeX em equações e variáveis de toda a UI e limites Y estáveis durante atualização contínua.
+
 > **EN:** Keep numerical models reusable and separate from UI, document assumptions, and provide reproducible tests and evidence.
 >
 > **ES:** Mantenga los modelos numéricos reutilizables y separados de la interfaz; documente hipótesis y aporte pruebas y evidencias reproducibles.

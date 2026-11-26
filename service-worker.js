@@ -1,5 +1,5 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.1.13';
+const VERSION='eevl-v1.1.18';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
@@ -27,14 +27,14 @@ self.addEventListener('fetch',event=>{
  const request=event.request,url=new URL(request.url);
  if(request.method!=='GET'||url.origin!==root.origin||!url.pathname.startsWith(root.pathname))return;
  const path=url.pathname.slice(root.pathname.length), key=new URL(url); key.search=''; key.hash='';
- const isLab=path.startsWith('simulators/')||path.startsWith('templates/')||path.startsWith('assets/vendor/')||path.startsWith('assets/js/core/');
+ const isLab=path.startsWith('simulators/')||path.startsWith('templates/')||path.startsWith('assets/vendor/')||path.startsWith('assets/js/core/')||path==='assets/js/buck-pid-scale.js';
  if(urls.includes(key.href)) {
    // Network first so edits to pages, scripts, data and translations show up without clearing caches;
    // the saved copy is used only when offline.
    event.respondWith(caches.open(SHELL).then(async cache=>{try{const response=await fetch(request,{cache:'no-cache'});if(response.ok)await cache.put(key.href,response.clone());return response;}catch{return (await cache.match(key.href))||offline();}}));
  } else if(isLab) {
    // Cache only resources actually requested by an opened simulator, never the full catalog.
-   event.respondWith((async()=>{const cache=await caches.open(VISITED);try{const response=await fetch(request);if(response.ok)await cache.put(key.href,response.clone());return response;}catch{const cached=await cache.match(key.href);return cached||offline();}})());
+   event.respondWith((async()=>{const cache=await caches.open(VISITED);try{const response=await fetch(request,{cache:'no-cache'});if(response.ok)await cache.put(key.href,response.clone());return response;}catch{const cached=await cache.match(key.href);return cached||offline();}})());
  } else if(request.mode==='navigate') event.respondWith(fetch(request).catch(()=>offline()));
 });
 function offline(){return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>EEVL · Offline</title><h1>Offline</h1><p lang="en">This resource has not been saved yet. Connect and open it once.</p><p lang="pt-BR">Este recurso ainda não foi armazenado. Conecte-se e abra-o uma vez.</p><p lang="es">Este recurso todavía no se ha guardado. Conéctate y ábrelo una vez.</p><a href="'+new URL('index.html',root).href+'">EEVL · Catalog / Catálogo</a></html>',{status:503,headers:{'Content-Type':'text/html; charset=utf-8'}});}

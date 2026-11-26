@@ -24,8 +24,8 @@ test('Spanish circuit text preserves scientific symbols and has no damaged encod
  for(const [key,value] of Object.entries(es).filter(([key])=>key.startsWith('circuit_'))){
   assert.doesNotMatch(value,/[?\uFFFD]|(?:soluciónes|deducciónes|tensiónes)/,key);
  }
- assert.match(es.circuit_voltageNote,/t = 0⁺.*t ≥ 0/);
- assert.match(es.circuit_characteristic,/s₁,₂/);
+ assert.match(es.circuit_voltageNote,/condiciones iniciales.*después de la conmutación/i);
+ assert.doesNotMatch(es.circuit_characteristic,/s₁,₂/);
 });
 
 test('Both nodal dictionaries cover every English entry and preserve interpolation contracts',async()=>{

@@ -42,7 +42,10 @@ Não transferir a evidência de um modelo a outro. API disponível em [API.md](A
 scripts inline, JSON, chaves e placeholders de tradução, metadados, arquivos,
 identificadores únicos, categorias, links locais e dimensões dos PNGs.
 `tests/preservation.test.mjs` compara hashes dos originais e dependência Plotly e
-confirma que os scripts inline dos arquivos registrados em provenance.json permanecem idênticos.
+confirma que os arquivos integrados correspondem somente às transformações documentadas
+sobre os originais: guarda de inicialização do SISO e observação/apresentação da escala
+do Buck PID. Os hashes das fontes originais são preservados; os algoritmos físicos
+e do controlador não são alterados pelas transformações de escala.
 **Esses testes não validam cientificamente os simuladores herdados.**
 
 `tests/service-worker.test.mjs` exercita escopo em subdiretório, cache essencial,

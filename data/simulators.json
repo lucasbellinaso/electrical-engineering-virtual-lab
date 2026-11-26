@@ -339,9 +339,9 @@
     "thumbnail": "assets/images/buck.svg",
     "authors": [],
     "contributors": [],
-    "version": "original-2026-11-25",
+    "version": "original-2026-11-25+scale.1",
     "created": "2026-11-25",
-    "updated": "2026-11-25",
+    "updated": "2026-11-26",
     "difficulty": "advanced",
     "languages": [
       "pt-BR",
@@ -407,9 +407,9 @@
       "EEVL Contributors"
     ],
     "contributors": [],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "created": "2026-11-25",
-    "updated": "2026-11-25",
+    "updated": "2026-11-26",
     "difficulty": "beginner",
     "languages": [
       "en",
@@ -479,7 +479,7 @@
       "EEVL Contributors"
     ],
     "contributors": [],
-    "version": "1.0.0",
+    "version": "1.1.0",
     "created": "2026-11-25",
     "updated": "2026-11-26",
     "difficulty": "beginner",
@@ -551,7 +551,7 @@
       "EEVL Contributors"
     ],
     "contributors": [],
-    "version": "1.0.0",
+    "version": "1.1.0",
     "created": "2026-11-25",
     "updated": "2026-11-26",
     "difficulty": "intermediate",
@@ -628,7 +628,7 @@
     "contributors": [],
     "version": "1.0.0",
     "created": "2026-11-25",
-    "updated": "2026-11-25",
+    "updated": "2026-11-26",
     "difficulty": "intermediate",
     "languages": [
       "en",

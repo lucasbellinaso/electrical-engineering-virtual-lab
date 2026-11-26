@@ -44,6 +44,7 @@ export const legacyTranslations = {
   'Diagrama de Bode — pequeno sinal': ['Bode plot — small signal', 'Diagrama de Bode — pequeña señal'],
   'Resposta linear da entrada 1, sem saturação; entrada 2 nula.': ['Linear response to input 1, without saturation; input 2 is zero.', 'Respuesta lineal de la entrada 1, sin saturación; entrada 2 nula.'],
   'Conversor Buck com controle PID': ['Buck converter with PID control', 'Convertidor Buck con control PID'],
+  'Escala acumulada desde Reiniciar: a faixa aumenta com novos extremos e não diminui automaticamente.': ['Cumulative scale since Restart: new extrema expand the range; it never shrinks automatically.', 'Escala acumulada desde Reiniciar: los nuevos extremos amplían el rango; nunca se reduce automáticamente.'],
   'Buck com PID': ['Buck with PID', 'Buck con PID'],
   'Simulação chaveada em tempo real: PWM, diodo, modo descontínuo e PID digital amostrado a cada período.': ['Real-time switched simulation: PWM, diode, discontinuous mode and digital PID sampled once per period.', 'Simulación conmutada en tiempo real: PWM, diodo, modo discontinuo y PID digital muestreado cada período.'],
   'Vout média': ['Average Vout', 'Vout promedio'],

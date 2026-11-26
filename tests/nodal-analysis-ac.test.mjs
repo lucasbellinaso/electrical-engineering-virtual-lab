@@ -10,7 +10,7 @@ const closeC = (z, w, tol, message = '') => assert.ok(cx.abs(cx.sub(z, w)) <= to
 const near = (a, b, tol, message = '') => assert.ok(Math.abs(a - b) <= tol, `${message} ${a} vs ${b} (tol ${tol})`);
 const comp = (circuit, id) => circuit.components.find(c => c.id === id);
 
-test('RC low-pass equals V/(1 + jωRC) (corner frequency: |H| = 1/√2, −45°)', () => {
+test('RC low-pass equals V/(1 + jÏ‰RC) (corner frequency: |H| = 1/âˆš2, âˆ’45Â°)', () => {
   const c = preset('rc-lowpass'), s = solvePhasorCircuit(c);
   const w = omegaOf(c.frequency), R = 1000, C = 0.15915494309189535e-6;
   const expected = cx.div({re: 10, im: 0}, {re: 1, im: w * R * C});
@@ -20,7 +20,7 @@ test('RC low-pass equals V/(1 + jωRC) (corner frequency: |H| = 1/√2, −45°)
   closeC(s.nodeVoltages[1], {re: 10, im: 0}, 1e-12);
 });
 
-test('RL high-pass equals V·jωL/(R + jωL) (+45° at the corner)', () => {
+test('RL high-pass equals VÂ·jÏ‰L/(R + jÏ‰L) (+45Â° at the corner)', () => {
   const c = preset('rl-highpass'), s = solvePhasorCircuit(c);
   const polarOut = polar(s.nodeVoltages[2]);
   near(polarOut.mag, 10 / Math.SQRT2, 1e-9); near(polarOut.phase, -45, 1e-9); // R across the output
@@ -30,7 +30,7 @@ test('RL high-pass equals V·jωL/(R + jωL) (+45° at the corner)', () => {
   near(polar(vL).mag, 10 / Math.SQRT2, 1e-9); near(polar(vL).phase, 45, 1e-9);
 });
 
-test('Series resonance: current = V/R in phase, |V_C| = |V_L| = Q·V with ∓90° phases', () => {
+test('Series resonance: current = V/R in phase, |V_C| = |V_L| = QÂ·V with âˆ“90Â° phases', () => {
   const c = preset('series-resonance'), s = solvePhasorCircuit(c);
   const L = 0.01, R = 10, w = omegaOf(c.frequency), Q = w * L / R;
   const I = s.branches.find(b => b.id === 'R1').current;
@@ -45,7 +45,7 @@ test('Parallel resonance: I_L + I_C = 0 and the tank is an open circuit', () => 
   const c = preset('parallel-resonance'), s = solvePhasorCircuit(c);
   const iL = s.branches.find(b => b.id === 'L1').current, iC = s.branches.find(b => b.id === 'C1').current;
   closeC(cx.add(iL, iC), {re: 0, im: 0}, 1e-12);
-  // The tank is open, so the source sees R1 ∥ (R3 + R2) = 1000 ∥ 1500 = 600 Ω → 6 V.
+  // The tank is open, so the source sees R1 âˆ¥ (R3 + R2) = 1000 âˆ¥ 1500 = 600 Î© â†’ 6 V.
   closeC(s.nodeVoltages[1], {re: 6, im: 0}, 1e-9);
   closeC(s.nodeVoltages[2], {re: 2, im: 0}, 1e-9);
 });
@@ -54,7 +54,7 @@ test('Two sources with phase: superposition and hand calculation', () => {
   const c = preset('two-sources-phase'), s = solvePhasorCircuit(c);
   const w = omegaOf(60), ZL = {re: 0, im: w * 26.5e-3};
   const V1 = cx.fromPolar(120, 0), V3 = cx.fromPolar(120, -30);
-  // Node 2: (V2−V1)/10 + (V2−V3)/10 + V2/(jωL) = 0
+  // Node 2: (V2âˆ’V1)/10 + (V2âˆ’V3)/10 + V2/(jÏ‰L) = 0
   const yL = cx.div({re: 1, im: 0}, ZL);
   const V2 = cx.div(cx.scale(cx.add(V1, V3), 0.1), cx.add({re: 0.2, im: 0}, yL));
   closeC(s.nodeVoltages[2], V2, 1e-9);
@@ -77,10 +77,10 @@ test('KCL residual is zero at every node for every preset', () => {
   }
 });
 
-test('Scaling f → 2f, L → L/2, C → C/2 leaves every phasor unchanged', () => {
+test('Scaling f â†’ 2f, L â†’ L/2, C â†’ C/2 leaves every phasor unchanged', () => {
   const a = preset('series-resonance'), b = structuredClone(a);
   b.frequency *= 2; comp(b, 'L1').value /= 2; comp(b, 'C1').value /= 2;
-  // Z_L = jωL and Z_C = 1/(jωC) scale by 1 and 4 respectively, so only L is invariant; use the RC case.
+  // Z_L = jÏ‰L and Z_C = 1/(jÏ‰C) scale by 1 and 4 respectively, so only L is invariant; use the RC case.
   const c = preset('rc-lowpass'), d = structuredClone(c);
   d.frequency *= 2; comp(d, 'C1').value /= 2;
   const sc = solvePhasorCircuit(c), sd = solvePhasorCircuit(d);
@@ -118,10 +118,35 @@ test('Symbolic element-based terms evaluate to the numeric complex MNA matrix fo
   }
 });
 
-test('Complex solver agrees with a known 2×2 system and rejects a singular one', () => {
+test('Complex solver agrees with a known 2Ã—2 system and rejects a singular one', () => {
   const x = solveComplexSystem([[{re: 1, im: 1}, {re: 0, im: 0}], [{re: 0, im: 0}, {re: 2, im: 0}]], [{re: 2, im: 0}, {re: 4, im: 0}]);
   closeC(x[0], {re: 1, im: -1}, 1e-15); closeC(x[1], {re: 2, im: 0}, 1e-15);
   assert.throws(() => solveComplexSystem([[{re: 1, im: 0}, {re: 1, im: 0}], [{re: 1, im: 0}, {re: 1, im: 0}]], [{re: 1, im: 0}, {re: 2, im: 0}]), e => e.code === 'SINGULAR_SYSTEM');
+});
+
+test('shared complex adapter preserves degree angles, stable division, and immutable solver inputs', () => {
+  assert.ok(Object.isFrozen(cx));
+  closeC(cx.fromPolar(2, 90), {re: 0, im: 2}, 1e-15);
+  closeC(cx.fromPolar(2, -90), {re: 0, im: -2}, 1e-15);
+  assert.deepEqual(polar({re: 0, im: 0}), {mag: 0, phase: 0});
+  closeC(cx.div({re: 1e160, im: 1e160}, {re: 1e160, im: -1e160}), {re: 0, im: 1}, 1e-15);
+  closeC(cx.div({re: 2, im: 4}, {re: 1, im: 2}), {re: 2, im: 0}, 1e-15);
+  assert.throws(() => solveComplexSystem([[null]], [{re: 1, im: 0}]), TypeError);
+  const A = [[{re: 2, im: 1}, {re: 1, im: 0}], [{re: 0, im: 0}, {re: 3, im: -1}]];
+  const b = [{re: 1, im: 2}, {re: -1, im: 4}];
+  const beforeA = structuredClone(A), beforeB = structuredClone(b);
+  solveComplexSystem(A, b);
+  assert.deepEqual(A, beforeA); assert.deepEqual(b, beforeB);
+});
+
+test('AC singular threshold is relative to matrix scale, inclusive at the limit', () => {
+  for (const scale of [1e-8, 1, 1e8]) {
+    const make = ratio => [[{re: scale, im: 0}, {re: 0, im: 0}], [{re: 0, im: 0}, {re: scale * ratio, im: 0}]];
+    const rhs = [{re: 1, im: 0}, {re: 1, im: 0}];
+    assert.doesNotThrow(() => solveComplexSystem(make(2 * LIMITS.singularRelTol), rhs));
+    assert.throws(() => solveComplexSystem(make(LIMITS.singularRelTol), rhs), e => e.code === 'SINGULAR_SYSTEM');
+    assert.throws(() => solveComplexSystem(make(LIMITS.singularRelTol / 2), rhs), e => e.code === 'SINGULAR_SYSTEM');
+  }
 });
 
 test('Invalid inputs are rejected with explicit error codes', () => {
@@ -145,7 +170,7 @@ test('Invalid inputs are rejected with explicit error codes', () => {
   fails(c => { c.components = c.components.filter(x => x.id === 'V1'); }, 'DISCONNECTED_NODE'); // node 2 has no element
   // A node held only by a current source has no path to ground.
   fails(c => { c.components = [{id: 'V1', type: 'V', from: 1, to: 0, value: 1, phase: 0}, {id: 'I1', type: 'I', from: 1, to: 2, value: 1, phase: 0}]; }, 'DISCONNECTED_NODE');
-  // Two ideal voltage sources in parallel with different values → singular matrix.
+  // Two ideal voltage sources in parallel with different values â†’ singular matrix.
   fails(c => { c.components.push({id: 'V2', type: 'V', from: 1, to: 0, value: 5, phase: 0}); }, 'SINGULAR_SYSTEM');
   assert.throws(() => validateCircuit(null), e => e.code === 'INVALID_CIRCUIT');
 });

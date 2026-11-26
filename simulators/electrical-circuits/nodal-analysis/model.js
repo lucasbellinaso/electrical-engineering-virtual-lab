@@ -2,6 +2,7 @@
  * Pure Modified Nodal Analysis (MNA) solver for linear DC resistive circuits.
  * Internal units are strictly SI: ohms (Ω), siemens (S), amperes (A), volts (V), watts (W).
  */
+import { msolve } from '../../../assets/js/core/matrix.js';
 
 export const LIMITS = Object.freeze({
   minNodes: 2,
@@ -196,57 +197,17 @@ export function validateCircuit(circuit) {
   return { nodeCount, components: normalized };
 }
 
-/**
- * Solves A * x = b using Gaussian elimination with partial pivoting.
- * Throws SINGULAR_SYSTEM if the matrix is singular or ill-conditioned.
- * @param {number[][]} matrix
- * @param {number[]} rhs
- * @returns {number[]}
- */
+/** Solves a real linear system through the shared matrix kernel. */
 export function solveLinearSystem(matrix, rhs) {
-  const n = rhs.length;
-  const A = matrix.map((row, i) => [...row, rhs[i]]);
-
-  for (let col = 0; col < n; col++) {
-    let pivotRow = col;
-    let maxVal = Math.abs(A[col][col]);
-    for (let row = col + 1; row < n; row++) {
-      const val = Math.abs(A[row][col]);
-      if (val > maxVal) {
-        maxVal = val;
-        pivotRow = row;
-      }
-    }
-
-    if (maxVal <= LIMITS.singularPivotTol) {
-      throw createModelError('SINGULAR_SYSTEM', 'Circuit matrix is singular (check for voltage source loops or floating subcircuits).');
-    }
-
-    if (pivotRow !== col) {
-      const tmp = A[col];
-      A[col] = A[pivotRow];
-      A[pivotRow] = tmp;
-    }
-
-    const pivot = A[col][col];
-    for (let row = col + 1; row < n; row++) {
-      const factor = A[row][col] / pivot;
-      if (factor === 0) continue;
-      for (let j = col; j <= n; j++) {
-        A[row][j] -= factor * A[col][j];
-      }
-    }
+  try {
+    return msolve(matrix, rhs.map(value => [value]), {
+      absTol: LIMITS.singularPivotTol,
+      relTol: 0
+    }).map(row => row[0]);
+  } catch (error) {
+    if (error?.code !== 'SINGULAR_MATRIX') throw error;
+    throw createModelError('SINGULAR_SYSTEM', 'Circuit matrix is singular (check for voltage source loops or floating subcircuits).');
   }
-
-  const x = new Array(n).fill(0);
-  for (let i = n - 1; i >= 0; i--) {
-    let sum = A[i][n];
-    for (let j = i + 1; j < n; j++) {
-      sum -= A[i][j] * x[j];
-    }
-    x[i] = sum / A[i][i];
-  }
-  return x;
 }
 
 /**

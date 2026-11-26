@@ -77,6 +77,7 @@ details summary{cursor:pointer;font-weight:600;min-height:32px}
   <div class="main">
     <section class="scope">
       <div class="fig"><canvas id="cv"></canvas></div>
+      <p class="note" id="scalePolicy">Escala acumulada desde Reiniciar: a faixa aumenta com novos extremos e não diminui automaticamente.</p>
       <div class="bar">
         <button class="pri" id="bRun">Pausar</button>
         <button id="bReset">Reiniciar</button>
@@ -130,6 +131,7 @@ details summary{cursor:pointer;font-weight:600;min-height:32px}
   </div>
 </div>
 
+<script src="../../../assets/js/buck-pid-scale.js"></script>
 <script>
 {
 const CTL=[["vref","Vref","V",1],["kp","Kp","1/V",1],["ki","Ki","1/(V·s)",1],["kd","Kd","µs/V",1e-6],["N","Filtro D (N)","rad/s",1],["dmax","D máx","",1],["dol","D malha aberta","",1]];
@@ -200,6 +202,14 @@ let cap,bv,bi,bd,br,bmv,bmi,head,count,win=20e-3;
 function resetBuf(){const dtS=DEC/(p.fsw*NS);cap=Math.max(200,Math.ceil(win/dtS));bv=new Float32Array(cap);bi=new Float32Array(cap);bd=new Float32Array(cap);br=new Float32Array(cap);bmv=new Float32Array(cap);bmi=new Float32Array(cap);head=0;count=0}
 function push(v,i,d,r,mv,mi){bv[head]=v;bi[head]=i;bd[head]=d;br[head]=r;bmv[head]=mv;bmi[head]=mi;head=(head+1)%cap;if(count<cap)count++}
 
+// Presentation-only accumulated plot limits. Each period writes NS/DEC samples.
+const plotScale=window.buckPidScale={voltage:BuckPidScale.createRange(),current:BuckPidScale.createRange()};
+function capturePlotScale(){
+  for(let k=NS/DEC;k>0;k--){const idx=(head-k+cap)%cap;
+    plotScale.voltage.include(bv[idx]);plotScale.voltage.include(br[idx]);plotScale.current.include(bi[idx]);}
+}
+function resetPlotScale(){plotScale.voltage.reset();plotScale.current.reset()}
+
 /* ---- desenho ---- */
 const cv=$("cv"),ctx=cv.getContext("2d");
 const probe=document.createElement("i");probe.style.display="none";document.body.appendChild(probe);
@@ -218,7 +228,7 @@ function draw(){
   const band=css("--band");const panes=[{a:bv,m:bmv,b:br,lab:"Vout (V)",c:ink,c2:red,fixed:null},{a:bi,m:bmi,lab:"iL (A)",c:ink,fixed:null},{a:bd,lab:"D",c:red,fixed:[-0.05,1.05]}];
   let y0=top;ctx.font="12px Inter,sans-serif";
   panes.forEach((pn,ix)=>{
-    const h=avail*hs[ix];const[mn,mx]=pn.fixed||range(pn.a,pn.b);
+    const h=avail*hs[ix];const[mn,mx]=pn.fixed||(ix===0?plotScale.voltage:plotScale.current).bounds()||[-0.5,0.5];
     const Y=v=>y0+h-(v-mn)/(mx-mn)*h;
     ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.fillStyle=mute;
     const st=nice(mx-mn);ctx.textAlign="right";ctx.textBaseline="middle";
@@ -252,14 +262,14 @@ function loop(now){
   const dt=Math.min(0.05,(now-last)/1000);last=now;
   if(running){
     const simT=(+$("sSpeed").value)*1e-3*dt;let n=Math.round(simT*p.fsw);n=Math.max(1,Math.min(n,4000));
-    for(let k=0;k<n;k++)period();
-    if(!isFinite(s.vC)||Math.abs(s.vC)>1e6){resetSim();resetBuf()}
+    for(let k=0;k<n;k++){period();capturePlotScale()}
+    if(!isFinite(s.vC)||Math.abs(s.vC)>1e6){resetSim();resetBuf();resetPlotScale()}
   }
   draw();if(++fr%6===0)readouts();
   requestAnimationFrame(loop);
 }
 $("bRun").addEventListener("click",()=>{running=!running;$("bRun").textContent=running?"Pausar":"Continuar"});
-$("bReset").addEventListener("click",()=>{resetSim();resetBuf()});
+$("bReset").addEventListener("click",()=>{resetSim();resetBuf();resetPlotScale()});
 $("sWin").addEventListener("change",e=>{win=+e.target.value*1e-3;resetBuf()});
 const tog=(id,key,val,txt)=>$(id).addEventListener("click",()=>{mult[key]=mult[key]===1?val:1;$(id).classList.toggle("on",mult[key]!==1);fill()});
 tog("dR","R",0.5);tog("dVr","vref",1.25);tog("dVi","vin",0.75);

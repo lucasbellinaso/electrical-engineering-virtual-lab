@@ -78,6 +78,14 @@ O chamador gerencia cancelamento e respostas obsoletas. `shared/equations.js` ex
 `equations(topology)` como pares [chave de tradução, LaTeX]. diagram/chart são helpers
 de UI/DOM, não algoritmos de controle nem interpretador simbólico genérico.
 
+Na UI 1.1.0 desses dois aplicativos, `chart.js` expõe `referenceRange(topology,quantity)`
+e `dataRange(result,quantity,visible)` para limites Y de apresentação. `chart` recebe
+uma faixa opcional `[low,high]`; retorna geometria com limites e indicação `outside`.
+Os SVGs expõem `data-y-min`, `data-y-max` e `data-out-of-range`. As faixas são mantidas
+ao recalcular, trocar idioma, ocultar curvas ou restaurar os parâmetros da mesma
+topologia. Ajustar/restaurar escala são ações explícitas; trocar topologia aplica
+a faixa de referência correspondente. Nada disso altera os dados da simulação.
+
 ## Template RC: templates/simulator/model.js
 
 `defaults`, `limits`, `validate(p)`, `rk4(value,step,derivative)` e `simulate(p=defaults)`.
@@ -90,8 +98,11 @@ s/V/V. Duração ≤100τ, bounds próprios e integração de primeira ordem. O 
 
 Exporta LIMITS, PRESETS, defaults, `validateCircuit(circuit)`,
 `solveLinearSystem(matrix,rhs)`, `solveNodalCircuit(input=defaults)` e
-`symbolicTerms(circuit)`. Matrizes: arrays de linhas; rhs: vetor. A solução linear
-é Gauss com pivotamento e detecção de singularidade, não uma biblioteca matricial geral.
+`symbolicTerms(circuit)`. Matrizes: arrays de linhas; rhs: vetor. `solveLinearSystem`
+adapta rhs para a forma de coluna de `msolve` em `assets/js/core/matrix.js`, com
+`{absTol: LIMITS.singularPivotTol, relTol: 0}`. `SINGULAR_MATRIX` é convertido no
+erro público `SINGULAR_SYSTEM` com a mensagem de circuito. Outros erros do núcleo
+são propagados, incluindo validações de forma e valores finitos.
 
 Circuito: `{nodeCount, components}`; componente `{id,type,from,to,value}`, tipos R/I/V,
 nó 0 de referência; demais nós numerados conforme nodeCount. Valores em SI. Resultado:

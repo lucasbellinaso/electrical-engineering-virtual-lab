@@ -2,7 +2,7 @@
 
 **Simulators**: `rc-rl-first-order` (RC & RL) and `rlc-second-order` (series and parallel RLC)
 **Code**: `simulators/electrical-circuits/shared/` (`model.js` pure model, `worker.js`, `equations.js`, UI separate)
-**Version**: `1.0.0`
+**Model version**: `1.0.0`; presentation UI `1.1.0`
 **Verification level claimed**: `analytically-verified` — and nothing higher.
 **Tests**: `tests/linear-circuits.test.mjs` (`npm test`, Windows: `npm.cmd test`)
 
@@ -88,6 +88,24 @@ These values are outputs of the test environment, not experimental data.
   budget allows it.
 - Browser behaviour (Worker, exports, responsiveness) is covered by manual checks reported in
   `docs/IMPLEMENTATION-REPORT.md`, not by this suite.
+
+## Presentation verification · Interface 1.1.0 (26/11/2026)
+
+The mathematical model and Worker are unchanged. New checks in
+[electrical-circuit-presentation.test.mjs](../../tests/electrical-circuit-presentation.test.mjs)
+verify that the four complete nominal responses fit fixed Y envelopes, parameter
+excursions are flagged and clipped without changing the limits, localized decimal
+and scientific LaTeX numbers render, inline formulas render in all three languages,
+and parallel/source-current labels use the correct symbol. These are presentation
+checks, not additional physical validation.
+
+Edge 158.0.4370.45 headless: four topologies, source changes, fixed limits, explicit
+Adjust/Restore, resetting parameters without changing the selected scale, curve
+visibility, analytical overlay, PT-BR/EN/ES, keyboard, 390 px viewport, dark theme,
+CSV/SVG/PNG downloads and offline reload under `/EEVL/` were exercised. Screenshots
+were inspected for math layout and prose. Node.js v26.13.1: `npm.cmd test` passed
+792 tests, zero failures, one pre-existing skipped test (SISO MIMO reference).
+No physical touch device or screen-reader verification was performed.
 
 ## References · Referências
 
