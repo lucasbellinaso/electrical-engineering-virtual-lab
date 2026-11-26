@@ -708,5 +708,80 @@
         "url": "https://openstax.org/books/university-physics-volume-2/pages/12-1-the-biot-savart-law"
       }
     ]
+  },
+  {
+    "id": "electrostatics",
+    "title": {
+      "pt-BR": "Campo Eletrostático 2D",
+      "en": "2D Electrostatic Field",
+      "es": "Campo Electrostático 2D"
+    },
+    "description": {
+      "pt-BR": "Explore o campo E e o potencial V de cargas pontuais, esfera carregada, fio infinito e placas paralelas, com sonda, linhas de campo, equipotenciais e deduções.",
+      "en": "Explore the E field and potential V of point charges, a charged sphere, an infinite wire and parallel plates, with a probe, field lines, equipotentials and derivations.",
+      "es": "Explora el campo E y el potencial V de cargas puntuales, una esfera cargada, un hilo infinito y placas paralelas, con sonda, líneas de campo, equipotenciales y deducciones."
+    },
+    "category": "electromagnetics",
+    "keywords": {
+      "pt-BR": [
+        "eletrostática",
+        "Coulomb",
+        "Gauss",
+        "campo elétrico",
+        "potencial",
+        "equipotenciais"
+      ],
+      "en": [
+        "electrostatics",
+        "Coulomb",
+        "Gauss",
+        "electric field",
+        "potential",
+        "equipotentials"
+      ],
+      "es": [
+        "electrostática",
+        "Coulomb",
+        "Gauss",
+        "campo eléctrico",
+        "potencial",
+        "equipotenciales"
+      ]
+    },
+    "path": "simulators/electromagnetics/electrostatics/index.html",
+    "thumbnail": "assets/images/electrostatics.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-26",
+    "updated": "2026-11-26",
+    "difficulty": "intermediate",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/electrostatics.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "OpenStax University Physics Volume 2, Electric Charges and Fields",
+          "pt-BR": "OpenStax University Physics Volume 2, Cargas e Campos Elétricos",
+          "es": "OpenStax University Physics Volume 2, Cargas y campos eléctricos"
+        },
+        "url": "https://openstax.org/books/university-physics-volume-2/pages/5-introduction"
+      }
+    ]
   }
 ]

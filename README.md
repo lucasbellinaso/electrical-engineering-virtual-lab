@@ -28,9 +28,9 @@ Não é necessário `npm install` nem build de produção. A suíte inclui verif
 
 ## Aplicativos disponíveis
 
-Novo laboratório: **[Campos Magnetostáticos](simulators/electromagnetics/magnetostatics/index.html)**, em Eletromagnetismo, disponível em PT-BR, inglês e espanhol. Inclui fios infinitos, espira e solenoide, mapa B/H, sonda e deduções. Consulte [o modelo](docs/MAGNETOSTATICS.md) e [as evidências de validação](docs/validation/magnetostatics.md).
+Novos laboratórios de Eletromagnetismo: **[Campo Eletrostático 2D](simulators/electromagnetics/electrostatics/index.html)** (cargas pontuais, esfera, fio infinito e placas paralelas; consulte [o modelo](docs/ELECTROSTATICS.md) e [as evidências](docs/validation/electrostatics.md)) e **[Campos Magnetostáticos](simulators/electromagnetics/magnetostatics/index.html)**, em Eletromagnetismo, disponível em PT-BR, inglês e espanhol. Inclui fios infinitos, espira e solenoide, mapa B/H, sonda e deduções. Consulte [o modelo](docs/MAGNETOSTATICS.md) e [as evidências de validação](docs/validation/magnetostatics.md).
 
-O catálogo contém onze aplicativos: seis legados declarados em PT-BR e cinco aplicativos com interface em português, inglês e espanhol.
+O catálogo contém doze aplicativos: seis legados declarados em PT-BR e seis aplicativos com interface em português, inglês e espanhol.
 
 | Aplicativo | Idiomas do app |
 |---|---|
@@ -45,6 +45,7 @@ O catálogo contém onze aplicativos: seis legados declarados em PT-BR e cinco a
 | RLC — Circuitos de 2ª Ordem | EN, PT-BR, ES |
 | Análise Nodal Fasorial — R, L, C | EN, PT-BR, ES |
 | Campos Magnetostáticos | EN, PT-BR, ES |
+| Campo Eletrostático 2D | EN, PT-BR, ES |
 
 O catálogo atualizado está em [data/simulators.json](data/simulators.json). O template RC é um exemplo de contribuição, não um aplicativo listado no catálogo.
 
@@ -79,6 +80,6 @@ Plotly 2.35.2 e KaTeX são distribuídos localmente; veja as licenças em `asset
 
 Interpretador MATLAB/Octave, sistema genérico de projetos e motor genérico de simulação são propostas futuras, ainda não implementadas. Consulte [ROADMAP.md](ROADMAP.md) para o escopo planejado.
 
-> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The eleven catalog apps include six legacy apps declared in Portuguese and five apps in EN/PT-BR/ES, including magnetostatics. See the linked architecture and validation documents before contributing.
+> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The twelve catalog apps include six legacy apps declared in Portuguese and six apps in EN/PT-BR/ES, including magnetostatics and electrostatics. See the linked architecture and validation documents before contributing.
 >
-> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye once aplicaciones: seis heredadas declaradas en portugués y cinco en inglés/portugués/español, incluida magnetostática.
+> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye doce aplicaciones: seis heredadas declaradas en portugués y seis en inglés/portugués/español, incluidas magnetostática y electrostática.

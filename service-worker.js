@@ -1,5 +1,5 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.1.4';
+const VERSION='eevl-v1.1.5';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
@@ -8,7 +8,7 @@ const urls=[
  'assets/js/legacy-runtime.js','assets/js/legacy-locales/siso.js','assets/js/legacy-locales/power.js','assets/js/legacy-locales/opamp-pid.js',
  'data/config.json','data/categories.json','data/simulators.json','locales/en.json','locales/pt-BR.json','locales/es.json',
  'assets/branding/logo-icon.svg','assets/branding/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png',
- 'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg','assets/images/nodal-analysis.svg','assets/images/rc-rl.svg','assets/images/rlc.svg','assets/images/nodal-analysis-ac.svg','assets/images/magnetostatics.svg'
+ 'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg','assets/images/nodal-analysis.svg','assets/images/rc-rl.svg','assets/images/rlc.svg','assets/images/nodal-analysis-ac.svg','assets/images/magnetostatics.svg','assets/images/electrostatics.svg'
 ].map(p=>new URL(p,root).href);
 self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(urls)));});
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();});
