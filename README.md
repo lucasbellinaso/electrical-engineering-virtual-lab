@@ -28,7 +28,7 @@ Não é necessário `npm install` nem build de produção. A suíte inclui verif
 
 ## Aplicativos disponíveis
 
-O catálogo contém dez aplicativos: seis legados monolíngues em PT-BR e quatro aplicativos originais com interface e documentação em inglês e português. As descrições do catálogo também existem em espanhol, mas **nenhum aplicativo declara interface em espanhol**.
+O catálogo contém dez aplicativos: seis legados declarados em PT-BR e quatro aplicativos com interface em português, inglês e espanhol.
 
 | Aplicativo | Idiomas do app |
 |---|---|
@@ -38,10 +38,10 @@ O catálogo contém dez aplicativos: seis legados monolíngues em PT-BR e quatro
 | DAB — Interface de Bateria | PT-BR (legado) |
 | Amplificadores Operacionais | PT-BR (legado) |
 | Conversor Buck — Controle PID | PT-BR (legado) |
-| Análise Nodal — Circuitos Resistivos | EN, PT-BR |
-| RC e RL — Circuitos de 1ª Ordem | EN, PT-BR |
-| RLC — Circuitos de 2ª Ordem | EN, PT-BR |
-| Análise Nodal Fasorial — R, L, C | EN, PT-BR |
+| Análise Nodal — Circuitos Resistivos | EN, PT-BR, ES |
+| RC e RL — Circuitos de 1ª Ordem | EN, PT-BR, ES |
+| RLC — Circuitos de 2ª Ordem | EN, PT-BR, ES |
+| Análise Nodal Fasorial — R, L, C | EN, PT-BR, ES |
 
 O catálogo atualizado está em [data/simulators.json](data/simulators.json). O template RC é um exemplo de contribuição, não um aplicativo listado no catálogo.
 
@@ -76,6 +76,6 @@ Plotly 2.35.2 e KaTeX são distribuídos localmente; veja as licenças em `asset
 
 Interpretador MATLAB/Octave, sistema genérico de projetos e motor genérico de simulação são propostas futuras, ainda não implementadas. Consulte [ROADMAP.md](ROADMAP.md) para o escopo planejado.
 
-> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The ten catalog apps are six Portuguese-only legacy apps and four EN/PT-BR apps; Spanish catalog text does not mean Spanish app support. See the linked architecture and validation documents before contributing.
+> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The ten catalog apps include six legacy apps declared in Portuguese and four apps in EN/PT-BR/ES. See the linked architecture and validation documents before contributing.
 >
-> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye seis aplicaciones heredadas solo en portugués y cuatro en inglés/portugués; las descripciones en español no indican que las aplicaciones estén traducidas.
+> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye diez aplicaciones: seis heredadas declaradas en portugués y cuatro en inglés/portugués/español.

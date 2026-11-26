@@ -36,7 +36,7 @@ test('Shell files are served network-first and fall back to the saved copy offli
 
 test('All official translations and shared modules are available offline in a subdirectory',async()=>{
  const h=harness();await h.lifecycle('install');await h.lifecycle('activate');h.offline();
- for(const path of ['locales/en.json','locales/pt-BR.json','locales/es.json','assets/js/i18n.js','assets/js/common.js']){
+ for(const path of ['locales/en.json','locales/pt-BR.json','locales/es.json','assets/js/i18n.js','assets/js/common.js','assets/js/legacy-i18n.js','assets/js/legacy-runtime.js','assets/js/legacy-locales/siso.js','assets/js/legacy-locales/power.js','assets/js/legacy-locales/opamp-pid.js']){
   const response=await h.request(path,'cors');assert.equal(response.status,200);assert.match(await response.text(),/shell:/);
  }
  const missing=await h.request('simulators/not-visited/index.html');const html=await missing.text();assert.equal(missing.status,503);assert.match(html,/lang="es"/);assert.match(html,/todavía no se ha guardado/);

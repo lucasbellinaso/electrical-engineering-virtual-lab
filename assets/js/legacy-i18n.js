@@ -1,4 +1,8 @@
 // UI-only overlay for supplied legacy apps. The protected app.html files stay intact.
+import {messages as sisoMessages, patterns as sisoPatterns} from './legacy-locales/siso.js';
+import {messages as powerMessages, patterns as powerPatterns} from './legacy-locales/power.js';
+import {messages as opampMessages, patterns as opampPatterns} from './legacy-locales/opamp-pid.js';
+import {installPresentationHooks, redrawPresentation} from './legacy-runtime.js';
 export function translateExact(value, original, language, translations) {
   const variants = translations[original];
   if (!variants || ![original, ...variants].includes(value)) return value;
@@ -145,41 +149,85 @@ export const legacyTranslations = {
   ,'Copiado!': ['Copied!', '¡Copiado!']
 };
 
+Object.assign(legacyTranslations, sisoMessages, powerMessages, opampMessages);
+const exactMessages = Object.fromEntries(Object.entries(legacyTranslations).map(([key, values]) => [key.trim(), values.map(value => value.trim())]));
+const attributionText = new Set(Object.entries(exactMessages)
+  .filter(([key]) => /Prof\. Lucas V\. Bellinaso|PythonSisoDesignApp/i.test(key))
+  .flatMap(([key, values]) => [key, ...values]));
+const patterns = [...sisoPatterns, ...powerPatterns, ...opampPatterns].map(item => ({...item, regex:new RegExp(item.source)}));
+
+export function translateText(value, language, depth = 0) {
+  if (typeof value !== 'string' || language === 'pt-BR') return value;
+  const text = value.trim(), index = language === 'es' ? 1 : 0;
+  let translated = exactMessages[text]?.[index];
+  if (translated === undefined) {
+    for (const item of patterns) {
+      if (!item.regex.test(text)) continue;
+      const replacement = item[language === 'es' ? 'es' : 'en'];
+      // Only known error wrappers contain another translatable message. Parser
+      // excerpts and numeric/formula captures in other patterns stay verbatim.
+      if (item.source.startsWith('^Erro ') && depth < 3) {
+        const match = item.regex.exec(text);
+        translated = replacement.replace(/\$(\d+)/g, (_, number) => translateText(match[Number(number)] ?? '', language, depth + 1));
+      } else translated = text.replace(item.regex, replacement);
+      break;
+    }
+  }
+  if (translated !== undefined) return value.replace(text, () => translated);
+  // Appended status lines are independent messages; preserve line boundaries.
+  if (value.includes('\n')) return value.split('\n').map(line => translateText(line, language)).join('\n');
+  return value;
+}
+
 const protectedNode = node => node.parentElement?.isContentEditable ||
-  node.parentElement?.closest('script,style,svg,canvas,math,code,pre,textarea,input,option:not([value]),[contenteditable="true"],[data-legacy-no-translate],.katex') ||
+  node.parentElement?.closest('script,style,canvas,math,code,pre,textarea,input,option:not([value]),[contenteditable="true"],[data-legacy-no-translate],.katex') ||
   /prof\.|author|autor|lucas v\./i.test(node.parentElement?.getAttribute('aria-label') || '') ||
-  /Prof\. Lucas V\. Bellinaso|PythonSisoDesignApp/i.test(node.nodeValue || '');
+  (/Prof\. Lucas V\. Bellinaso|PythonSisoDesignApp/i.test(node.nodeValue || '') && !attributionText.has(node.nodeValue?.trim()));
 const originalAttributes = new WeakMap();
+const originalText = new WeakMap();
+
+function sourceText(saved, current, translate = translateText) {
+  if (!saved || !['pt-BR','en','es'].some(code => translate(saved, code) === current)) return current;
+  return saved;
+}
 
 export function translateFrame(frame, language) {
   let doc;
   try { doc = frame.contentDocument; } catch { return; }
   if (!doc?.body) return;
-  const ix = language === 'es' ? 1 : 0;
   const walk = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   let n;
   while ((n = walk.nextNode())) {
     if (protectedNode(n)) continue;
-    const current = n.nodeValue.trim();
-    let original = n.__eevlOriginal ?? current;
-    if (n.__eevlOriginal && ![original, ...(legacyTranslations[original] || [])].includes(current)) {
-      original = current;
-      n.__eevlOriginal = current;
-    }
-    const translated = translateExact(current, original, language, legacyTranslations);
-    n.__eevlOriginal = original;
-    if (translated !== current) n.nodeValue = n.nodeValue.replace(current, translated);
+    const current = n.nodeValue;
+    // This single Portuguese range separator is prose, not the variable a.
+    const localTranslate = (value, code) => value.trim() === 'a' && n.parentElement?.closest('.gainbox')
+      ? value.replace('a', code === 'en' ? 'to' : 'a') : translateText(value, code);
+    const original = sourceText(originalText.get(n), current, localTranslate);
+    originalText.set(n, original);
+    const translated = localTranslate(original, language);
+    if (translated !== current) n.nodeValue = translated;
   }
-  for (const el of doc.querySelectorAll('[title],[aria-label],[placeholder]')) {
+  for (const el of doc.querySelectorAll('[title],[aria-label],[placeholder],[alt],[data-title]')) {
     let saved = originalAttributes.get(el);
     if (!saved) { saved = new Map(); originalAttributes.set(el, saved); }
-    for (const attr of ['title','aria-label','placeholder']) {
+    for (const attr of ['title','aria-label','placeholder','alt','data-title']) {
       if (!el.hasAttribute(attr)) continue;
-      const original = saved.has(attr) ? saved.get(attr) : el.getAttribute(attr);
+      const current = el.getAttribute(attr);
+      const original = sourceText(saved.get(attr), current);
       saved.set(attr, original);
-      if (language === 'pt-BR') el.setAttribute(attr, original);
-      else if (legacyTranslations[original]) el.setAttribute(attr, legacyTranslations[original][ix]);
+      const translated = translateText(original, language);
+      if (translated !== current) el.setAttribute(attr, translated);
     }
+  }
+  if (doc.title) {
+    const original = sourceText(originalText.get(doc), doc.title);
+    originalText.set(doc, original);
+    doc.title = translateText(original, language);
+  }
+  if (doc.documentElement) doc.documentElement.lang = language;
+  for (const code of doc.querySelectorAll('pre,code')) {
+    if (code.getAttribute('lang') !== 'pt-BR') code.setAttribute('lang','pt-BR');
   }
 }
 
@@ -196,20 +244,42 @@ function renderCoverage(language) {
     sourceNotice.insertAdjacentElement('afterend', notice);
   }
   notice.textContent = language === 'es'
-    ? 'Traducción parcial al inglés y al español: algunos controles y gráficos siguen en portugués. El original no se modifica; la vista a pantalla completa abre el original en portugués.'
+    ? 'Vista previa EN/ES: controles, ayuda, gráficos y mensajes traducidos mediante una capa independiente. El archivo original y el código exportado se conservan. La página completa abre el original en portugués.'
     : language === 'pt-BR'
-      ? 'Tradução parcial para inglês e espanhol: alguns controles e gráficos permanecem em português. O original não foi alterado; a tela cheia abre o original em português.'
-      : 'Partial English and Spanish translation: some controls and plots remain in Portuguese. The original is unchanged; full-page view opens the Portuguese original.';
+      ? 'Prévia EN/ES: controles, ajuda, gráficos e mensagens traduzidos por uma camada independente. O arquivo original e o código exportado são preservados. A página inteira abre o original em português.'
+      : 'EN/ES preview: controls, help, plots and messages are translated by an independent layer. The original file and exported code are preserved. Full-page view opens the Portuguese original.';
 }
 if (frame) {
   let selected = document.querySelector('#language')?.value || 'en';
-  const update = () => { translateFrame(frame, selected); renderCoverage(selected); };
-  frame.addEventListener('load', () => {
+  const update = () => {
+    translateFrame(frame, selected);
+    frame.title = {'pt-BR':'Simulador legado · Português',en:'Legacy simulator · English',es:'Simulador legado · Español'}[selected];
+    renderCoverage(selected);
+  };
+  let observedDocument, observer;
+  const setup = () => {
+    const doc = frame.contentDocument, win = frame.contentWindow;
+    if (!doc?.body || !win) return;
+    installPresentationHooks(win, text => translateText(text, selected));
     update();
-    try { new MutationObserver(update).observe(frame.contentDocument.body, {subtree:true, childList:true, characterData:true}); } catch {}
+    if (observedDocument !== doc) {
+      observer?.disconnect();
+      let queued = false;
+      observer = new MutationObserver(() => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => { queued = false; update(); });
+      });
+      observer.observe(doc.body, {subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','aria-label','placeholder','alt','data-title']});
+      observedDocument = doc;
+    }
+    redrawPresentation(win);
+  };
+  frame.addEventListener('load', setup);
+  document.addEventListener('languagechange', () => {
+    selected = document.querySelector('#language')?.value || 'en';
+    setup();
   });
-  document.addEventListener('languagechange', () => { selected = document.querySelector('#language')?.value || 'en'; update(); });
-  document.querySelector('#language')?.addEventListener('change', event => { selected = event.target.value; update(); });
-  if (frame.contentDocument?.readyState === 'complete') update();
+  if (frame.contentDocument?.readyState === 'complete') setup();
 }
 }

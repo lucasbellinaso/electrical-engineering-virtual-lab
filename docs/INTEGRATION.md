@@ -17,12 +17,13 @@ Todos foram preservados; veja hashes SHA-256 em `provenance.json`.
 
 **Nenhum script numérico inline foi modificado.** O teste de preservação compara
 todos esses scripts e as transformações exatas. Os wrappers agora carregam
-`assets/js/legacy-i18n.js`, uma camada parcial EN/ES por correspondência exata de
-textos e atributos acessíveis no iframe de mesma origem. A seleção PT-BR restaura
+`assets/js/legacy-i18n.js`, uma prévia EN/ES por correspondência exata de
+textos e padrões ancorados no iframe de mesma origem. A seleção PT-BR restaura
 os textos originais mapeados. Fórmulas, scripts, valores de entrada e autoria são
-preservados; gráficos SVG/canvas, diálogos e textos ainda não mapeados permanecem
-no idioma original. O aviso visível informa a cobertura parcial e os seis registros
-continuam declarando PT-BR no catálogo. A aparência herdada não acompanha o tema.
+preservados. A camada inclui textos SVG/Plotly, rótulos canvas e mensagens de
+diálogos; o código exportado continua original. O aviso identifica a prévia e os
+seis registros continuam declarando PT-BR no catálogo até a revisão. O mecanismo
+e seus limites estão em [I18N.md](I18N.md). A aparência herdada não acompanha o tema.
 Cada `index.html` fornece apresentação no portal, retorno,
 metadados, aviso de validação e iframe; abrir página inteira mantém as funções de
 URL e exportação que cada original já oferece. Não foram adicionadas funções de
@@ -69,10 +70,10 @@ SISO changes only the Plotly script URL to a vendored copy of the same version;
 Buck PID removes only two Google Fonts link tags. **All inline numerical scripts
 remain identical.** The provenance and preservation test document these changes.
 
-The independent wrappers use the shared portal translations and a partial EN/ES
-overlay inside the same-origin iframe. Unmapped strings, plots and dialogs can
-remain Portuguese. Direct `app.html` access preserves the Portuguese original.
-The six catalog entries therefore still list PT-BR only. Original appearance,
+The independent wrappers preview EN/ES controls, help, dynamic messages and
+SVG/canvas plots inside the same-origin iframe. Exported code remains original.
+Direct `app.html` access preserves the Portuguese original. The six catalog entries
+still list PT-BR pending preview review. Original appearance,
 model assumptions and numerical methods are preserved.
 Scientific validation is experimental for all six; no independent evidence was
 provided. The duty-cycle step laboratory (`buck-step`) was supplied later and is
@@ -84,7 +85,8 @@ legacy numerical models. Large inherited calculations may still block their own 
 ## Español
 
 Los seis archivos originales y sus copias protegidas conservan los hashes registrados.
-Los marcos cargan una capa parcial EN/ES, reversible a PT-BR, sin editar algoritmos.
-Los gráficos, diálogos y textos sin mapa pueden seguir en portugués; abrir `app.html`
-directamente muestra el original. Los metadatos siguen declarando solamente PT-BR.
+Los marcos cargan una vista previa EN/ES, reversible a PT-BR, sin editar algoritmos.
+Incluye controles, ayuda, mensajes y gráficos SVG/canvas. El código exportado se
+conserva; abrir `app.html` directamente muestra el original. Los metadatos siguen
+declarando PT-BR durante la revisión de la vista previa.
 La clasificación experimental y las limitaciones científicas no cambian.
