@@ -9,7 +9,9 @@
  * - Erros: TypeError se o tipo de entrada não é array/número; RangeError se a forma
  *   (não retangular, dimensões incompatíveis, não quadrada onde exigido) ou o valor
  *   (não finito, dimensão negativa ou não inteira) é inválido. msolve/inv lançam
- *   Error('Matriz singular') para sistemas singulares.
+ *   Error('Matriz singular') para sistemas singulares; o erro traz code = 'SINGULAR_MATRIX'.
+ *   Por padrão só o pivô exatamente nulo é singular; o chamador pode exigir mais com a opção
+ *   { absTol, relTol } de msolve/inv (singular se o maior pivô ≤ max(absTol, relTol·máx|aᵢⱼ|)).
  * - A validação só rejeita entradas inválidas; não altera a aritmética dos algoritmos
  *   portados de simulators/control-systems/siso/app.html (expm, charpoly, msolve, mmul).
  */
@@ -67,13 +69,38 @@ function kmmul(A, B) {
 }
 const kmadd = (A, B, kb = 1) => A.map((row, i) => row.map((v, j) => v + kb * B[i][j]));
 const kmscale = (A, k) => A.map(row => row.map(v => v * k));
-function kmsolve(A, B) {
+/** Erro de matriz singular, com code para o chamador distinguir de outros erros. */
+function erroSingular() {
+  const e = new Error('Matriz singular');
+  e.code = 'SINGULAR_MATRIX';
+  return e;
+}
+
+/**
+ * Limite de pivô abaixo do qual a matriz é tratada como singular. Sem opts: 0 (só o pivô exatamente nulo).
+ * Com opts: max(absTol, relTol·máx|aᵢⱼ|), com absTol e relTol finitos e ≥ 0 (padrão 0).
+ * @param {number[][]} A já validada @param {{absTol?:number, relTol?:number}} [opts]
+ */
+function limiteSingular(A, opts) {
+  if (opts === undefined) return 0;
+  if (opts === null || typeof opts !== 'object') throw new TypeError('opts deve ser um objeto { absTol, relTol }');
+  const { absTol = 0, relTol = 0 } = opts;
+  for (const [nome, v] of [['absTol', absTol], ['relTol', relTol]]) {
+    checkFinite(v, `opts.${nome}`);
+    if (v < 0) throw new RangeError(`opts.${nome} deve ser não negativo (recebido ${v})`);
+  }
+  let escala = 0;
+  if (relTol > 0) for (const row of A) for (const v of row) escala = Math.max(escala, Math.abs(v));
+  return Math.max(absTol, relTol * escala);
+}
+
+function kmsolve(A, B, tol = 0) {
   const n = A.length, m = B[0].length;
   const M = A.map((row, i) => row.concat(B[i]));
   for (let col = 0; col < n; col++) {
     let piv = col, mx = Math.abs(M[col][col]);
     for (let r = col + 1; r < n; r++) if (Math.abs(M[r][col]) > mx) { mx = Math.abs(M[r][col]); piv = r; }
-    if (mx === 0) throw new Error('Matriz singular');
+    if (mx <= tol) throw erroSingular();   // tol = 0: equivale a mx === 0 (mx ≥ 0)
     [M[col], M[piv]] = [M[piv], M[col]];
     for (let r = 0; r < n; r++) {
       if (r === col) continue;
@@ -224,24 +251,27 @@ export function isSquare(A) {
 /**
  * Resolve A X = B (eliminação de Gauss com pivotamento parcial).
  * @param {number[][]} A quadrada n x n @param {number[][]} B n x m @returns {number[][]}
- * @throws {Error} 'Matriz singular' se A é singular
+ * @param {{absTol?:number, relTol?:number}} [opts] tolerância de singularidade (padrão 0 e 0): A é singular
+ *   se o maior módulo de pivô de alguma coluna ≤ max(absTol, relTol·máx|aᵢⱼ|). TypeError/RangeError se inválida.
+ * @throws {Error} 'Matriz singular' (code 'SINGULAR_MATRIX') se A é singular
  */
-export function msolve(A, B) {   // resolve A X = B (eliminação de Gauss com pivotamento parcial)
+export function msolve(A, B, opts) {   // resolve A X = B (eliminação de Gauss com pivotamento parcial)
   const n = assertSquare(A, 'A');
   const mb = assertMatrix(B, 'B');
   if (mb.r !== n) throw new RangeError(`msolve: B deve ter ${n} linhas (recebido ${mb.r})`);
+  const tol = limiteSingular(A, opts);
   if (n === 0) return [];
-  return kmsolve(A, B);
+  return kmsolve(A, B, tol);
 }
 
 /**
  * Inversa de A quadrada, via msolve(A, I).
- * @param {number[][]} A @returns {number[][]}
- * @throws {Error} 'Matriz singular' se A é singular
+ * @param {number[][]} A @param {{absTol?:number, relTol?:number}} [opts] como em msolve @returns {number[][]}
+ * @throws {Error} 'Matriz singular' (code 'SINGULAR_MATRIX') se A é singular
  */
-export function inv(A) {
+export function inv(A, opts) {
   const n = assertSquare(A, 'A');
-  return msolve(A, eye(n));
+  return msolve(A, eye(n), opts);
 }
 
 /**
