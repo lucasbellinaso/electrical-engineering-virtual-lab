@@ -7,7 +7,7 @@ Todos foram preservados; veja hashes SHA-256 em `provenance.json`.
 
 | Original | Cópia de execução | Alterações |
 |---|---|---|
-| Control Systems/SisoApp - projeto de controladores.html | simulators/control-systems/siso/app.html | URL Plotly CDN → biblioteca local 2.35.2 |
+| Control Systems/SisoApp - projeto de controladores.html | simulators/control-systems/siso/app.html | URL Plotly CDN → biblioteca local 2.35.2; `renderRows()` retorna cedo enquanto `P` é `null` (correção de um `TypeError`, aprovada pelo autor) |
 | Power Electronics/simulador_buck.html | simulators/power-electronics/buck/app.html | Nenhuma; cópia idêntica |
 | Power Electronics/dab_dinamico.html | simulators/power-electronics/dab/app.html | Nenhuma; cópia idêntica |
 | Fundamental Eletronics and Electrical Circuits/laboratorio_ampop.html | simulators/analog-electronics/opamp/app.html | Nenhuma; cópia idêntica |
