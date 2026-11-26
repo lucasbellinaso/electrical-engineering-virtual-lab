@@ -8,9 +8,9 @@ const catalog=JSON.parse(await readFile(new URL('data/simulators.json',root),'ut
 const en=JSON.parse(await readFile(new URL('locales/en.json',root),'utf8'));
 const es=JSON.parse(await readFile(new URL('locales/es.json',root),'utf8'));
 
-test('Spanish is declared for the original circuit apps and magnetostatics with localized interfaces',async()=>{
+test('Spanish is declared for the original circuit apps, magnetostatics and electrostatics with localized interfaces',async()=>{
  const spanish=catalog.filter(item=>item.languages.includes('es')).map(item=>item.id).sort();
- assert.deepEqual(spanish,['magnetostatics','nodal-analysis','nodal-analysis-ac','rc-rl-first-order','rlc-second-order']);
+ assert.deepEqual(spanish,['electrostatics','magnetostatics','nodal-analysis','nodal-analysis-ac','rc-rl-first-order','rlc-second-order']);
  for(const path of ['simulators/electrical-circuits/rl-rc/index.html','simulators/electrical-circuits/rlc-series-parallel/index.html']){
   const html=await readFile(new URL(path,root),'utf8');
   for(const [,key] of html.matchAll(/data-i18n(?:-html|-placeholder|-aria)?="([\w-]+)"/g))assert.ok(es[key],`${path}: ${key}`);
