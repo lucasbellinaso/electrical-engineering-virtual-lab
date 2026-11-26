@@ -1,4 +1,10 @@
-# Entrega e verificação · 25/11/2026
+# Entrega e verificação · 25/11/2026 · HISTÓRICO
+
+> Registro histórico da implementação e de extensões anteriores. Descrições,
+> contagens de testes, disponibilidade e restrições de publicação refletem a etapa
+> narrada. Não são o estado atual nem diretrizes concorrentes. Consulte
+> [ARCHITECTURE.md](../ARCHITECTURE.md), [ROADMAP.md](../ROADMAP.md),
+> [API.md](API.md) e [VALIDATION.md](VALIDATION.md).
 
 ## Implementado
 

@@ -1,5 +1,8 @@
 # Integração do SISO / SISO integration
 
+Este documento mantém a descrição da integração e o inventário confirmado abaixo.
+Diretrizes atuais: [arquitetura](../ARCHITECTURE.md); API pública: [API.md](API.md).
+
 ## Português
 O arquivo fornecido `Control Systems/SisoApp - projeto de controladores.html` permanece intacto.
 O programa se identifica como SISO Design App, baseado no PythonSisoDesignApp,
@@ -45,3 +48,48 @@ tests do not validate SISO. Author attribution is preserved from the supplied so
 See the provenance JSON for original, integrated and dependency SHA-256 hashes.
 Plotly is vendored with its MIT license. Open the simulator online with the Service
 Worker active to cache its resources; offline availability depends on browser storage.
+
+## Inventário confirmado por inspeção (26/11/2026)
+
+Todas as funções abaixo foram localizadas em `simulators/control-systems/siso/app.html`.
+São funções internas de um script HTML, **não módulos exportados**, nem uma API
+MATLAB/Octave pronta. Assinaturas documentam o estado atual; não devem ser tomadas
+como convenções definitivas para uma extração.
+
+| Função existente | Papel e acoplamento a revisar |
+|---|---|
+| pmul(a,b), padd(a,b) | produto e soma de polinômios; coeficientes em ordem decrescente |
+| polyFromRoots(rs) | coeficientes a partir de raízes, usa representação complexa interna |
+| roots(pIn,init), aberth(c,n,init) | busca de raízes e iteração de Aberth; revisar escalas, condicionamento, convergência e inicialização |
+| mmul(A,B), msolve(A,B) | matrizes por linhas; msolve resolve A·X=B com RHS matricial e pivotamento |
+| expm(A) | escalonamento, quadratura e aproximação Padé de ordem 6 |
+| charpoly(A) | polinômio característico por Faddeev–LeVerrier |
+| tf2ss(num,den) | forma canônica controlável, retorna A/B/C/D/n; num/den em ordem decrescente |
+| c2d(A,B,dt) | ZOH por exponencial da matriz aumentada; retorna Ad/Bd, não a API MATLAB completa |
+| closedLoopSS(Gc,Gp,Gf) | constrói malha específica; entradas r/du/dy/dm, saídas y/uc; verifica denominador algébrico específico |
+| simulate(sys,U,dt,discrete) | estado inicial zero, entradas por canais Float64Array; saídas por canal; não é motor híbrido genérico |
+| pade(T,N) | aproximação de atraso, retorna num/den |
+| makeFR(zeros,poles,k,discrete,Ts,delay=0) | cria avaliador de resposta em frequência |
+| margins(fr,w0,w1) | análise de margens no intervalo fornecido; revisar cruzamentos múltiplos e tolerâncias |
+| computeLocus() | lugar das raízes dependente do estado global do app; requer desacoplamento |
+| stepResponse(sys,Gp,tf,discrete,Ts,wfast=0) | cálculo temporal ligado a configurações internas; revisar dependências antes de extrair |
+
+Há helpers adicionais (normalização polinomial, representação complexa, análise e
+formatação) que deverão entrar numa auditoria de dependências antes de reutilização.
+Parsers de campos não constituem interpretador MATLAB/Octave genérico. O inventário
+não altera classificação experimental, proveniência ou evidências científicas.
+
+## Estratégia gradual de reutilização
+
+1. Inventariar dependências numéricas e de UI, unidades, formatos, índices e tolerâncias.
+2. Selecionar uma função independente com necessidade real de outro consumidor.
+3. Criar módulo puro com contrato explícito e adaptador, preservando a referência original.
+4. Padronizar nomes e comportamento conforme MATLAB/GNU Octave; documentar diferenças
+   de assinatura, forma de vetor/matriz, complexos, amostragem, atrasos e convenções de sinal.
+5. Testar casos analíticos e referências numéricas reproduzíveis; controlar condicionamento,
+   resíduos, entradas inválidas e convergência.
+6. Migrar um consumidor por vez e comparar respostas/margens/raízes antes e depois,
+   com parâmetros e tolerâncias registrados; preservar exportações/configurações existentes.
+7. Só ampliar a API depois de regressão e revisão. Não duplicar o aplicativo SISO.
+
+Nenhuma extração ou mudança de algoritmo foi realizada nesta consolidação documental.

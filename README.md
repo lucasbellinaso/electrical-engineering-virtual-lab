@@ -1,143 +1,81 @@
-# Electrical Engineering Virtual Lab · EEVL
+# Electrical Engineering Virtual Lab (EEVL)
 
-**Explore. Simulate. Understand. / Explore. Simule. Compreenda.**
+O EEVL é um portal aberto de aplicativos educacionais para Engenharia Elétrica, voltado à aprendizagem, experimentação e projeto de controle de baixa e média complexidade. Seus três pilares são **simplicidade de uso**, **transparência matemática** e **modularidade**.
 
-Portal educacional gratuito em HTML5, CSS3 e JavaScript nativo. Sem backend,
-autenticação, banco de dados, chaves de API ou build de produção. Cálculos no navegador.
+Os aplicativos rodam localmente no navegador, sem backend ou instalação obrigatória. O projeto é estático e compatível com GitHub Pages em subdiretórios; a instalação como PWA é opcional. Não é um substituto completo para MATLAB, Simulink ou outros ambientes científicos.
 
-## Executar localmente
+> **EN:** An open, browser-based collection of electrical engineering learning apps, built around usability, mathematical transparency, and modularity.
+>
+> **ES:** Colección abierta de aplicaciones educativas de ingeniería eléctrica para navegador, centrada en la facilidad de uso, la transparencia matemática y la modularidad.
 
-Na raiz do projeto, com Python 3 instalado:
+## Executar e verificar
+
+Para desenvolvimento local, na raiz do projeto:
 
 ```sh
 python -m http.server 8000
 ```
 
-Abra **http://localhost:8000**. Não abra `index.html` por `file://`: módulos,
-fetch e Service Worker exigem HTTP/HTTPS. No Windows use `npm.cmd start` como
-alternativa, quando a política do PowerShell impedir `npm.ps1`.
+Acesse http://localhost:8000. É necessário servir por HTTP; abrir o arquivo diretamente (`file://`) não permite o funcionamento de módulos e recursos do navegador.
 
-## Verificar
-
-Node.js 22 ou superior; nenhuma instalação de pacotes necessária:
+Com Node.js 22 ou superior, execute os testes sem instalar dependências:
 
 ```sh
-npm test
-# Windows PowerShell:
 npm.cmd test
 ```
 
-Verifica sintaxe JS (inclusive scripts inline herdados), JSON, metadados,
-identificadores, caminhos, links internos, paridade das traduções, ícones,
-preservação dos originais e modelo RC. Consulte [validação](docs/VALIDATION.md).
+Não é necessário `npm install` nem build de produção. A suíte inclui verificações de integridade e testes numéricos; critérios e limites estão em [docs/VALIDATION.md](docs/VALIDATION.md).
 
-## Conteúdo disponível
+## Aplicativos disponíveis
 
-| Simulador | Idioma do aplicativo | Validação |
-|---|---|---|
-| Projeto de Controladores SISO | PT-BR | Experimental |
-| Buck: regime permanente, CCM/DCM e partida | PT-BR | Experimental |
-| DAB: interface dinâmica com bateria | PT-BR | Experimental |
-| Amplificadores operacionais | PT-BR | Experimental |
-| Buck com PID digital | PT-BR | Experimental |
+O catálogo contém dez aplicativos: seis legados monolíngues em PT-BR e quatro aplicativos originais com interface e documentação em inglês e português. As descrições do catálogo também existem em espanhol, mas **nenhum aplicativo declara interface em espanhol**.
 
-As páginas de apresentação, catálogo e navegação são EN/PT-BR. Os aplicativos
-legados mantêm sua interface original em português. Um laboratório dedicado ao
-**degrau de razão cíclica** (`buck-step`) foi integrado sem alterações, apenas em
-português e com validação experimental.
+| Aplicativo | Idiomas do app |
+|---|---|
+| Projeto de Controladores SISO | PT-BR (legado) |
+| Conversor Buck — Regime Permanente | PT-BR (legado) |
+| Conversor Buck — Degrau de Razão Cíclica | PT-BR (legado) |
+| DAB — Interface de Bateria | PT-BR (legado) |
+| Amplificadores Operacionais | PT-BR (legado) |
+| Conversor Buck — Controle PID | PT-BR (legado) |
+| Análise Nodal — Circuitos Resistivos | EN, PT-BR |
+| RC e RL — Circuitos de 1ª Ordem | EN, PT-BR |
+| RLC — Circuitos de 2ª Ordem | EN, PT-BR |
+| Análise Nodal Fasorial — R, L, C | EN, PT-BR |
 
-O [template RC](templates/simulator/index.html) é um exemplo funcional para
-colaboradores, fora do catálogo. Tem algoritmo separado, gráfico SVG, tabela
-acessível, parâmetros na URL, métricas e exportação CSV/SVG/PNG. Seus testes
-analíticos não validam os modelos herdados.
+O catálogo atualizado está em [data/simulators.json](data/simulators.json). O template RC é um exemplo de contribuição, não um aplicativo listado no catálogo.
 
-## Estrutura
+## Estrutura principal
 
-```text
-index.html / about.html / contribute.html
-assets/branding/       SVGs de marca e favicon
-assets/icons/          ícones PNG 192 e 512
-assets/images/         ilustrações SVG conceituais
-assets/css/            tema e responsividade
-assets/js/             catálogo, i18n, PWA, páginas e apresentação de laboratórios
-assets/vendor/         Plotly 2.35.2 e licença MIT
-data/                  config.json, categories.json, simulators.json
-locales/               en.json, pt-BR.json
-simulators/            cópias integradas e apresentações bilíngues
-templates/simulator/   exemplo RC: index.html, model.js, ui.js
-tests/                 comparação analítica RC e preservação dos originais
-scripts/               verificações e geração reproduzível de assets/integrações
-docs/                  especificação, validação, integração e hashes de origem
-.github/workflows/     verificações de push e pull request
-Control Systems/       arquivos fornecidos preservados
-Power Electronics/     arquivos fornecidos preservados
-Fundamental Eletronics and Electrical Circuits/  arquivos fornecidos preservados
-logoEEVL.svg           logotipo original preservado
-```
+- `index.html`, `about.html`, `contribute.html`: portal e páginas informativas.
+- `assets/js/`, `assets/css/`, `assets/vendor/`: módulos compartilhados, estilos e bibliotecas locais.
+- `data/`, `locales/`: catálogo/configuração e traduções do portal.
+- `simulators/`: aplicativos e modelos.
+- `templates/simulator/`: template funcional de referência.
+- `tests/`, `scripts/`: testes e verificações automatizadas.
+- `docs/`: contratos, idioma, validação e decisões do projeto.
 
-## Publicar no GitHub Pages
+## Documentação normativa
 
-Repositório: https://github.com/lucasbellinaso/electrical-engineering-virtual-lab.
-Esta implementação **não faz push nem publica automaticamente**.
+Consulte estes documentos antes de propor mudanças:
 
-1. Revise os arquivos e envie um commit para a branch `main` quando desejar.
-2. Em **Settings → Pages**, selecione **Deploy from a branch**.
-3. Escolha **main** e **/ (root)**, depois **Save**.
-4. O endereço esperado é
-   https://lucasbellinaso.github.io/electrical-engineering-virtual-lab/.
+- [AGENTS.md](AGENTS.md) — instruções de trabalho.
+- [ARCHITECTURE.md](ARCHITECTURE.md) — arquitetura, estado implementado e decisões.
+- [ROADMAP.md](ROADMAP.md) — propostas futuras, não funcionalidades disponíveis.
+- [docs/API.md](docs/API.md) — APIs atuais dos modelos e módulos.
+- [docs/LANGUAGE.md](docs/LANGUAGE.md) — proposta de linguagem futura; não há intérprete implementado.
+- [docs/I18N.md](docs/I18N.md) — idiomas, seleção e contratos de tradução.
+- [docs/VALIDATION.md](docs/VALIDATION.md) — critérios e evidências científicas.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — fluxo de contribuição.
 
-Não é necessário workflow de deploy. `.nojekyll`, caminhos relativos, manifesto
-com escopo `./` e Service Worker relativo permitem a hospedagem em subdiretório.
-O workflow fornecido somente verifica o projeto; não publica.
+## GitHub Pages, PWA e dependências
 
-## Adicionar um simulador
+O site pode ser hospedado como conteúdo estático no GitHub Pages; o fluxo de contribuição não faz merge automaticamente. O Service Worker mantém o shell e armazena recursos visitados sob demanda. A PWA é opcional e o navegador pode remover dados em cache.
 
-Copie `templates/simulator/` para `simulators/<categoria>/<id>/`, ajuste os imports
-relativos (de `../../assets/` para `../../../assets/` nessa profundidade), substitua
-o modelo, documente e teste. Adicione um registro em `data/simulators.json` e, se
-necessário, uma categoria em `data/categories.json`. A página inicial não precisa
-de alterações. Consulte [CONTRIBUTING.md](CONTRIBUTING.md) para contrato completo.
+Plotly 2.35.2 e KaTeX são distribuídos localmente; veja as licenças em `assets/vendor/`. O código original do portal está sob licença MIT ([LICENSE](LICENSE)); preserve atribuições e licenças dos materiais fornecidos.
 
-## PWA e preferências
+Interpretador MATLAB/Octave, sistema genérico de projetos e motor genérico de simulação são propostas futuras, ainda não implementadas. Consulte [ROADMAP.md](ROADMAP.md) para o escopo planejado.
 
-Idioma inicial pelo navegador (português → PT-BR; demais → EN), persistido em
-localStorage. Tema claro, escuro ou sistema, também persistido. O link GitHub é
-controlado por `data/config.json`; use `null` para ocultar.
-
-O Service Worker armazena somente o portal essencial na instalação. Recursos de
-simuladores e Plotly são armazenados quando solicitados por uma visita, com o
-Service Worker já ativo. Na primeira visita, aguarde a instalação e recarregue.
-Abra o laboratório online antes de testar offline. O cache não garante retenção
-permanente: o navegador pode remover dados por quota ou política de armazenamento.
-A instalação é oferecida pela interface nativa de navegadores compatíveis.
-
-Para atualizar, incremente `VERSION` em `service-worker.js` junto com a mudança.
-O portal mostra uma mensagem quando a nova versão aguarda ativação; o botão
-Atualizar ativa o worker e recarrega. Caches de laboratórios visitados migram
-entre versões e são atualizados pela rede nas próximas visitas. Remova caches
-deliberadamente quando uma mudança incompatível de modelo exigir nova simulação.
-
-## Dependências e licenças
-
-O portal novo não depende de CDN. Plotly 2.35.2 foi incluído localmente para
-preservar o SISO, com licença MIT em `assets/vendor/plotly-LICENSE`. As duas
-referências a fontes Google foram removidas **somente na cópia** de Buck com PID;
-o fallback CSS original se aplica. Veja [INTEGRATION.md](docs/INTEGRATION.md).
-
-Pillow só é necessário para regenerar ícones (`python scripts/generate-assets.py`),
-não para executar ou verificar o portal. Integrações são reproduzíveis com
-`python scripts/integrate-simulators.py`. Não execute esse script para aprovar
-mudanças desconhecidas nos originais: revise primeiro os modelos e o diff.
-
-MIT para o código original do portal; [LICENSE](LICENSE) preservada do repositório.
-Atribuições fornecidas foram mantidas. A ausência de autoria/licença explícita em
-um arquivo herdado deve ser esclarecida antes de redistribuir contribuições externas.
-
-## English quick start
-
-Serve the repository with `python -m http.server 8000`, then open localhost:8000.
-Run `npm test` with Node 22+. No dependency installation or production build is
-required. Enable GitHub Pages from **main / root** after reviewing and pushing.
-The portal is bilingual; imported simulators are Portuguese-only, clearly labeled,
-and retain their numerical scripts. Add labs through JSON metadata and static files.
-See the bilingual integration and validation documents for scientific limitations.
+> **EN:** Run `python -m http.server 8000` for local development and `npm.cmd test` with Node.js 22+. No package installation or production build is required. The ten catalog apps are six Portuguese-only legacy apps and four EN/PT-BR apps; Spanish catalog text does not mean Spanish app support. See the linked architecture and validation documents before contributing.
+>
+> **ES:** Para desarrollo local, ejecute `python -m http.server 8000`; las pruebas requieren Node.js 22+ (`npm.cmd test`). No hace falta instalar paquetes ni generar una compilación. El catálogo incluye seis aplicaciones heredadas solo en portugués y cuatro en inglés/portugués; las descripciones en español no indican que las aplicaciones estén traducidas.

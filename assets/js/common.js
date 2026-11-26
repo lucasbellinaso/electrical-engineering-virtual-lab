@@ -1,4 +1,4 @@
-import {language, setLanguage, t, storage} from './i18n.js';
+import {language, setLanguage, t, storage, configureLanguagePicker} from './i18n.js';
 export const siteRoot = new URL('../../', import.meta.url);
 export let config = {};
 const system = matchMedia('(prefers-color-scheme: dark)');
@@ -9,6 +9,7 @@ export async function initialize() {
   applyTheme(theme); system.addEventListener('change', () => { if (theme === 'auto') applyTheme(theme); });
   const themePicker = document.querySelector('#theme');
   if (themePicker) { themePicker.value = theme; themePicker.addEventListener('change', e => { theme = e.target.value; storage.set('eevl-theme',theme); applyTheme(theme); }); }
+  configureLanguagePicker();
   await setLanguage(language);
   document.querySelector('#language')?.addEventListener('change', e => { setLanguage(e.target.value).catch(() => { e.target.value = language; alert(t('loadError')); }); });
   try { const res = await fetch(new URL('data/config.json',siteRoot)); if (res.ok) config = await res.json(); } catch { /* A repository link is optional. */ }

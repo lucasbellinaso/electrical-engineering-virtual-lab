@@ -1,0 +1,169 @@
+# Arquitetura do EEVL
+
+Referência normativa de princípios, decisões e contratos. Estado inspecionado em
+26/11/2026, base `78f7f9b`; evolução proposta em [ROADMAP.md](ROADMAP.md).
+
+## Propósito e limites
+
+Plataforma aberta de aplicativos educacionais de Engenharia Elétrica para graduação,
+pós-graduação, experimentação e projeto/teste de controle de baixa e média complexidade.
+Não pretende substituir integralmente MATLAB, Simulink, PLECS ou outros ambientes
+científicos. Seus pilares são **simplicidade de utilização**, **transparência matemática**
+e **modularidade de desenvolvimento**.
+
+O uso normal acontece exclusivamente no navegador: HTML, CSS e módulos JavaScript,
+sem backend, servidor de processamento, cadastro ou instalação obrigatória. GitHub
+Pages serve arquivos estáticos, inclusive em subdiretório. A instalação da PWA é opcional.
+Node, Python, NumPy, SciPy, Python Control e Octave podem apoiar desenvolvimento e
+validação; não integram os requisitos de execução dos aplicativos.
+
+## Estado implementado
+
+| Camada | Implementação atual |
+|---|---|
+| Portal | index/about/contribute; CSS e temas compartilhados |
+| Catálogo | JSON de simuladores/categorias, busca, dificuldade, estado e ordenação |
+| Idiomas | pt-BR, en, es no portal; fallback inglês; idiomas reais por aplicativo |
+| Navegação de legados | apresentações com iframe; arquivo de execução separado |
+| Modelos puros | template RC, RC/RL/RLC, análise nodal resistiva e fasorial |
+| Compartilhamento | modelo, Worker, gráficos e deduções em electrical-circuits/shared |
+| PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
+| Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
+
+Há dez entradas disponíveis no catálogo desta base: seis legados em português e quatro
+aplicativos originais EN/PT-BR. O espanhol das descrições **não** muda essa classificação.
+O template RC fica fora do catálogo. A lista atualizável de arquivos e metadados é
+[data/simulators.json](data/simulators.json), não este inventário datado.
+
+Não existem ainda interpretador MATLAB/Octave compartilhado, gerenciador genérico de
+projetos, motor genérico de blocos, identificação ou otimização. A análise nodal atual
+não equivale a um editor simbólico/multifísico completo.
+
+## Organização dos aplicativos
+
+As áreas técnicas atuais continuam em `data/categories.json`. Uma segunda dimensão
+conceitual orienta projeto e documentação, sem novos filtros obrigatórios nesta entrega:
+
+| Finalidade | Atividade e interface |
+|---|---|
+| Concept Labs / Laboratórios Conceituais | modelos predefinidos, poucos parâmetros, gráficos e deduções; sem programação obrigatória; projetos opcionais |
+| Engineering Labs / Laboratórios de Engenharia | plantas físicas configuráveis, estados iniciais, referências e perturbações; futuramente controle programável, múltiplas taxas e projetos |
+| Modeling & Simulation / Modelagem e Simulação | futuro ambiente genérico de plantas, blocos, sistemas contínuos/discretos/híbridos, ODE não linear e subsistemas |
+| Analysis & Design Tools / Análise e Projeto | SISO existente; evolução para MIMO, identificação, otimização, sinais e programação matemática |
+
+Aplicativos conceituais devem permanecer simples mesmo que outros módulos ganhem
+capacidades avançadas. 3D só deve entrar quando contribuir para a atividade; associação
+de variáveis a objetos 3D é planejamento, não requisito de todo laboratório.
+
+## Estrutura e dependências
+
+`assets/js/{i18n,common,app,document,lab}.js` cuida do portal. Modelos reutilizáveis
+já estão separados da UI nos aplicativos originais. Consulte as interfaces reais em
+[docs/API.md](docs/API.md) antes de implementar matemática semelhante.
+
+Uma futura `assets/js/core/` pode reunir matrix, complex, polynomial, control,
+simulation, identification, optimization, signal-processing, symbolic, interpreter
+e project. **Esses nomes não são módulos existentes**; não criar arquivos vazios.
+Extrair quando houver necessidade real e contrato testável. Dependências de UI não
+podem contaminar o modelo puro. Gráficos e 3D também devem ter interfaces próprias.
+
+Plotly 2.35.2 é uma dependência local herdada do SISO; KaTeX 0.16.22 renderiza equações
+localmente nos aplicativos originais. Licenças estão em `assets/vendor/`. A inclusão
+de Math.js, ml-matrix ou Nerdamer exigirá avaliação de licença, tamanho, manutenção,
+confiabilidade, compatibilidade offline e ganho efetivo. Nada foi incluído automaticamente.
+
+## Contratos atuais e evolução
+
+### Catálogo e idioma
+
+Títulos, descrições e palavras-chave do catálogo e nomes de categorias têm en/pt-BR/es.
+`languages` informa a interface e documentação realmente disponíveis no **aplicativo**.
+Identificador, caminho relativo, autores, colaboradores, versão, datas, dificuldade,
+estado, referências, validação e evidência são preservados. `planned` exige caminho
+nulo e não pode simular disponibilidade. Não inferir validação pela aparência.
+
+A seleção e fallback estão definidos em [docs/I18N.md](docs/I18N.md). O modelo matemático
+é único para todos os idiomas; número formatado não deve voltar ao algoritmo como string.
+
+### Matemática e dados
+
+Os modelos atuais têm formatos diferentes; não há contrato universal já implantado.
+Matrizes numéricas são arrays de linhas, polinômios do SISO usam coeficientes em ordem
+decrescente, e a análise fasorial usa complexos `{re, im}`. Esses detalhes estão na API.
+Priorizar comportamento MATLAB/GNU Octave em futuras interfaces, com adaptadores
+explícitos para evitar mudanças silenciosas de orientação, unidades, índices e sinais.
+
+Proposta futura: envelopes JSON com `kind`, `schemaVersion`, identificação, unidades,
+parâmetros e dados. Plantas terão representação TF/SS/ZPK, discreta ou ODE; sinais terão
+tempo, canais, unidades e amostragem; controladores terão portas, parâmetros, memória,
+inicialização e tarefas. Os esquemas não estão congelados nem implementados. Separar
+versão do formato, versão do modelo e identificação do aplicativo. Validar e migrar
+formatos explicitamente antes de consumi-los; rejeitar versões desconhecidas.
+
+### Simulação futura
+
+Plantas não lineares devem separar entradas, saídas, parâmetros, estados contínuos,
+condições iniciais, derivadas e equações de saída. O motor integra estados; a interface
+apenas configura e apresenta. Deve poder acomodar TF, SS, ZPK, sistemas discretos,
+modelos identificados, circuitos e blocos sem obrigar cada app a implementar tudo.
+
+Editor futuro: fontes, álgebra, saturação, integrador, atraso discreto, TF/SS, plantas
+e controladores programáveis, subsistemas, osciloscópios e 3D pertinente. Ordenar
+dependências, distinguir integração e eventos, detectar laços algébricos e informar
+quais podem ser resolvidos. Não alegar suporte genérico a DAE por existir uma solução
+específica de MNA ou realimentação no SISO.
+
+### Controladores programáveis futuros
+
+Campos separados: entradas, saídas, parâmetros/constantes, memória explícita,
+inicialização, código periódico e período. Entradas vêm da planta ou de outros blocos;
+parâmetros ficam constantes durante a execução normal. Memória persiste, locais vivem
+só na chamada atual, e saídas mantêm valor entre atualizações (ZOH).
+
+Múltiplas tarefas devem operar no **tempo virtual**, não por `setInterval` físico.
+Proposta de política: eventos simultâneos ordenados por prioridade declarada e ID
+estável; definir se leituras veem o snapshot anterior ou atualizações já confirmadas,
+antes de oferecer acoplamentos diretos. Controladores em cascata exigirão dependência
+explícita. Monitorar memória/variáveis internas e registrar ordem no resultado.
+A memória explícita tem finalidade didática. Sintaxe e exemplo PI em
+[docs/LANGUAGE.md](docs/LANGUAGE.md); nada desse runtime foi implementado nesta tarefa.
+
+### Projetos e armazenamento futuros
+
+Gerenciador compartilhado: novo, abrir, salvar/salvar como, duplicar, renomear, excluir,
+importar/exportar, recentes, autosave e aviso de alterações não salvas. JSON versionado;
+extensões **propostas**, ainda não definitivas: `.eevl` projeto, `.eevlc` controlador,
+`.eevlp` planta. Um projeto poderá guardar planta/parâmetros, estados iniciais,
+controladores/memória/código, períodos, referências, perturbações, configuração de
+simulação/gráficos e resultados opcionais. CSV e SVG/PNG quando pertinentes.
+
+File System Access API será opcional: escolher pasta por gesto do usuário, guardar
+handles em IndexedDB (não cookies), restaurar referências e verificar permissões;
+solicitar autorização novamente quando necessário. Sem suporte, usar IndexedDB e
+importação/exportação convencional. O aplicativo deve funcionar sem pasta obrigatória.
+Nunca enviar arquivos pessoais automaticamente ao GitHub. Nenhum gerenciador foi criado.
+
+## SISO: referência e reutilização
+
+`simulators/control-systems/siso/app.html` permanece a aplicação integrada; o original
+de referência continua em `Control Systems/`, com hashes em `docs/provenance.json`.
+O [inventário confirmado](docs/SISO.md) distingue funções numéricas de funções ligadas
+à UI. Extrair, generalizar, adaptar convenções, testar e migrar progressivamente,
+comparando comportamento antes/depois. Não criar outro app que duplique o SISO.
+Interface funcional não prova validação completa; nenhuma extração extensa foi feita.
+
+## PWA, transparência e validação
+
+Preservar manifesto, ícones, escopo relativo, instalação opcional e atualização.
+O shell usa rede primeiro com cache offline; módulos, bibliotecas e simuladores são
+armazenados apenas quando visitados. Traduções oficiais fazem parte do shell.
+O navegador pode remover dados; offline não é garantia de armazenamento permanente.
+
+Cada gráfico deve declarar unidades, escalas, eixos, referências, normalizações e
+convenções. Quando houver coordenadas não cartesianas, mostrar também posição cartesiana;
+distinguir posição, componentes vetoriais e vetores unitários. Explicar singularidades
+e limites físicos em detalhes acessíveis sem sobrecarregar a tela principal.
+
+Critérios científicos e evidências em [docs/VALIDATION.md](docs/VALIDATION.md).
+Registros históricos em SPECIFICATION e IMPLEMENTATION-REPORT não são certificações
+atuais. Nesta entrega, nenhuma equação ou algoritmo de aplicativo foi modificado.

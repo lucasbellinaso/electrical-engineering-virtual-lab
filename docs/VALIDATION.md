@@ -1,17 +1,55 @@
 # Validação e verificação / Validation and verification
 
+Referência atual de critérios. As evidências específicas ficam nos relatórios
+versionados abaixo; o histórico de interface não é validação científica.
+
+## Critérios gerais
+
+- Experimental: sem verificação suficiente. Verificação analítica exige comparação
+  com solução conhecida; validação numérica exige ferramenta/referência independente;
+  validação experimental exige medições e dados reproduzíveis. Vários níveis só com
+  evidência para cada um. Não inferir nível pela presença de testes ou pela autoria.
+- Registrar versão/commit, ambiente/ferramentas, parâmetros, unidades, condições
+  iniciais, hipóteses, tolerâncias, resultados, limitações e testes não executados.
+- Cobrir, conforme aplicável: casos analíticos, extremos, entradas inválidas,
+  resíduos, convergência, estabilidade, conservação de energia e condicionamento.
+- NumPy/SciPy/Python Control e GNU Octave são referências de desenvolvimento,
+  não dependências de execução. Python Control e SciPy podem compartilhar rotinas:
+  não contá-los automaticamente como duas referências totalmente independentes.
+- Criar progressivamente testes para matrizes, polinômios/raízes, autovalores,
+  exponencial matricial, discretização, respostas temporais/frequência, margens,
+  lugar das raízes, Riccati, integração, identificação e otimização quando existirem
+  módulos correspondentes. A lista não implica implementação atual.
+
+## Evidências atuais
+
+| Modelo | Relatório | Limite da evidência |
+|---|---|---|
+| Template RC | seção abaixo | solução analítica de primeira ordem |
+| RC/RL/RLC | [linear-circuits.md](validation/linear-circuits.md) | comparação analítica, energia e convergência |
+| Nodal resistivo | [nodal-analysis.md](validation/nodal-analysis.md) | soluções conhecidas, KCL e potência |
+| Nodal fasorial | [nodal-analysis-ac.md](validation/nodal-analysis-ac.md) | fasores analíticos, ressonância e potência complexa |
+| Legados | [INTEGRATION.md](INTEGRATION.md) e [SISO.md](SISO.md) | preservação; classificação experimental |
+
+Não transferir a evidência de um modelo a outro. API disponível em [API.md](API.md).
+
 ## O que cada teste demonstra
 
 `npm test` usa apenas Node.js (22+). `scripts/check.mjs` verifica sintaxe JS e
 scripts inline, JSON, chaves e placeholders de tradução, metadados, arquivos,
 identificadores únicos, categorias, links locais e dimensões dos PNGs.
 `tests/preservation.test.mjs` compara hashes dos originais e dependência Plotly e
-confirma que todo script inline dos cinco simuladores permanece idêntico.
+confirma que os scripts inline dos arquivos registrados em provenance.json permanecem idênticos.
 **Esses testes não validam cientificamente os simuladores herdados.**
 
 `tests/service-worker.test.mjs` exercita escopo em subdiretório, cache essencial,
 armazenamento seletivo, acesso offline, parâmetros na URL e migração de cache.
 O relatório `IMPLEMENTATION-REPORT.md` registra as verificações em Edge real.
+
+`tests/i18n.test.mjs` verifica o módulo real de idiomas com DOM/storage/fetch controlados:
+seleção, fallback, persistência, paridade, placeholders, formatos e valores numéricos.
+Testes de cache exercitam espanhol e módulos em subdiretório. Esses testes não provam
+qualidade física dos modelos nem substituem acessibilidade e responsividade em dispositivo real.
 
 ## Template RC 1.0.0: evidência analítica reproduzível
 

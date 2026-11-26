@@ -2,7 +2,7 @@
 
 ## Português
 
-Durante a implementação surgiram cinco arquivos em três pastas do usuário.
+Durante a implementação foram recebidos seis arquivos em três pastas do usuário.
 Todos foram preservados; veja hashes SHA-256 em `provenance.json`.
 
 | Original | Cópia de execução | Alterações |
@@ -13,9 +13,11 @@ Todos foram preservados; veja hashes SHA-256 em `provenance.json`.
 | Fundamental Eletronics and Electrical Circuits/laboratorio_ampop.html | simulators/analog-electronics/opamp/app.html | Nenhuma; cópia idêntica |
 | Control Systems/Buck com PID.html | simulators/control-systems/buck-pid/app.html | Remoção dos dois links de fontes externas Google |
 
+| Power Electronics/buck_degrau.html | simulators/power-electronics/buck-step/app.html | Nenhuma; cópia idêntica |
+
 **Nenhum script numérico inline foi modificado.** O teste de preservação compara
 todos esses scripts e as transformações exatas. A interface herdada não acompanha
-o tema/idioma do portal. Cada `index.html` fornece apresentação bilíngue, retorno,
+o tema/idioma do portal. Cada `index.html` fornece apresentação no portal, retorno,
 metadados, aviso de validação e iframe; abrir página inteira mantém as funções de
 URL e exportação que cada original já oferece. Não foram adicionadas funções de
 exportação ausentes aos modelos legados. O template exemplifica essas funções.
@@ -56,12 +58,12 @@ eventuais contribuições externas antes de redistribuí-las sob outra licença.
 
 ## English
 
-Five supplied HTML files were integrated. Three execution copies are byte-identical.
+Six supplied HTML files were integrated. Four execution copies are byte-identical.
 SISO changes only the Plotly script URL to a vendored copy of the same version;
 Buck PID removes only two Google Fonts link tags. **All inline numerical scripts
 remain identical.** The provenance and preservation test document these changes.
 
-The independent wrappers are bilingual; inherited applications remain Portuguese-only
+The independent wrappers use the shared portal translations; inherited applications remain Portuguese-only
 and retain their original appearance, model assumptions and numerical methods.
 Scientific validation is experimental for all six; no independent evidence was
 provided. The duty-cycle step laboratory (`buck-step`) was supplied later and is

@@ -1,25 +1,53 @@
 # Instruções permanentes para agentes
 
-- Leia `docs/SPECIFICATION.md`, `CONTRIBUTING.md` e a documentação do simulador
-  antes de editar. Inspecione os arquivos atuais; o usuário pode adicionar modelos.
-- Preserve a identidade azul, tipografia de sistema, tokens de tema e componentes
-  existentes. Mantenha responsividade, foco visível, teclado e contraste.
-- Todo código novo de interface e documentação de simulador deve ser EN/PT-BR.
-  Declare idiomas reais de legados sem suporte bilíngue; não os traduza alterando
-  silenciosamente algoritmos. Preserve nomes e atribuições originais.
-- Separe modelo de UI, documente equações, unidades, hipóteses, método numérico,
-  padrões, limites e decisões. Crie testes numéricos adequados, incluindo casos
-  analíticos, convergência e entradas inválidas quando aplicáveis.
-- Não invente resultados, validação, referências, autoria ou certificações.
-  Níveis de validação exigem evidência reproduzível versionada.
-- Não modifique modelo, parâmetros ou método existentes sem justificativa
-  documentada. Arquivos fornecidos ficam preservados; integrações têm hashes em
-  `docs/provenance.json`. Nunca regenere hashes para encobrir uma alteração.
-- Não adicione dependências externas desnecessárias, backend, API keys ou serviços
-  pagos. Toda simulação é local. Preserve GitHub Pages e caminhos relativos.
-- Atualize catálogo JSON, traduções, documentação e cache VERSION quando necessário.
-  Adicionar categorias e simuladores não deve exigir editar a lógica da home.
-- Execute `npm test` (Windows: `npm.cmd test`) e verifique os fluxos afetados.
-  Identifique claramente limitações e testes não executados.
-- Não realize push, publicação externa ou alterações destrutivas sem autorização
-  do usuário. Não sobrescreva trabalho concorrente do usuário.
+## Antes de editar
+
+- Leia [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md),
+  [ROADMAP.md](ROADMAP.md) e a documentação do módulo afetado. A especificação e
+  os relatórios antigos em docs são registros históricos, não regras concorrentes.
+- Inspecione árvore, branch, diff, catálogo, módulos e testes. Preserve alterações
+  existentes e trabalho concorrente; use branch/checkout isolado quando necessário.
+- Distinga recursos implementados em [docs/API.md](docs/API.md) de propostas em
+  [docs/LANGUAGE.md](docs/LANGUAGE.md) e ROADMAP. Não anuncie planejamento como pronto.
+
+## Implementação e experiência
+
+- Mantenha execução normal no navegador, hospedagem estática e caminhos relativos.
+  Node/Python são ferramentas de desenvolvimento, nunca requisitos de execução.
+- Reutilize algoritmos e componentes antes de criar outros. Não duplique o SISO.
+  Extrações devem ser graduais, justificadas e acompanhadas de regressão.
+- Preserve identidade azul, tokens de tema, componentes, simplicidade, teclado,
+  foco visível, toque e contraste. A complexidade da UI deve acompanhar a tarefa.
+- Separe matemática e traduções da interface. Novos aplicativos devem prever
+  pt-BR, en e es desde o início, usando [docs/I18N.md](docs/I18N.md). Declare
+  somente os idiomas realmente disponíveis e revisados. Preserve legados monolíngues.
+- Mantenha identificadores, variáveis, unidades e LaTeX independentes do idioma.
+  Use Intl para apresentação; não interprete números por remoção de separadores.
+- Documente equações, deduções, hipóteses, unidades, coordenadas, sinais, método,
+  condições iniciais, limitações, normalizações e singularidades pertinentes.
+  Use LaTeX com recursos locais sem sobrecarregar a interface principal.
+- Evite frameworks, compiladores e dependências desnecessárias. Avalie licença,
+  tamanho, manutenção e confiabilidade de bibliotecas antes de incorporá-las.
+- Preserve PWA, módulos offline e cache sob demanda. Atualize VERSION ao mudar
+  recursos publicados. Não precacheie todos os aplicativos.
+- Nunca use eval ou Function para executar código matemático do usuário.
+  O interpretador MATLAB/Octave é planejamento, não licença para executar JavaScript.
+- Não envie arquivos pessoais automaticamente ao GitHub. Acesso a pastas é opcional;
+  formatos de projeto e armazenamento devem seguir as decisões da arquitetura.
+
+## Ciência, preservação e entrega
+
+- Não invente resultados, evidências, referências, autoria ou validação.
+  [docs/VALIDATION.md](docs/VALIDATION.md) define os critérios.
+- Não altere equações, parâmetros, hipóteses ou métodos existentes silenciosamente.
+  Justifique mudanças e compare o comportamento antes/depois.
+- Preserve originais, autoria, licenças e hashes de proveniência. Nunca regenere
+  hashes para encobrir modificações; mantenha uma referência SISO para regressão.
+- Crie testes relevantes: casos analíticos, resíduos, convergência, estabilidade,
+  limites, entradas inválidas e condicionamento conforme o modelo.
+- Atualize catálogo e documentação ao mudar contratos. Mantenha os documentos de
+  referência ligados por links, sem copiar regras que possam divergir.
+- Execute npm test (Windows: npm.cmd test) e verificações dos fluxos afetados.
+  Informe versões, tolerâncias, limitações e testes não executados.
+- Push, publicação e alterações destrutivas exigem autorização do usuário.
+  Quando a entrega for PR, não faça merge automaticamente.

@@ -1,11 +1,11 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.0.10';
+const VERSION='eevl-v1.1.0';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
  './','index.html','about.html','contribute.html','manifest.json',
  'assets/css/main.css','assets/js/app.js','assets/js/common.js','assets/js/i18n.js','assets/js/document.js','assets/js/lab.js',
- 'data/config.json','data/categories.json','data/simulators.json','locales/en.json','locales/pt-BR.json',
+ 'data/config.json','data/categories.json','data/simulators.json','locales/en.json','locales/pt-BR.json','locales/es.json',
  'assets/branding/logo-icon.svg','assets/branding/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png',
  'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg','assets/images/nodal-analysis.svg','assets/images/rc-rl.svg','assets/images/rlc.svg','assets/images/nodal-analysis-ac.svg'
 ].map(p=>new URL(p,root).href);
@@ -36,4 +36,4 @@ self.addEventListener('fetch',event=>{
    event.respondWith((async()=>{const cache=await caches.open(VISITED);try{const response=await fetch(request);if(response.ok)await cache.put(key.href,response.clone());return response;}catch{const cached=await cache.match(key.href);return cached||offline();}})());
  } else if(request.mode==='navigate') event.respondWith(fetch(request).catch(()=>offline()));
 });
-function offline(){return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>EEVL · Offline</title><h1>Offline</h1><p>This resource has not been saved yet. Connect and open it once.</p><p>Este recurso ainda não foi armazenado. Conecte-se e abra-o uma vez.</p><a href="'+new URL('index.html',root).href+'">EEVL · Catalog / Catálogo</a>',{status:503,headers:{'Content-Type':'text/html; charset=utf-8'}});}
+function offline(){return new Response('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>EEVL · Offline</title><h1>Offline</h1><p lang="en">This resource has not been saved yet. Connect and open it once.</p><p lang="pt-BR">Este recurso ainda não foi armazenado. Conecte-se e abra-o uma vez.</p><p lang="es">Este recurso todavía no se ha guardado. Conéctate y ábrelo una vez.</p><a href="'+new URL('index.html',root).href+'">EEVL · Catalog / Catálogo</a></html>',{status:503,headers:{'Content-Type':'text/html; charset=utf-8'}});}

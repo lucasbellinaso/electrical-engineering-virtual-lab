@@ -33,3 +33,11 @@ test('Shell files are served network-first and fall back to the saved copy offli
  assert.equal(await (await h.request('data/simulators.json','cors')).text(),'network:'+h.root+'data/simulators.json');
  assert.equal((await h.request('index.html')).status,200);
 });
+
+test('All official translations and shared modules are available offline in a subdirectory',async()=>{
+ const h=harness();await h.lifecycle('install');await h.lifecycle('activate');h.offline();
+ for(const path of ['locales/en.json','locales/pt-BR.json','locales/es.json','assets/js/i18n.js','assets/js/common.js']){
+  const response=await h.request(path,'cors');assert.equal(response.status,200);assert.match(await response.text(),/shell:/);
+ }
+ const missing=await h.request('simulators/not-visited/index.html');const html=await missing.text();assert.equal(missing.status,503);assert.match(html,/lang="es"/);assert.match(html,/todavía no se ha guardado/);
+});

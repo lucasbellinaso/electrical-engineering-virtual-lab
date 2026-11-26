@@ -1,4 +1,10 @@
-# EEVL — especificação e plano
+# EEVL — especificação e plano · HISTÓRICO
+
+> Registro histórico da implementação e de extensões anteriores. Descrições,
+> contagens de testes, disponibilidade e restrições de publicação refletem a etapa
+> narrada. Não são o estado atual nem diretrizes concorrentes. Consulte
+> [ARCHITECTURE.md](../ARCHITECTURE.md), [ROADMAP.md](../ROADMAP.md),
+> [API.md](API.md) e [VALIDATION.md](VALIDATION.md).
 
 ## Escopo
 Portal educacional estático em HTML5, CSS3 e JavaScript nativo, sem backend,

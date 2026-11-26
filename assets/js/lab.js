@@ -1,13 +1,13 @@
 import {initialize,siteRoot} from './common.js';
-import {t,localized} from './i18n.js';
+import {t,localized,languageLabel} from './i18n.js';
 let simulator,category;
 function render(){
  if(!simulator)return;
  document.title=localized(simulator.title)+' — EEVL';
  document.querySelector('#lab-title').textContent=localized(simulator.title);
  document.querySelector('#lab-description').textContent=localized(simulator.description);
- document.querySelector('#lab-category').textContent=localized(category.name)+' / '+t('experimental');
- document.querySelector('#lab-metadata').textContent=`${simulator.authors.join(' · ') || t('authorUnspecified')} · ${simulator.version} · PT-BR`;
+ document.querySelector('#lab-category').textContent=localized(category.name)+' / '+t(simulator.validation[0] || 'noValidation');
+ document.querySelector('#lab-metadata').textContent=`${simulator.authors.join(' · ') || t('authorUnspecified')} · ${simulator.version} · ${simulator.languages.map(languageLabel).join(' / ')}`;
  document.querySelector('#lab-references').textContent=simulator.references.map(r=>localized(r.title)).join(' · ');
 }
 document.addEventListener('languagechange',render);
