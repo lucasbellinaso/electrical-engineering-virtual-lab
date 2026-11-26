@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
+<title id="title">Magnetostatic fields</title><desc id="desc">Magnetic field lines around a current loop, with a field probe.</desc>
+<defs><radialGradient id="bg"><stop stop-color="#134f6b"/><stop offset="1" stop-color="#091b2b"/></radialGradient><marker id="a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#efcf83"/></marker></defs>
+<path fill="url(#bg)" d="M0 0h800v450H0z"/>
+<g stroke="#32576c" stroke-width="1" opacity=".5"><path d="M0 100h800M0 175h800M0 250h800M0 325h800M0 400h800M100 70v380M200 70v380M300 70v380M400 70v380M500 70v380M600 70v380M700 70v380"/></g>
+<g fill="none" stroke="#efcf83" stroke-width="2" opacity=".85">
+<path d="M400 340C280 340 240 270 270 230S400 180 400 110C400 180 530 190 530 230S520 340 400 340Z"/>
+<path d="M400 385C190 385 130 260 190 215S400 170 400 80C400 170 610 170 610 215S610 385 400 385Z"/>
+<path d="M400 425C80 425 30 230 110 195S400 150 400 60C400 150 690 150 690 195S720 425 400 425Z"/>
+<path d="M400 350V155" marker-end="url(#a)"/><path d="M565 302l-18 18" marker-end="url(#a)"/><path d="M198 267l6-28" marker-end="url(#a)"/>
+</g>
+<ellipse cx="400" cy="260" rx="141" ry="42" stroke="#61c7d1" stroke-width="9" fill="none"/>
+<g stroke="#ffd786" fill="#091b2b" stroke-width="2"><circle cx="470" cy="175" r="10"/><path d="M450 175h40M470 155v40"/></g>
+<text x="40" y="46" fill="#e8f3f5" font-family="system-ui,sans-serif" font-size="25" font-weight="650">B / H · Biot–Savart</text><text x="40" y="77" fill="#9bbdce" font-family="system-ui,sans-serif" font-size="16">EEVL · Magnetostatics</text>
+</svg>
