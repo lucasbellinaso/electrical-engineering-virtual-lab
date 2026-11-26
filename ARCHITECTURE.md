@@ -26,16 +26,21 @@ validação; não integram os requisitos de execução dos aplicativos.
 | Idiomas | pt-BR, en, es no portal; fallback inglês; idiomas reais por aplicativo |
 | Navegação de legados | apresentações com iframe; arquivo de execução separado |
 | Modelos puros | template RC, RC/RL/RLC, análise nodal resistiva e fasorial, magnetostática (fios, espira e solenoide em `simulators/electromagnetics/magnetostatics/`), eletrostática (cargas, esfera, fio e placas em `simulators/electromagnetics/electrostatics/`) |
-| Núcleo matemático | `assets/js/core/`: polynomial, matrix, control, numeric, complex, residue, timeresp, design, riccati, analysis, solvers, eigen, models (sem consumidores ainda; fixtures SciPy) |
+| Núcleo matemático | `assets/js/core/`: polynomial, matrix, cmatrix, control, numeric, complex, residue, timeresp, design, riccati, analysis, solvers, eigen, models; LT consome complex/cmatrix/numeric; fixtures SciPy |
 | Compartilhamento | modelo, Worker, gráficos e deduções em electrical-circuits/shared |
 | PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
 | Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
 
-Há doze entradas disponíveis no catálogo desta base: seis legados e seis aplicativos originais, todos
+Há treze entradas disponíveis no catálogo desta base: seis legados e sete aplicativos originais, todos
 declarados em EN/PT-BR/ES; nos legados a tradução é parcial e o original segue em português. O espanhol das descrições, sozinho, **não** muda
 essa classificação; vale o campo `languages` de cada entrada.
 O template RC fica fora do catálogo. A lista atualizável de arquivos e metadados é
 [data/simulators.json](data/simulators.json), não este inventário datado.
+
+O laboratório de [LT como quadripolo](docs/TRANSMISSION-LINE.md), em Sistemas
+Elétricos de Potência, usa modelo puro por fase RMS e é o primeiro consumidor
+do núcleo matemático nos aplicativos. O núcleo também é armazenado sob demanda
+para manter o laboratório disponível offline depois da primeira visita.
 
 Não existem ainda interpretador MATLAB/Octave compartilhado, gerenciador genérico de
 projetos, motor genérico de blocos, identificação ou otimização. A análise nodal atual

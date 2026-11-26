@@ -16,8 +16,10 @@ test('PWA shell supports subdirectories, installs no simulator and claims client
 test('Only visited laboratory resources are cached; query URLs work offline',async()=>{
  const h=harness();await h.lifecycle('install');await h.lifecycle('activate');
  await h.request('simulators/control-systems/siso/index.html');await h.request('assets/vendor/plotly-2.35.2.min.js','cors');
+ for(const path of ['assets/js/core/complex.js','assets/js/core/cmatrix.js','assets/js/core/numeric.js','simulators/power-systems/transmission-line/index.html','simulators/power-systems/transmission-line/locales.json'])await h.request(path,'cors');
  h.offline();assert.equal((await h.request('simulators/control-systems/siso/index.html?voltage=10')).status,200);assert.equal((await h.request('assets/vendor/plotly-2.35.2.min.js','cors')).status,200);
  assert.equal((await h.request('simulators/never-visited/index.html')).status,503);assert.equal((await h.request('index.html')).status,200);
+ for(const path of ['assets/js/core/complex.js','assets/js/core/cmatrix.js','assets/js/core/numeric.js','simulators/power-systems/transmission-line/index.html','simulators/power-systems/transmission-line/locales.json'])assert.equal((await h.request(path,'cors')).status,200);
  assert.equal(await h.request('../unrelated/index.html'),undefined);
 });
 test('Updates preserve visited laboratories, remove only EEVL caches',async()=>{

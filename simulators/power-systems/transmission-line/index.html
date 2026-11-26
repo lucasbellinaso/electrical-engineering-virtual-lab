@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#102e4a"><title>Transmission line · EEVL</title>
+  <link rel="icon" href="../../../assets/branding/favicon.svg">
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./style.css"><script type="module" src="./ui.js"></script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="sim-header">
+  <a class="brand" href="../../../index.html"><img src="../../../assets/branding/logo-icon.svg" width="36" height="36" alt=""><span>EEVL</span></a>
+  <a class="back" href="../../../index.html#catalog" data-i18n="back">← Back to the catalog</a>
+  <div class="preferences"><select id="language" data-i18n-aria="language" aria-label="Language"></select><select id="theme" data-i18n-aria="theme" aria-label="Theme"><option value="auto" data-i18n="auto">Auto</option><option value="light" data-i18n="light">Light</option><option value="dark" data-i18n="dark">Dark</option></select></div>
+</header>
+<main id="main" class="sim-wrapper lt-app">
+  <div class="eyebrow" data-m="eyebrow">EEVL / POWER SYSTEMS / v1.0.0</div>
+  <h1 data-m="title">Transmission line: from two-port to load</h1>
+  <p class="intro" data-m="intro"></p>
+  <div class="experiments" role="group" data-m-aria="experiments">
+    <button type="button" data-preset="lesson" data-m="lesson"></button><button type="button" data-preset="ferranti" data-m="ferranti"></button><button type="button" data-preset="capacitive" data-m="capacitiveExperiment"></button><button type="button" data-preset="long" data-m="longExperiment"></button>
+  </div>
+  <details class="prediction"><summary data-m="predict"></summary><p id="prediction"></p></details>
+  <div class="lt-layout">
+    <section class="panel controls" aria-labelledby="parameters-title">
+      <h2 id="parameters-title" data-m="parameters"></h2>
+      <form id="parameters">
+        <fieldset class="mode-choices"><legend data-m="mode"></legend>
+          <label class="mode-choice"><input type="radio" name="mode" value="receiving" checked><span data-m="receivingMode"></span></label>
+          <label class="mode-choice"><input type="radio" name="mode" value="sending-open"><span data-m="sendingMode"></span></label>
+        </fieldset>
+        <p id="boundary-note" class="hint"></p>
+        <label><span data-m="length"></span><input name="lengthKm" type="number" min="0" max="1000" step="any" required value="400"></label>
+        <input id="length-slider" type="range" min="0" max="1000" step="1" value="400" data-m-aria="length" aria-label="Length (km)">
+        <label><span id="voltage-label"></span><input name="voltageKv" type="number" min="1" max="1000" step="any" required value="500"></label>
+        <fieldset id="load-controls"><legend data-m="load"></legend>
+          <label><span data-m="apparent"></span><input name="apparentMva" type="number" min="0" max="3000" step="any" required value="600"></label>
+          <label><span data-m="powerFactor"></span><input name="powerFactor" type="number" min="0.1" max="1" step="any" required value="0.9"></label>
+          <label><span data-m="loadType"></span><select name="loadType"><option value="inductive" data-m="inductive"></option><option value="capacitive" data-m="capacitive"></option></select></label>
+        </fieldset>
+        <details><summary data-m="distributed"></summary>
+          <label><span data-m="frequency"></span><input name="frequencyHz" type="number" min="40" max="70" step="any" required value="60"></label>
+          <label><span data-math="R'\;(\Omega/\mathrm{km})"></span><input name="resistanceOhmKm" type="number" min="0" max="1" step="any" required value="0.0256"></label>
+          <label><span data-math="L'\;(\mathrm{mH}/\mathrm{km})"></span><input name="inductanceMhKm" type="number" min="0.1" max="5" step="any" required></label>
+          <label><span data-math="C'\;(\mathrm{nF}/\mathrm{km})"></span><input name="capacitanceNfKm" type="number" min="1" max="50" step="any" required value="14.25"></label>
+          <button id="lossless" type="button" data-m="lossless"></button>
+        </details>
+        <div class="actions"><button class="primary" type="submit" data-m="calculate"></button><button id="reset" type="button" data-i18n="reset">Reset</button></div>
+      </form>
+      <p id="error" role="alert" class="error" hidden></p>
+      <p class="hint" data-m="rmsNote"></p>
+    </section>
+    <div id="results" class="results">
+      <section class="panel" aria-labelledby="diagram-heading">
+        <div class="panel-heading"><h2 id="diagram-heading" data-m="diagram"></h2><div class="switch" role="group" data-m-aria="representation"><button id="show-twoport" type="button" aria-pressed="true" data-m="twoport"></button><button id="show-pi" type="button" aria-pressed="false" data-m="pi"></button></div></div>
+        <div class="diagram-scroll" tabindex="0" role="region" data-m-aria="diagramDescription" aria-label="Transmission line"><svg id="diagram" viewBox="0 0 800 190" role="img" data-m-aria="diagramDescription" aria-label="Transmission line"></svg></div>
+        <p id="pi-values" class="hint" hidden></p>
+        <div class="metrics" aria-live="polite"><div><span data-m="sendingVoltage"></span><strong id="vs"></strong></div><div><span data-m="receivingVoltage"></span><strong id="vr"></strong></div><div><span>I_S / I_R (A)</span><strong id="currents"></strong></div></div>
+        <details><summary data-m="powers"></summary><div id="powers" class="power-values"></div></details>
+      </section>
+      <section class="panel" aria-labelledby="equation-heading">
+        <h2 id="equation-heading" data-m="connected"></h2><p class="hint" data-m="clickTerm"></p>
+        <div id="main-equation" class="eq"></div>
+        <div class="terms" role="group" data-m-aria="contributions"><button type="button" data-term="av" aria-pressed="true">AV_R</button><button type="button" data-term="bi" aria-pressed="false">BI_R</button><button type="button" data-term="cv" aria-pressed="false">CV_R</button><button type="button" data-term="di" aria-pressed="false">DI_R</button></div>
+        <p id="term-description"></p><output id="term-value"></output>
+        <details><summary data-m="parametersAbcd"></summary><div class="table-scroll"><table><thead><tr><th data-m="parameter"></th><th data-m="rectangular"></th><th data-m="polar"></th></tr></thead><tbody id="abcd"></tbody></table></div><p id="line-values"></p><p id="residual" class="hint"></p></details>
+      </section>
+      <section class="panel" aria-labelledby="profile-heading">
+        <div class="panel-heading"><h2 id="profile-heading" data-m="profile"></h2><label><span data-m="quantity"></span><select id="quantity"><option value="voltage" data-m="voltage"></option><option value="current" data-m="current"></option></select></label></div>
+        <svg id="profile" viewBox="0 0 800 290" role="img" data-m-aria="profileDescription" aria-label="Spatial profile"></svg>
+        <label class="probe-control"><span data-m="probe"></span><input id="probe" type="range" min="0" max="400" value="200" step="1"><output id="probe-value"></output></label>
+        <details><summary data-m="sampleTable"></summary><div class="table-scroll"><table><thead><tr><th>x (km)</th><th>|V| (kV)</th><th>∠V (°)</th><th>|I| (A)</th><th>∠I (°)</th></tr></thead><tbody id="samples"></tbody></table></div></details>
+      </section>
+      <section class="panel" aria-labelledby="phasor-heading"><h2 id="phasor-heading" data-m="phasors"></h2><p class="hint" data-m="phasorNote"></p><div class="phasor-grid"><svg id="voltage-phasors" viewBox="0 0 360 290" role="img" data-m-aria="voltagePhasors" aria-label="Voltage phasors"></svg><svg id="current-phasors" viewBox="0 0 360 290" role="img" data-m-aria="currentPhasors" aria-label="Current phasors"></svg></div></section>
+      <section class="panel"><h2 data-m="comparison"></h2><p data-m="comparisonNote"></p><div id="comparison"></div><p id="comparison-error"></p><p class="hint" data-m="nominalNote"></p></section>
+    </div>
+  </div>
+  <section class="panel theory"><h2 data-m="understand"></h2><div id="derivation"></div><details><summary data-m="limitations"></summary><p data-m="limitationsText"></p><p data-m="boundsText"></p><p data-m="singularityText"></p></details><p data-m="sourceNote"></p><a class="back" href="../../../docs/TRANSMISSION-LINE.md" data-m="modelDocumentation"></a> · <a class="back" href="../../../docs/validation/transmission-line.md" data-m="validationDocumentation"></a></section>
+</main>
+<div class="update-bar" id="update" hidden role="status"><span data-i18n="updateReady"></span><button id="update-button" data-i18n="update">Update</button></div>
+</body></html>

@@ -131,13 +131,33 @@ formatam dados do solver; não calculam nem validam o circuito.
 ## Núcleo matemático: assets/js/core/
 
 Módulos ESM puros (sem DOM, sem dependências, importáveis em Node e no navegador),
-extraídos gradualmente do SISO. **Nenhum aplicativo os consome ainda**; o SISO integrado
+extraídos gradualmente do SISO. O laboratório de LT consome complex.js, cmatrix.js e numeric.js; o SISO integrado
 continua usando suas funções internas, intactas. As funções portadas mantêm a aritmética
 original e são comparadas por igualdade exata com `app.html` (tests/helpers/siso-reference.mjs).
 Convenções: polinômios em ordem decrescente, matrizes por linhas, raízes e pontos `s`
 como `[re, im]`, frequências em rad/s, fase em graus. Entradas inválidas lançam
 TypeError/RangeError; os kernels portados não validam resultados intermediários
 (podem produzir Infinity/NaN como o original).
+
+## LT: simulators/power-systems/transmission-line/model.js
+
+`defaults`, `presets`, `bounds`, `validate(input)`, `lineParameters(input)` e
+`solve(input=defaults)`. Consumidor do núcleo matemático, sem DOM ou dependências externas.
+Entradas: `lengthKm`, `frequencyHz`, `resistanceOhmKm`, `inductanceMhKm`,
+`capacitanceNfKm`, `voltageKv` (linha RMS), `apparentMva` (trifásica),
+`powerFactor`, `loadType` (`inductive`/`capacitive`) e `mode`
+(`receiving`/`sending-open`). Em vazio exige `apparentMva=0`.
+
+`lineParameters` retorna `p,z,y,gamma,zc,exact,nominal,pi`; ABCD em
+`{A,B,C,D}` complexos `{re,im}`, `pi={series,shunt}` com admitância **por ramo**,
+ou `null` próximo de meia onda. `solve` acrescenta `vs,is,vr,ir` RMS por fase,
+`comparison`, 401 `samples` com `{x,voltage,current}`, `sendingPower` e
+`receivingPower` trifásicas em VA, `losses`/`integratedLosses` em W,
+`determinantResidual`, `errorPercent` (fasor V_S ou V_R) e `contributions`.
+`gamma` usa /km; `samples.x` usa km. Não altera entradas. Erros `RangeError`
+com `code`: `invalid`, `openLoad`, `resonance`. O consumidor usa o auxiliar
+`sinhc`, ainda com API instável, protegido por testes locais. Equações, ramos,
+domínio e limiares em [TRANSMISSION-LINE.md](TRANSMISSION-LINE.md).
 
 Tolerância de singularidade: `msolve`, `inv`, `csolve` e `cinv` aceitam um último argumento opcional
 `{ absTol, relTol }` (ambos finitos e ≥ 0, padrão 0). A matriz é singular se o maior módulo de pivô de
