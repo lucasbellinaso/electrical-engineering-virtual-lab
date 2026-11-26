@@ -8,8 +8,10 @@ O arquivo fornecido `Control Systems/SisoApp - projeto de controladores.html` pe
 O programa se identifica como SISO Design App, baseado no PythonSisoDesignApp,
 Prof. Lucas V. Bellinaso, UFSM. A atribuição foi preservada, sem usar marcas institucionais.
 
-`simulators/control-systems/siso/app.html` é uma cópia com **uma única substituição**:
-Plotly 2.35.2 via CDN → `../../../assets/vendor/plotly-2.35.2.min.js`.
+`simulators/control-systems/siso/app.html` é uma cópia com **duas alterações**:
+(1) Plotly 2.35.2 via CDN → `../../../assets/vendor/plotly-2.35.2.min.js`;
+(2) uma linha de proteção em `renderRows()`, que retorna cedo enquanto a planta `P` ainda é `null`
+(evita um `TypeError` em `P.poles`; aprovada pelo autor).
 Os métodos numéricos, equações, parâmetros, hipóteses, estilos e interface do
 programa fornecido não foram alterados. A página `index.html` ao lado é uma
 apresentação bilíngue independente, com um iframe e abertura em página inteira.
@@ -35,8 +37,10 @@ antes de abrir o simulador. O armazenamento depende da quota e política do nave
 
 ## English
 The supplied source is preserved byte for byte. The integrated `app.html` changes
-only the Plotly 2.35.2 script URL from CDN to the local copy of the same version.
-No mathematical model, algorithm, parameter or interface was changed. The bilingual
+the Plotly 2.35.2 script URL from CDN to the local copy of the same version and adds
+one guard line in `renderRows()` (it returns early while the plant `P` is still `null`,
+which avoided a `TypeError` on `P.poles`; approved by the author). No mathematical
+model, algorithm, parameter or interface was changed. The bilingual
 wrapper is independent; the original application is Portuguese only.
 
 Source inspection identifies state-space models, ZOH discretization with a matrix

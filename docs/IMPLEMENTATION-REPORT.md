@@ -13,8 +13,8 @@
 - Catálogo orientado a JSON, 12 categorias, busca por palavras-chave dos dois
   idiomas, filtros combináveis de área/dificuldade/estado e ordenação.
 - Cinco simuladores fornecidos integrados, originais preservados e código numérico
-  inline inalterado. Apenas localização de Plotly e remoção de fontes externas nas
-  cópias correspondentes; relatório detalhado em `INTEGRATION.md`.
+  inline inalterado, salvo uma linha de proteção em `renderRows()` do SISO. Apenas localização
+  de Plotly e remoção de fontes externas nas cópias correspondentes; relatório detalhado em `INTEGRATION.md`.
 - EN/PT-BR no portal e apresentações, tema claro/escuro/automático persistido.
 - Template RC executável: RK4 separado da UI, solução exata, gráfico SVG com
   inspeção por ponteiro/slider/teclado, tabela, métricas, reset, URL e CSV/SVG/PNG.

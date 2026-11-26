@@ -5,9 +5,10 @@
       "source": "Control Systems/SisoApp - projeto de controladores.html",
       "sourceSha256": "ce1b89602dd8379414b91d67c06e4ec167ef30a4d631de250e3c0a062ac05852",
       "integrated": "simulators/control-systems/siso/app.html",
-      "integratedSha256": "20c42b66611be0453d14ca85ab5bcadac668b1b8a7e9bee974dc2dc611f3b80a",
+      "integratedSha256": "b2f06a86f576b896b53dd5414e0b6815554c57f343d8dbc3d18ec39a20223f2f",
       "changes": [
-        "Plotly 2.35.2 CDN URL replaced with the local same-version copy."
+        "Plotly 2.35.2 CDN URL replaced with the local same-version copy.",
+        "renderRows() returns early while P is still null, avoiding a TypeError on P.poles (approved by the author; numerical code unchanged)."
       ]
     },
     {
