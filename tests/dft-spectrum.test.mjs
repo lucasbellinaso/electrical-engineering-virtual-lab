@@ -165,7 +165,7 @@ test('three locales share keys and placeholders, and every used key exists', () 
 test('all LaTeX sources render with KaTeX without errors', () => {
   const render = source => katex.renderToString(source, {throwOnError: true, displayMode: true, trust: false});
   const html = read(dir + 'index.html');
-  for (const m of html.matchAll(/data-tex="([^"]+)"/g)) render(m[1].replace(/&amp;/g, '&'));
+  for (const m of html.matchAll(/data-tex="([^"]+)"/g)) render(m[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<"));
   const dictionary = JSON.parse(read(dir + 'locales.json'));
   for (const messages of Object.values(dictionary)) for (const value of Object.values(messages)) for (const part of proseParts(value)) if (part.latex) render(part.latex);
 });

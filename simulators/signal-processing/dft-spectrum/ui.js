@@ -398,7 +398,7 @@ $('csv').addEventListener('click', () => {
 // ---------- translation ----------
 function translate() {
   document.querySelectorAll('[data-m]').forEach(e => { if (e.tagName === 'OPTION') e.textContent = plain(tr(e.dataset.m)); else prose(e, tr(e.dataset.m)); });
-  document.querySelectorAll('[data-tex]').forEach(e => math(e, e.dataset.tex));
+  document.querySelectorAll('[data-tex]').forEach(e => math(e, e.dataset.tex, e.hasAttribute('data-display')));
   document.title = plain(tr('title')) + ' - EEVL';
   presetNote();
   if (data) prose($('dataStatus'), tr('dataLoaded', {count: String(data.values.length), duration: fmt(Number($('duration').value))}));

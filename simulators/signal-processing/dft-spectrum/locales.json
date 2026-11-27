@@ -87,7 +87,12 @@
     "stepTitle": "TDF pela fórmula, passo a passo",
     "stepIntro": "Para um \\(k\\) escolhido, cada amostra \\(x_n\\) é multiplicada por \\(e^{-i2\\pi kn/N}=\\cos(2\\pi kn/N)-i\\sin(2\\pi kn/N)\\) e as parcelas são somadas, exatamente como no laço da aula. O resultado é comparado com a FFT da biblioteca.",
     "stepBin": "Bin",
-    "stepWalk": "Somas parciais \\(\\sum_{m=0}^{n}x_m e^{-i2\\pi km/N}\\) no plano complexo (horizontal: \\(\\operatorname{Re}\\), vertical: \\(\\operatorname{Im}\\)). Quando \\(k\\) coincide com uma componente, as parcelas se alinham e a soma cresce; caso contrário, elas giram e se cancelam."
+    "stepWalk": "Somas parciais \\(\\sum_{m=0}^{n}x_m e^{-i2\\pi km/N}\\) no plano complexo (horizontal: \\(\\operatorname{Re}\\), vertical: \\(\\operatorname{Im}\\)). Quando \\(k\\) coincide com uma componente, as parcelas se alinham e a soma cresce; caso contrário, elas giram e se cancelam.",
+    "docsTitle": "Equações, hipóteses e limitações",
+    "docsIntro": "São tomadas \\(N\\) amostras \\(x_n\\) nos instantes \\(t_n=nT/N\\), \\(n=0,\\dots,N-1\\). A TDF, a amplitude de um lado com a fase e a reconstrução pelas componentes mantidas pelo limiar são:",
+    "docsAssumptions": "Hipóteses: a janela \\([0,T)\\) se repete periodicamente; o sinal é real, então \\(F_{N-k}=\\overline{F_k}\\) e cada senoide divide sua amplitude entre \\(k\\) e \\(N-k\\) (daí o fator 2, que não vale para \\(k=0\\) e \\(k=N/2\\)); o ruído é gaussiano branco, reprodutível pela semente. A fase \\(\\varphi_k\\) é a de um cosseno: para \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
+    "docsLimitations": "Limitações: se \\(f_iT\\) não é inteiro há vazamento espectral; frequências acima de \\(f_s/2\\) aparecem rebatidas (aliasing); não há janelamento; o filtro por limiar é didático e usa o bloco inteiro de amostras. Com \\(N\\) que não é potência de 2, a FFT da biblioteca recorre à TDF direta (custo \\(N^2\\)).",
+    "docsReferences": "Referências:"
   },
   "en": {
     "title": "Discrete Fourier transform: spectrum, noise and filtering",
@@ -177,7 +182,12 @@
     "stepTitle": "DFT by the formula, step by step",
     "stepIntro": "For a chosen \\(k\\), each sample \\(x_n\\) is multiplied by \\(e^{-i2\\pi kn/N}=\\cos(2\\pi kn/N)-i\\sin(2\\pi kn/N)\\) and the terms are added, exactly as in the loop of the lesson. The result is compared with the library FFT.",
     "stepBin": "Bin",
-    "stepWalk": "Partial sums \\(\\sum_{m=0}^{n}x_m e^{-i2\\pi km/N}\\) in the complex plane (horizontal: \\(\\operatorname{Re}\\), vertical: \\(\\operatorname{Im}\\)). When \\(k\\) matches a component, the terms line up and the sum grows; otherwise they rotate and cancel."
+    "stepWalk": "Partial sums \\(\\sum_{m=0}^{n}x_m e^{-i2\\pi km/N}\\) in the complex plane (horizontal: \\(\\operatorname{Re}\\), vertical: \\(\\operatorname{Im}\\)). When \\(k\\) matches a component, the terms line up and the sum grows; otherwise they rotate and cancel.",
+    "docsTitle": "Equations, assumptions and limitations",
+    "docsIntro": "\\(N\\) samples \\(x_n\\) are taken at \\(t_n=nT/N\\), \\(n=0,\\dots,N-1\\). The DFT, the one-sided amplitude with the phase and the reconstruction from the components kept by the threshold are:",
+    "docsAssumptions": "Assumptions: the window \\([0,T)\\) repeats periodically; the signal is real, so \\(F_{N-k}=\\overline{F_k}\\) and each sinusoid splits its amplitude between \\(k\\) and \\(N-k\\) (hence the factor 2, which does not hold for \\(k=0\\) and \\(k=N/2\\)); the noise is white Gaussian, reproducible by the seed. The phase \\(\\varphi_k\\) is that of a cosine: for \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
+    "docsLimitations": "Limitations: if \\(f_iT\\) is not an integer there is spectral leakage; frequencies above \\(f_s/2\\) appear folded (aliasing); no window function is applied; the threshold filter is a teaching device and uses the whole block of samples. For \\(N\\) not a power of 2, the library FFT falls back to the direct DFT (cost \\(N^2\\)).",
+    "docsReferences": "References:"
   },
   "es": {
     "title": "Transformada discreta de Fourier: espectro, ruido y filtrado",
@@ -267,6 +277,11 @@
     "stepTitle": "TDF por la fórmula, paso a paso",
     "stepIntro": "Para un \\(k\\) elegido, cada muestra \\(x_n\\) se multiplica por \\(e^{-i2\\pi kn/N}=\\cos(2\\pi kn/N)-i\\sin(2\\pi kn/N)\\) y los términos se suman, exactamente como en el bucle de la clase. El resultado se compara con la FFT de la biblioteca.",
     "stepBin": "Bin",
-    "stepWalk": "Sumas parciales \\(\\sum_{m=0}^{n}x_m e^{-i2\\pi km/N}\\) en el plano complejo (horizontal: \\(\\operatorname{Re}\\), vertical: \\(\\operatorname{Im}\\)). Cuando \\(k\\) coincide con una componente, los términos se alinean y la suma crece; si no, giran y se cancelan."
+    "stepWalk": "Sumas parciales \\(\\sum_{m=0}^{n}x_m e^{-i2\\pi km/N}\\) en el plano complejo (horizontal: \\(\\operatorname{Re}\\), vertical: \\(\\operatorname{Im}\\)). Cuando \\(k\\) coincide con una componente, los términos se alinean y la suma crece; si no, giran y se cancelan.",
+    "docsTitle": "Ecuaciones, hipótesis y limitaciones",
+    "docsIntro": "Se toman \\(N\\) muestras \\(x_n\\) en los instantes \\(t_n=nT/N\\), \\(n=0,\\dots,N-1\\). La TDF, la amplitud de un lado con la fase y la reconstrucción con las componentes conservadas por el umbral son:",
+    "docsAssumptions": "Hipótesis: la ventana \\([0,T)\\) se repite periódicamente; la señal es real, así que \\(F_{N-k}=\\overline{F_k}\\) y cada senoide reparte su amplitud entre \\(k\\) y \\(N-k\\) (de ahí el factor 2, que no vale para \\(k=0\\) y \\(k=N/2\\)); el ruido es gaussiano blanco, reproducible por la semilla. La fase \\(\\varphi_k\\) es la de un coseno: para \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
+    "docsLimitations": "Limitaciones: si \\(f_iT\\) no es entero hay fuga espectral; las frecuencias por encima de \\(f_s/2\\) aparecen plegadas (aliasing); no se aplica ventana; el filtro por umbral es didáctico y usa todo el bloque de muestras. Con \\(N\\) no potencia de 2, la FFT de la biblioteca recurre a la TDF directa (costo \\(N^2\\)).",
+    "docsReferences": "Referencias:"
   }
 }
