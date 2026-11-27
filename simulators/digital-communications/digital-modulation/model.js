@@ -1,4 +1,4 @@
-/**
+﻿/**
  * M-ary digital modulation over memoryless baseband AWGN channel.
  *
  * Conventions and normalizations:
@@ -10,6 +10,10 @@
  *   prior to AWGN addition; the receiver uses ideal coherent ML boundaries (DeltaPhi = 0).
  * - Pure ES module with deterministic seeded Mulberry32 PRNG and Box-Muller Gaussian samples.
  */
+
+import { erfc as coreErfc, qfunc as coreQfunc, normalInterval } from '../../../assets/js/core/special.js';
+import { simpson } from '../../../assets/js/core/numeric.js';
+import { mulberry32 } from '../../../assets/js/core/random.js';
 
 export const MODULATIONS = Object.freeze(['BPSK', 'QPSK', '8-PSK', '16-QAM', '64-QAM']);
 
@@ -66,100 +70,9 @@ export function validate(input) {
   return p;
 }
 
-/**
- * Complementary error function erfc(x) with ~1e-15 relative accuracy (Cody 1969).
- * @param {number} x
- * @returns {number}
- */
-export function erfc(x) {
-  if (!Number.isFinite(x)) {
-    if (x === Infinity) return 0;
-    if (x === -Infinity) return 2;
-    return NaN;
-  }
-  if (x < 0) return 2 - erfc(-x);
-  if (x === 0) return 1;
-  if (x > 27) return 0;
-
-  // Rational Chebyshev approximations from Cody (1969), Math. Comp. 23, 631-637.
-  if (x < 0.46875) {
-    const a = [
-      3.16112374387056560e0, 1.13864154151050156e2, 3.77485237685302021e2,
-      3.20937758913846947e3, 1.85777706184603153e-1
-    ];
-    const b = [
-      2.36012909523441209e1, 2.44024637934444173e2, 1.28261652607737228e3,
-      2.84423683343917062e3
-    ];
-    const y = x * x;
-    const xnum = (((a[4] * y + a[0]) * y + a[1]) * y + a[2]) * y + a[3];
-    const xden = (((y + b[0]) * y + b[1]) * y + b[2]) * y + b[3];
-    return 1 - (x * xnum) / xden;
-  }
-
-  if (x <= 4.0) {
-    const c = [
-      5.64188496988670089e-1, 8.88314979438837594e0, 6.61191906371416295e1,
-      2.98635138197400131e2, 8.81952221241769090e2, 1.71204761263407058e3,
-      2.05107837782607147e3, 1.23033935479799725e3, 2.15311535474403846e-8
-    ];
-    const d = [
-      1.57449261107098347e1, 1.17693950891312499e2, 5.37181101862009858e2,
-      1.62138957456669019e3, 3.29079923573345963e3, 4.36261909014324716e3,
-      3.43936767414372164e3, 1.23033935480374942e3
-    ];
-    let xnum = c[8] * x;
-    let xden = x;
-    for (let i = 0; i < 7; i++) {
-      xnum = (xnum + c[i]) * x;
-      xden = (xden + d[i]) * x;
-    }
-    const res = (xnum + c[7]) / (xden + d[7]);
-    const ysq = Math.trunc(x * 16) / 16;
-    const del = (x - ysq) * (x + ysq);
-    return Math.exp(-ysq * ysq) * Math.exp(-del) * res;
-  }
-
-  const p = [
-    3.05326634961232344e-1, 3.60344899949804439e-1, 1.25781726111229246e-1,
-    1.60837851487422766e-2, 6.58749161529837803e-4, 1.63153871373020978e-2
-  ];
-  const q = [
-    2.56852019228982232e0, 1.87295284992346047e0, 5.27905102951428412e-1,
-    6.05183413124413191e-2, 2.33520497626869185e-3
-  ];
-  const y = 1 / (x * x);
-  let xnum = p[5] * y;
-  let xden = y;
-  for (let i = 0; i < 4; i++) {
-    xnum = (xnum + p[i]) * y;
-    xden = (xden + q[i]) * y;
-  }
-  const res = (y * (xnum + p[4])) / (xden + q[4]);
-  const corr = (1 / Math.sqrt(Math.PI) - res) / x;
-  const ysq = Math.trunc(x * 16) / 16;
-  const del = (x - ysq) * (x + ysq);
-  return Math.exp(-ysq * ysq) * Math.exp(-del) * corr;
-}
-
-/**
- * Gaussian Q-function Q(z) = P(Z > z) for Z ~ N(0, 1).
- * @param {number} z
- * @returns {number}
- */
-export function qfunc(z) {
-  return 0.5 * erfc(z / Math.SQRT2);
-}
-
-/**
- * Probability P(a < Z <= b) for Z ~ N(0, 1) without catastrophic cancellation in tails.
- */
-function normalInterval(a, b) {
-  if (a >= b) return 0;
-  if (a >= 0) return qfunc(a) - (b === Infinity ? 0 : qfunc(b));
-  if (b <= 0) return qfunc(-b) - (a === -Infinity ? 0 : qfunc(-a));
-  return 1 - (a === -Infinity ? 0 : qfunc(-a)) - (b === Infinity ? 0 : qfunc(b));
-}
+// Preserve the simulator's public NaN behavior while sharing the core implementation.
+export function erfc(x) { return typeof x !== 'number' || Number.isNaN(x) ? NaN : coreErfc(x); }
+export function qfunc(z) { return typeof z !== 'number' || Number.isNaN(z) ? NaN : coreQfunc(z); }
 
 function toBits(value, width) {
   return value.toString(2).padStart(width, '0');
@@ -267,7 +180,7 @@ export function constellationSpec(modulation) {
 /**
  * Computes Craig's exact M-PSK SER integral over [0, pi - psi]:
  * (1/pi) * int_0^(pi - psi) exp(-gamma_s * sin^2(psi) / sin^2(theta)) dtheta
- * using composite Simpson's rule (256 subintervals). Smooth integrand vanishes at theta -> 0.
+ * using composite Simpson's rule (512 subintervals). Smooth integrand vanishes at theta -> 0.
  */
 function craigWedgeIntegral(gammaS, psi) {
   if (psi <= 0) return 0.5;
@@ -281,11 +194,8 @@ function craigWedgeIntegral(gammaS, psi) {
     const s = Math.sin(theta);
     return Math.exp(-c / (s * s));
   };
-  let sum = f(0) + f(b);
-  for (let i = 1; i < n; i++) {
-    sum += (i % 2 === 0 ? 2 : 4) * f(i * h);
-  }
-  return ((h / 3) * sum) / Math.PI;
+  const samples = Array.from({ length: n + 1 }, (_, i) => f(i * h));
+  return (h * simpson(samples)) / Math.PI;
 }
 
 /**
@@ -400,19 +310,6 @@ export function impairedTheoreticalErrorRates(modulation, ebN0Db, phaseOffsetDeg
 }
 
 /**
- * Deterministic 32-bit PRNG (Mulberry32).
- */
-function createRng(seed) {
-  let state = seed >>> 0;
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/**
  * Fast ML symbol detector using exact constellation decision regions.
  */
 function detectSymbol(spec, rI, rQ) {
@@ -448,7 +345,7 @@ function runBlock(spec, ebN0Db, symbolCount, phaseOffsetDeg, seed, collectDetail
   const sigma = 1 / Math.sqrt(2 * gammaS);
   const phi = (phaseOffsetDeg * Math.PI) / 180;
   const cosP = Math.cos(phi), sinP = Math.sin(phi);
-  const rng = createRng(seed);
+  const rng = mulberry32(seed);
   const M = spec.M;
   const points = spec.points;
 
@@ -602,3 +499,4 @@ export function simulate(input = defaults) {
     comparisons
   };
 }
+
