@@ -32,6 +32,7 @@ versionados abaixo; o histórico de interface não é validação científica.
 | LT como quadripolo | [transmission-line.md](validation/transmission-line.md) | linha sem perdas, Ferranti, limites, π/cascata, resíduos e balanço de potência; sem medições ou simulador independente |
 | Magnetostática | [magnetostatics.md](validation/magnetostatics.md) | soluções analíticas (Ampère, Biot–Savart), simetria, superposição e convergência; sem FEM nem medições |
 | Eletrostática | [electrostatics.md](validation/electrostatics.md) | soluções analíticas (Coulomb, Gauss), E = −∇V, simetria e superposição; sem FEM nem medições |
+| Modulação digital M-ária | [digital-modulation.md](validation/digital-modulation.md) | função Q/erfc por quadratura, normalização/Gray, Craig, Cho–Yoon, erro de fase e consistência Monte Carlo; sem hardware de RF |
 | Legados | [INTEGRATION.md](INTEGRATION.md) e [SISO.md](SISO.md) | preservação; classificação experimental |
 
 Não transferir a evidência de um modelo a outro. API disponível em [API.md](API.md).

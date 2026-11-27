@@ -72,6 +72,15 @@
     }
   },
   {
+    "id": "digital-communications",
+    "icon": "◈",
+    "name": {
+      "en": "Digital Communications",
+      "pt-BR": "Comunicações Digitais",
+      "es": "Comunicaciones Digitales"
+    }
+  },
+  {
     "id": "digital-electronics",
     "icon": "▥",
     "name": {
