@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#102e4a">
+  <title>M-ary digital modulation over AWGN · EEVL</title>
+  <link rel="icon" href="../../../assets/branding/favicon.svg">
+  <link rel="manifest" href="../../../manifest.json">
+  <link rel="stylesheet" href="../../../assets/css/main.css">
+  <link rel="stylesheet" href="../../../assets/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./ui.js"></script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="sim-header">
+  <a class="brand" href="../../../index.html">
+    <img src="../../../assets/branding/logo-icon.svg" width="36" height="36" alt="">
+    <span>EEVL</span>
+  </a>
+  <a class="back" href="../../../index.html#catalog" data-i18n="back">← Back to the catalog</a>
+  <div class="preferences">
+    <select id="language" data-i18n-aria="language" aria-label="Language"></select>
+    <select id="theme" data-i18n-aria="theme" aria-label="Theme">
+      <option value="auto" data-i18n="auto">Auto</option>
+      <option value="light" data-i18n="light">Light</option>
+      <option value="dark" data-i18n="dark">Dark</option>
+    </select>
+  </div>
+</header>
+
+<main id="main" tabindex="-1" class="sim-wrapper dc-app">
+  <div class="eyebrow" data-m="eyebrow">EEVL / DIGITAL COMMUNICATIONS / v1.0.0</div>
+  <h1 data-m="title">M-ary digital modulation over AWGN</h1>
+  <p class="intro" data-m="intro"></p>
+
+  <div class="experiments" role="group" data-m-aria="experiments">
+    <button type="button" data-preset="qpsk" data-m="expQpsk"></button>
+    <button type="button" data-preset="bpsk" data-m="expBpsk"></button>
+    <button type="button" data-preset="qam16" data-m="expQam16"></button>
+    <button type="button" data-preset="qam64Phase" data-m="expQam64Phase"></button>
+  </div>
+
+  <details class="prediction">
+    <summary data-m="predict"></summary>
+    <p id="prediction"></p>
+  </details>
+
+  <div class="dc-layout">
+    <section class="panel controls" aria-labelledby="parameters-title">
+      <h2 id="parameters-title" data-m="parameters"></h2>
+      <form id="parameters">
+        <fieldset class="mod-choices">
+          <legend data-m="modulationLegend"></legend>
+          <label class="mod-choice" for="mod-bpsk">
+            <input id="mod-bpsk" type="radio" name="modulation" value="BPSK">
+            <span data-m="modBpsk"></span>
+          </label>
+          <label class="mod-choice" for="mod-qpsk">
+            <input id="mod-qpsk" type="radio" name="modulation" value="QPSK" checked>
+            <span data-m="modQpsk"></span>
+          </label>
+          <label class="mod-choice" for="mod-8psk">
+            <input id="mod-8psk" type="radio" name="modulation" value="8-PSK">
+            <span data-m="mod8psk"></span>
+          </label>
+          <label class="mod-choice" for="mod-16qam">
+            <input id="mod-16qam" type="radio" name="modulation" value="16-QAM">
+            <span data-m="mod16qam"></span>
+          </label>
+          <label class="mod-choice" for="mod-64qam">
+            <input id="mod-64qam" type="radio" name="modulation" value="64-QAM">
+            <span data-m="mod64qam"></span>
+          </label>
+        </fieldset>
+
+        <div class="field-group">
+          <label for="ebn0-input"><span data-m="ebN0Label"></span></label>
+          <input id="ebn0-input" name="ebN0Db" type="number" min="0" max="24" step="0.5" required value="8">
+          <input id="ebn0-slider" type="range" min="0" max="24" step="0.5" value="8" data-m-aria="ebN0Label" aria-label="Eb/N0 (dB)">
+        </div>
+
+        <div class="field-group">
+          <label for="symbols-input"><span data-m="symbolCountLabel"></span></label>
+          <input id="symbols-input" name="symbolCount" type="number" min="100" max="20000" step="100" required value="2000">
+        </div>
+
+        <div class="field-group">
+          <label for="phase-input"><span data-m="phaseOffsetLabel"></span></label>
+          <input id="phase-input" name="phaseOffsetDeg" type="number" min="-45" max="45" step="0.5" required value="0">
+          <input id="phase-slider" type="range" min="-45" max="45" step="0.5" value="0" data-m-aria="phaseOffsetLabel" aria-label="Phase offset">
+        </div>
+
+        <div class="field-group">
+          <label for="seed-input"><span data-m="seedLabel"></span></label>
+          <input id="seed-input" name="seed" type="number" min="1" max="2147483647" step="1" required value="2026">
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit" data-m="simulate"></button>
+          <button id="new-noise" type="button" data-m="newNoise"></button>
+          <button id="reset" type="button" data-i18n="reset">Reset</button>
+        </div>
+      </form>
+      <p id="error" role="alert" class="error" hidden></p>
+      <p id="phase-warning" class="notice" hidden></p>
+      <p class="hint" data-m="channelNote"></p>
+    </section>
+
+    <div id="results" class="results">
+      <section class="panel" aria-labelledby="constellation-heading">
+        <div class="panel-heading">
+          <h2 id="constellation-heading" data-m="constellationTitle"></h2>
+          <div class="toolbar">
+            <label class="toggle-check" for="toggle-boundaries">
+              <input id="toggle-boundaries" type="checkbox" checked>
+              <span data-m="showBoundaries"></span>
+            </label>
+            <label class="toggle-check" for="toggle-labels">
+              <input id="toggle-labels" type="checkbox" checked>
+              <span data-m="showBitLabels"></span>
+            </label>
+            <button id="iq-adjust" type="button" data-m="adjustScale"></button>
+            <button id="iq-restore" type="button" data-m="restoreScale"></button>
+          </div>
+        </div>
+        <div class="constellation-wrap">
+          <svg id="constellation" viewBox="0 0 560 560" role="img" data-m-aria="constellationDescription" aria-label="I/Q constellation"></svg>
+        </div>
+        <div class="legend-row" aria-hidden="true">
+          <span class="leg-item"><span class="swatch ideal"></span><span data-m="legendIdeal"></span></span>
+          <span class="leg-item"><span class="swatch ok"></span><span data-m="legendCorrect"></span></span>
+          <span class="leg-item"><span class="swatch err"></span><span data-m="legendError"></span></span>
+          <span class="leg-item"><span class="swatch sel"></span><span data-m="legendSelected"></span></span>
+        </div>
+        <p id="iq-out-of-range" class="hint range-flag" hidden></p>
+
+        <div class="metrics" aria-live="polite">
+          <div><span data-m="metricSpectral"></span><strong id="m-spectral"></strong></div>
+          <div><span data-m="metricDmin"></span><strong id="m-dmin"></strong></div>
+          <div><span data-m="metricEsN0"></span><strong id="m-esn0"></strong></div>
+          <div><span data-m="metricBer"></span><strong id="m-ber"></strong></div>
+          <div><span data-m="metricSer"></span><strong id="m-ser"></strong></div>
+          <div><span data-m="metricCounts"></span><strong id="m-counts"></strong></div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="ber-heading">
+        <div class="panel-heading">
+          <h2 id="ber-heading" data-m="berTitle"></h2>
+          <div class="toolbar">
+            <label class="toggle-check" for="toggle-ser">
+              <input id="toggle-ser" type="checkbox" checked>
+              <span data-m="showSerCurve"></span>
+            </label>
+            <label class="toggle-check" for="toggle-compare">
+              <input id="toggle-compare" type="checkbox">
+              <span data-m="showComparisonCurves"></span>
+            </label>
+            <button id="ber-adjust" type="button" data-m="adjustScale"></button>
+            <button id="ber-restore" type="button" data-m="restoreScale"></button>
+            <button id="export-csv" type="button" data-m="exportCsv"></button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <svg id="ber-chart" viewBox="0 0 800 340" role="img" data-m-aria="berDescription" aria-label="BER curve"></svg>
+        </div>
+        <div class="legend-row" aria-hidden="true">
+          <span class="leg-item"><span class="line-swatch theory-ber"></span><span data-m="legendTheoryBer"></span></span>
+          <span class="leg-item"><span class="line-swatch theory-ser"></span><span data-m="legendTheorySer"></span></span>
+          <span class="leg-item" id="leg-impaired" hidden><span class="line-swatch impaired-ber"></span><span data-m="legendImpairedBer"></span></span>
+          <span class="leg-item"><span class="swatch mc-dot"></span><span data-m="legendMcBer"></span></span>
+          <span class="leg-item"><span class="swatch op-dot"></span><span data-m="legendOperating"></span></span>
+        </div>
+        <p id="ber-out-of-range" class="hint range-flag" hidden data-m="berOutOfRange"></p>
+        <p id="ber-zero-note" class="hint" hidden></p>
+
+        <details>
+          <summary data-m="berTableSummary"></summary>
+          <div class="table-scroll" tabindex="0" role="region" data-m-aria="berTableSummary">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col" data-m="colEbN0"></th>
+                  <th scope="col" data-m="colTheoryBer"></th>
+                  <th scope="col" data-m="colTheorySer"></th>
+                  <th scope="col" data-m="colMcBer"></th>
+                  <th scope="col" data-m="colMcSer"></th>
+                  <th scope="col" data-m="colErrors"></th>
+                </tr>
+              </thead>
+              <tbody id="ber-table"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel" aria-labelledby="inspector-heading">
+        <h2 id="inspector-heading" data-m="inspectorTitle"></h2>
+        <p class="hint" data-m="inspectorHint"></p>
+        <div id="sample-buttons" class="sample-pills" role="group" data-m-aria="inspectorTitle"></div>
+        <p id="sample-detail" class="inspector-readout" aria-live="polite"></p>
+        <div class="table-scroll" tabindex="0" role="region" data-m-aria="inspectorTitle">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col" data-m="colSample"></th>
+                <th scope="col" data-m="colTxBits"></th>
+                <th scope="col" data-m="colRxPoint"></th>
+                <th scope="col" data-m="colRxBits"></th>
+                <th scope="col" data-m="colBitErrors"></th>
+              </tr>
+            </thead>
+            <tbody id="inspector-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel theory" aria-labelledby="theory-heading">
+    <h2 id="theory-heading" data-m="understand"></h2>
+    <div id="derivation"></div>
+    <details>
+      <summary data-m="limitations"></summary>
+      <p data-m="limitationsText"></p>
+      <p data-m="boundsText"></p>
+      <p data-m="statisticalText"></p>
+    </details>
+    <p class="doc-links">
+      <a class="back" href="../../../docs/DIGITAL-MODULATION.md" data-m="modelDocumentation"></a> ·
+      <a class="back" href="../../../docs/validation/digital-modulation.md" data-m="validationDocumentation"></a>
+    </p>
+  </section>
+</main>
+
+<div class="update-bar" id="update" hidden role="status">
+  <span data-i18n="updateReady"></span>
+  <button id="update-button" type="button" data-i18n="update"></button>
+</div>
+</body>
+</html>

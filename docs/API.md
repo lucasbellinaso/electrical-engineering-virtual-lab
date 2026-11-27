@@ -170,6 +170,19 @@ com `code`: `invalid`, `openLoad`, `resonance`. O consumidor usa o auxiliar
 `sinhc`, ainda com API instável, protegido por testes locais. Equações, ramos,
 domínio e limiares em [TRANSMISSION-LINE.md](TRANSMISSION-LINE.md).
 
+## Modulação Digital: simulators/digital-communications/digital-modulation/model.js
+
+`MODULATIONS`, `bounds`, `defaults`, `presets`, `SWEEP_EBN0_DB`, `validate(input)`,
+`erfc(x)`, `qfunc(z)`, `constellationSpec(modulation)`,
+`theoreticalErrorRates(modulation, ebN0Db)`,
+`impairedTheoreticalErrorRates(modulation, ebN0Db, phaseOffsetDeg)` e
+`simulate(input=defaults)`. Módulo ESM puro sem DOM. Entradas: `modulation`
+(`'BPSK'`, `'QPSK'`, `'8-PSK'`, `'16-QAM'`, `'64-QAM'`), `ebN0Db` (`[0, 24]`),
+`symbolCount` inteiro (`[100, 20000]`), `phaseOffsetDeg` (`[-45, 45]`) e
+`seed` inteiro (`[1, 2147483647]`). Normalização $E_s = 1$, $E_b = E_s / k$,
+ruído AWGN complexo com $\sigma^2 = N_0 / 2$ e PRNG determinístico Mulberry32.
+Equações, mapeamento Gray e limites em [DIGITAL-MODULATION.md](DIGITAL-MODULATION.md).
+
 Tolerância de singularidade: `msolve`, `inv`, `csolve` e `cinv` aceitam um último argumento opcional
 `{ absTol, relTol }` (ambos finitos e ≥ 0, padrão 0). A matriz é singular se o maior módulo de pivô de
 alguma coluna for ≤ `max(absTol, relTol · máx|aᵢⱼ|)`. Sem a opção vale a regra original: só o pivô
