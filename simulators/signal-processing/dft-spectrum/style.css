@@ -37,6 +37,7 @@ table.components input{display:block;width:100%;min-width:0;padding:6px;border:1
 .view-controls .radio{margin:2px 0}
 label.inline{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 label.inline input{width:110px;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink)}
+.legend .toggle{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
 .legend{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:.84rem;margin:6px 0}
 .key{display:inline-block;width:22px;vertical-align:middle;border-top:3px solid}
 .key.noisy{border-color:#5fa8cf}.key.clean{border-color:var(--ink)}.key.filtered{border-color:#d97706}

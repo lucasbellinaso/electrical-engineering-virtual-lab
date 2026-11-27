@@ -155,8 +155,10 @@ function renderTime() {
   const r = result, T = r.parameters.duration, yr = scales.time.cur, f = frame($('timeChart'), 260, [0, T], yr);
   const a = r.analysis, out = [];
   if (r.fineClean) { f.plot.append(polyline(r.fineTime, r.fineClean, f, 'line clean')); out.push(...r.fineClean); }
-  f.plot.append(polyline(r.time, r.noisy, f, 'line noisy')); out.push(...r.noisy);
-  if (r.noisy.length <= 128) for (let i = 0; i < r.noisy.length; i++) f.plot.append(svg('circle', {cx: f.x(r.time[i]), cy: f.y(r.noisy[i]), r: 2.6, class: 'sample'}));
+  if ($('showSamples').checked) {
+    f.plot.append(polyline(r.time, r.noisy, f, 'line noisy')); out.push(...r.noisy);
+    if (r.noisy.length <= 128) for (let i = 0; i < r.noisy.length; i++) f.plot.append(svg('circle', {cx: f.x(r.time[i]), cy: f.y(r.noisy[i]), r: 2.6, class: 'sample'}));
+  }
   // Continuous reconstruction from the kept cosines when it is cheap; otherwise the inverse-DFT samples.
   if (a.components.length <= 64) {
     const count = Math.min(4000, 8 * a.samples), fine = r.fineTime ?? Array.from({length: count + 1}, (_, i) => i * T / count);
@@ -278,6 +280,8 @@ for (const input of form.elements.source) input.addEventListener('change', () =>
 document.querySelectorAll('input[name=view]').forEach(input => input.addEventListener('change', () => { if (result) { renderAmplitude(); renderPhase(); } }));
 $('maxFrequency').addEventListener('input', () => { if (result && $('maxFrequency').checkValidity()) { renderAmplitude(); renderPhase(); } });
 $('preset').addEventListener('change', e => { if (e.target.value !== 'custom') applyPreset(e.target.value); else presetNote(); });
+// Showing/hiding a curve only redraws; the Y range is kept (docs/UI-CONVENTIONS.md).
+$('showSamples').addEventListener('change', () => { if (result) renderTime(); });
 $('reset').addEventListener('click', () => applyPreset(defaultPreset));
 document.querySelectorAll('[data-fit]').forEach(b => b.addEventListener('click', () => {
   if (!result) return;
