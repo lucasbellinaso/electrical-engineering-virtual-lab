@@ -193,9 +193,12 @@ TypeError/RangeError. `det` e `cdet` não têm a opção (devolvem 0 só para pi
 | Módulo | Exportações (★ = nova, não existe no SISO) |
 |---|---|
 | polynomial.js | ptrim, pmul, padd, pscale, pdeg, plead, pprod, polyFromRoots (só parte real), roots, aberth, matchRoots; ★polyval, polyvalComplex, polyder, polyint, conv, deconv→{q,r} |
-| matrix.js | zeros, eye, mmul, madd, mscale, msolve(A, B, opts) (lança em singular; `opts = { absTol, relTol }` opcional, ver abaixo), expm (Padé 6), charpoly; ★transpose, trace, det, inv(A, opts), norm1, normInf, isSquare, logm (log principal real; lança RangeError com autovalor real ≤ 0) |
+| matrix.js | zeros, eye, ones, diag, reshape (ordem por linhas), mmul, madd, mscale, msolve(A, B, opts), expm (Padé 6), charpoly; ★transpose, trace, det, inv(A, opts), norm1, normInf, isSquare, logm, svd (real, reduzida: `{U,s,Vh}`), svdvals, rank, pinv |
 | control.js | tf2ss, c2d (ZOH), pade, makeFR, bisect, margins; ★ss2tf, series, parallel, feedback, dcgain, evalTF, d2c (`d2c(sys, 'zoh'\|'tustin')`, `sys` = `{A,B,C,D,dt}` MIMO ou `{num,den,dt}` SISO, `dt > 0`; ZOH usa Γ = ∫e^{Aτ}dτ e funciona com integrador) |
-| numeric.js | logspace (n≥2, como o SISO); ★linspace, trapz, cumtrapz, cumsum, sum, mean, std (N−1), norm, diff, interp1 (NaN fora do intervalo) |
+| numeric.js | logspace (n≥2, como o SISO); ★linspace, trapz, cumtrapz, simpson, quad (Simpson adaptativo em intervalo finito), cumsum, sum, mean, median, std (N−1), quantile/percentile (linear/type 7), histogram (contagens e bordas), norm, diff, interp1 (NaN fora do intervalo) |
+| special.js | erf, erfc (aproximação de Cody), qfunc, ndtr (CDF normal padrão), ndtri (inversa), normalInterval |
+| signal.js | fft, ifft (vetores reais/complexos; saída em `{re,im}`), filter/lfilter (DF-II transposta; `{y,zf}`) |
+| random.js | mulberry32 (uniforme reproduzível em [0,1)), createRandom(seed) com `uniform()` e `normal(mean,std)` (Box–Muller) |
 | complex.js | ★objetos `{re,im}`: make, add, sub, mul, div, conj, scale, abs, arg, fromPolar/fromPolarDeg, toPolar/toPolarDeg, exp, sqrt, pow, fromPair/toPair, equalsWithin; ★sinh, cosh, tanh (estouro: componentes ±Infinity, sem lançar; tanh estável perto dos polos e assintótico para \|x\| > 20); ★sinhc (auxiliar, API ainda instável: sinh(z)/z, sinhc(0) = 1) |
 | cmatrix.js | ★matrizes complexas: array de linhas de `{re,im}` (mesmo formato de complex.js; aritmética importada dele). czeros, ceye, fromReal, fromParts(Re, Im), realPart, imagPart, cadd, csub, cscale(A, z) (z real ou `{re,im}`), cmmul (retangulares), ctranspose (sem conjugar), chermitian (conjugada), ctrace, cdet, cinv(A, opts), csolve(A, B, opts) (lança `Error('Matriz singular')`, `code = 'SINGULAR_MATRIX'`), cnorm1, cnormInf, cnormFro |
 
@@ -208,7 +211,17 @@ TypeError/RangeError. `det` e `cdet` não têm a opção (devolvem 0 só para pi
 | analysis.js | ★pole, zero (SS só SISO), damp, tfdata, tf2zpk, zpk2tf, zpk2ss, ss2zpk, freqresp, bode, nyquist, evalfr, margin, minreal, rlocus, gangof4, mag2db, db2mag, unwrap |
 | models.js | ★tf, ss, zpk (construtores: validam e devolvem `{num,den}`, `{A,B,C,D}` com D matricial, `{z,p,k}`; `dt` só gravado se > 0; zpk aceita raiz como número ou `[re, im]`), negate (−sys: TF nega num, ZPK nega k, SS nega C e D), append (sempre devolve SS em blocos diagonais, MIMO; exige mesmo dt), modred (`elim` = índices base 0 ou máscara; `'matchdc'` padrão ou `'truncate'`; matchdc discreto usa (I − A₂₂)⁻¹, que o python-control 0.10.2 não implementa) |
 
-**Referências numéricas.** Os módulos novos são comparados com fixtures JSON em
+**Contratos das extensões numéricas:** `ones(r,c)` cria matriz real; `diag(v,k)` cria matriz diagonal e `diag(A,k)` extrai a diagonal, com `k` positivo acima da diagonal. `reshape(A,r,c)` preserva a ordem por linhas (C order). `svd(A)` aceita matriz real e devolve a decomposição reduzida `{U,s,Vh}`, com valores singulares descendentes; `rank(A,tol?)` e `pinv(A,tol?)` usam corte absoluto informado ou, por padrão, `max(m,n)·eps·smax`.
+
+`median`, `quantile(v,q)` e `percentile(v,p)` usam interpolação linear/type 7 do NumPy. `histogram(v,bins=10,range?)` devolve `{counts,edges}`, ignora amostras fora do intervalo e inclui a borda direita na última classe; pesos e normalização por densidade não fazem parte desta API. `simpson(y)` ou `simpson(x,y)` integra amostras; para número par de pontos aplica a correção Cartwright do SciPy. `quad(f,a,b,options?)` usa Simpson adaptativo em intervalo finito e devolve `{value,error,evaluations,converged}`; `options` aceita `epsAbs`, `epsRel` e `maxDepth`. Não é um porte do QUADPACK nem aceita limites infinitos.
+
+`special.js` opera sobre escalares reais: `erf`, `erfc`, `qfunc`, `ndtr`, `ndtri` e `normalInterval(a,b)`. `erfc` usa aproximação racional de Cody; `ndtri(0)` e `ndtri(1)` devolvem infinidades. `signal.js` fornece `fft`/`ifft` (resultado complexo em objetos `{re,im}`; radix-2 e DFT direta para comprimentos não potência de 2) e `filter`/`lfilter` em forma direta II transposta, devolvendo `{y,zf}`. `random.js` fornece sequência Mulberry32 reproduzível e amostras normais Box–Muller; a sequência não tem igualdade bit a bit com o gerador NumPy.
+
+**Referências numéricas.** As extensões `special`, `matrix`, `numeric` e `signal` são comparadas com
+`tests/fixtures/core-extensions-python.json`, gerado por `scripts/reference/gen_core_extensions.py`
+com NumPy 2.4.6 e SciPy 1.18.0. Aleatoriedade tem sequência própria Mulberry32; seus momentos
+amostrais são comparados estatisticamente com referências NumPy, não bit a bit. Os módulos novos
+também são comparados com fixtures JSON em
 `tests/fixtures/core-*.json`, geradas por `scripts/reference/gen_*.py` (Python 3.10, NumPy 2.2.6,
 SciPy 1.15.1, 26/11/2026) e conferidas contra o **python-control 0.10.2** real por
 `scripts/reference/check_control.py` (`pip install control==0.10.2`; rode
