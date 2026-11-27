@@ -2,7 +2,7 @@ import {initialize} from '../../../assets/js/common.js';
 import {language} from '../../../assets/js/i18n.js';
 import katex from '../../../assets/vendor/katex/katex.mjs';
 import {proseParts} from '../../electrical-circuits/shared/presentation.js';
-import {MAX_COMPONENTS, simulate, analyze, evaluateCosines, evaluateSines, parseSamples, halfLength, sampleTimes} from './model.js';
+import {MAX_COMPONENTS, simulate, analyze, evaluateCosines, evaluateSines, parseSamples, halfLength, sampleTimes, displayAmplitude} from './model.js';
 import {presets, defaultPreset} from './presets.js';
 
 const $ = id => document.getElementById(id), form = $('parameters'), svgNS = 'http://www.w3.org/2000/svg';
@@ -172,7 +172,7 @@ function renderTime() {
 
 function visibleBins() {
   const a = result.analysis, n = a.samples;
-  if (view() === 'full') return {bins: a.bins, xr: [0, a.sampleRate], value: b => b.lessonAmplitude};
+  if (view() === 'full') return {bins: a.bins, xr: [0, a.sampleRate], value: b => displayAmplitude(a.bins, b.k)};
   const fmax = Math.max(Number($('maxFrequency').value) || a.nyquist, a.resolution), top = Math.min(fmax, a.nyquist);
   return {bins: a.bins.slice(0, halfLength(n) + 1).filter(b => b.frequency <= top + 1e-12), xr: [0, top], value: b => b.amplitude};
 }
@@ -195,7 +195,7 @@ function renderAmplitude() {
     f.plot.append(svg('line', {x1: f.x(b.frequency), x2: f.x(b.frequency), y1: area.top, y2: area.top + f.h, class: 'marker ' + cls}));
   }
   $('ampOut').hidden = !outside;
-  math($('ampAxis'), view() === 'full' ? String.raw`2|F_k|/N` : 'A_k');
+  math($('ampAxis'), 'A_k');
   $('maxFrequency').disabled = view() === 'full';
   $('ampChart').setAttribute('aria-label', tr('ampChartLabel'));
   $('ampChart').frameInfo = {xr, bins};
@@ -205,7 +205,7 @@ function renderAmplitude() {
 function renderInspection() {
   const a = result.analysis, k = hoverK ?? selectedK, b = a.bins[k], node = $('inspection');
   if (!b) { node.textContent = ''; return; }
-  const amp = b.amplitude ?? b.lessonAmplitude;
+  const amp = displayAmplitude(a.bins, k);
   prose(node, tr('inspectBin', {k: String(k), f: fmt(b.frequency), a: fmt(amp), twice: fmt(b.lessonAmplitude), phase: fmt(b.phase), kept: tr(a.keep[k] ? 'keptYes' : 'keptNo')}));
 }
 
@@ -272,7 +272,7 @@ form.addEventListener('input', e => {
   const id = e.target.id;
   if (id === 'thresholdRange') { $('threshold').value = e.target.value; scheduleUpdate(); return; }
   if (id === 'threshold') { $('thresholdRange').value = e.target.value; scheduleUpdate(); return; }
-  if (['preset', 'dataText', 'dataFile'].includes(id) || e.target.name === 'source') return;
+  if (['preset', 'dataText', 'dataFile', 'maxFrequency'].includes(id) || e.target.name === 'source') return;
   if (syntheticIds.includes(id) || (id === 'duration' && mode === 'synthetic')) { $('preset').value = 'custom'; presetNote(); }
   scheduleUpdate();
 });

@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import katex from '../assets/vendor/katex/katex.mjs';
 import {fft} from '../assets/js/core/signal.js';
 import {proseParts} from '../simulators/electrical-circuits/shared/presentation.js';
-import {validate, synthesize, simulate, analyze, spectrum, evaluateCosines, describeComponents, aliasFrequency, parseSamples, sampleTimes, wrapPhase, MAX_COMPONENTS} from '../simulators/signal-processing/dft-spectrum/model.js';
+import {validate, synthesize, simulate, analyze, spectrum, evaluateCosines, describeComponents, aliasFrequency, parseSamples, sampleTimes, wrapPhase, displayAmplitude, MAX_COMPONENTS} from '../simulators/signal-processing/dft-spectrum/model.js';
 import {presets, presetOrder, defaultPreset} from '../simulators/signal-processing/dft-spectrum/presets.js';
 
 const dir = '../simulators/signal-processing/dft-spectrum/';
@@ -43,6 +43,17 @@ test('pure tones: amplitude, phase relation φ − 90°, DC and Nyquist normalis
   near(a.bins[0].amplitude, 0.7, 1e-12); near(a.bins[32].amplitude, 1.5, 1e-12);
   near(a.bins[0].lessonAmplitude, 1.4, 1e-12); near(a.bins[32].lessonAmplitude, 3, 1e-12);
   assert.equal(a.bins[33].amplitude, null);
+});
+
+test('displayed full spectrum uses the same amplitudes as the threshold filter', () => {
+  for (const n of [8, 9]) {
+    const signal = Array.from({length: n}, (_, i) => 1 + 0.7 * Math.cos(2 * Math.PI * i / n) + (n % 2 ? 0 : 0.5 * (-1) ** i));
+    const a = analyze(signal, 1, 1.1);
+    for (const bin of a.bins) assert.equal(a.keep[bin.k], displayAmplitude(a.bins, bin.k) >= a.threshold);
+    near(displayAmplitude(a.bins, 0), 1);
+    if (n % 2 === 0) near(displayAmplitude(a.bins, n / 2), 0.5);
+    near(displayAmplitude(a.bins, n - 1), 0.7);
+  }
 });
 
 test('spectrum equals the lesson formula F_k = Σ x_n e^(−i2πkn/N) for radix-2 and other lengths', () => {
@@ -127,6 +138,11 @@ test('data parser follows its documented grammar', () => {
   assert.throws(() => parseSamples('1\n2\n3'), RangeError);
   assert.throws(() => parseSamples(Array.from({length: 9}, (_, i) => `${i * i} 1`).join('\n')), RangeError);
   assert.throws(() => parseSamples(Array.from({length: 9}, (_, i) => `${-i} 1`).join('\n')), RangeError);
+  const epoch = 1700000000, rows = offsets => offsets.map((v, i) => `${epoch + v * 0.001} ${i}`).join('\n');
+  assert.throws(() => parseSamples(rows([0, 1, 2, 3, 5, 5, 6, 7])), /spacing/);
+  assert.throws(() => parseSamples(rows([0, 1, 2, 3, 5, 4, 6, 7])), /spacing/);
+  assert.throws(() => parseSamples(rows([0, 1, 2, 3, 4.5, 5, 6, 7])), /spacing/);
+  near(parseSamples(rows([0, 1, 2, 3, 4, 5, 6, 7])).duration, 0.008, 1e-4);
   assert.throws(() => parseSamples('1e999\n'.repeat(8)), RangeError);
 });
 

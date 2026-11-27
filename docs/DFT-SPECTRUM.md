@@ -16,8 +16,8 @@ reconstrução), as hipóteses e as limitações; este arquivo traz os detalhes.
   `f_s = N/T`, resolução `Δf = 1/T`, bin `k` em `f_k = k/T`.
 - TDF: `F_k = Σ x_n e^{−i2πkn/N}`, sem normalização na direta; a inversa divide por `N` (como NumPy).
 - Amplitude de um lado: `A_0 = |F_0|/N`, `A_k = 2|F_k|/N` para `0 < k < N/2`, `A_{N/2} = |F_{N/2}|/N`.
-  A vista completa reproduz os gráficos da aula, com `2|F_k|/N` em todos os bins; nela, `k = 0` e `k = N/2`
-  aparecem com o dobro da amplitude real.
+  A vista completa espelha as amplitudes de um lado nos bins `N-k`, mantendo a correção de DC e Nyquist;
+  assim a linha de limiar corresponde à amplitude usada pelo filtro em todos os bins.
 - Fase: `arg F_k = atan2(Im F_k, Re F_k)`, fase do cosseno `A_k cos(2π f_k t + arg F_k)`. Para uma componente seno
   com `f T` inteiro, `arg F_k = φ − π/2`. A fase é zerada quando `|F_k| ≤ 10⁻⁹ max|F|`.
 - Filtragem: mantêm-se os bins `0 ≤ k ≤ N/2` com `A_k ≥ A_min` e seus espelhos `N − k`; os demais são zerados e o
@@ -46,15 +46,13 @@ reconstrução), as hipóteses e as limitações; este arquivo traz os detalhes.
 Usa `fft`/`ifft` de `assets/js/core/signal.js` e `createRandom` de `assets/js/core/random.js`; reaproveita
 `proseParts` de `simulators/electrical-circuits/shared/presentation.js`.
 
-Proposta para a biblioteca: para `N` que não é potência de 2, `fft` recorre à TDF direta (`O(N²)`). Um algoritmo
-de Bluestein ou de raiz mista tornaria `O(N log N)` também os tamanhos como `N = 100` ou `N = 1000`, comuns em dados importados. Esta contribuição não altera
-`signal.js`.
+Para `N` que não é potência de 2, a FFT compartilhada usa o algoritmo de Bluestein (`O(N log N)`).
 
 ## Limitações
 
 Não há janelamento (Hann, Hamming etc.), zero-padding nem estimativa espectral por média; o limiar é um filtro
 didático, não causal, sobre o bloco inteiro. O ruído é gaussiano e branco. As frequências acima de `f_s/2` são
-rebatidas. `N ≤ 4096` mantém a interação fluida mesmo quando a FFT recorre à TDF direta.
+rebatidas. O número de amostras é limitado a `N ≤ 4096`.
 
 ## Evidências
 

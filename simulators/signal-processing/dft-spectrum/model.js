@@ -94,6 +94,9 @@ function checkSignal(x) {
 /** Largest index of the one-sided spectrum: ⌊N/2⌋. */
 export const halfLength = n => Math.floor(n / 2);
 
+/** One-sided amplitude mirrored over the complete spectrum, as used by the filter. */
+export const displayAmplitude = (bins, k) => bins[Math.min(k, bins.length - k)].amplitude;
+
 /**
  * Amplitude and phase spectra.
  * lessonAmplitude = 2|F_k|/N for every k (normalization of the lesson's full plots);
@@ -205,7 +208,12 @@ export function parseSamples(text) {
   if (columns === 1) return {values: rows.map(r => r[0]), duration: null};
   const times = rows.map(r => r[0]), dt = (times.at(-1) - times[0]) / (times.length - 1);
   if (!(dt > 0)) throw new RangeError('spacing');
-  for (let i = 1; i < times.length; i++) if (Math.abs(times[i] - times[i - 1] - dt) > 1e-6 * dt + 1e-12 * Math.abs(times[i])) throw new RangeError('spacing');
+  for (let i = 1; i < times.length; i++) {
+    const step = times[i] - times[i - 1];
+    // Account for floating-point subtraction, but never hide a materially irregular grid.
+    const rounding = Number.EPSILON * Math.max(Math.abs(times[i]), Math.abs(times[i - 1]));
+    if (!(step > 0) || rounding > dt * 1e-3 || Math.abs(step - dt) > 1e-6 * dt + rounding) throw new RangeError('spacing');
+  }
   return {values: rows.map(r => r[1]), duration: dt * times.length};
 }
 
