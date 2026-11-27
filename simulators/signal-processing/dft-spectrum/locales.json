@@ -88,7 +88,8 @@
     "docsIntro": "São tomadas \\(N\\) amostras \\(x_n\\) nos instantes \\(t_n=nT/N\\), \\(n=0,\\dots,N-1\\). A TDF, a amplitude de um lado com a fase e a reconstrução pelas componentes mantidas pelo limiar são:",
     "docsAssumptions": "Hipóteses: a janela \\([0,T)\\) se repete periodicamente; o sinal é real, então \\(F_{N-k}=\\overline{F_k}\\) e cada senoide divide sua amplitude entre \\(k\\) e \\(N-k\\) (daí o fator 2, que não vale para \\(k=0\\) e \\(k=N/2\\)); o ruído é gaussiano branco, reprodutível pela semente. A fase \\(\\varphi_k\\) é a de um cosseno: para \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
     "docsLimitations": "Limitações: se \\(f_iT\\) não é inteiro há vazamento espectral; frequências acima de \\(f_s/2\\) aparecem rebatidas (aliasing); não há janelamento; o filtro por limiar é didático e usa o bloco inteiro de amostras. Com \\(N\\) que não é potência de 2, a FFT da biblioteca recorre à TDF direta (custo \\(N^2\\)).",
-    "docsReferences": "Referências:"
+    "docsReferences": "Referências:",
+    "ampChartNote": "As frequências \\(f_k=k/T\\) e as amplitudes \\(A_k\\) de cada componente são obtidas pela transformada discreta de Fourier das amostras \\(x_n\\), calculada pela função fft (algoritmo rápido FFT quando \\(N\\) é potência de 2; soma direta nos demais casos). Cada haste é um bin \\(k\\)."
   },
   "en": {
     "title": "Discrete Fourier transform: spectrum, noise and filtering",
@@ -179,7 +180,8 @@
     "docsIntro": "\\(N\\) samples \\(x_n\\) are taken at \\(t_n=nT/N\\), \\(n=0,\\dots,N-1\\). The DFT, the one-sided amplitude with the phase and the reconstruction from the components kept by the threshold are:",
     "docsAssumptions": "Assumptions: the window \\([0,T)\\) repeats periodically; the signal is real, so \\(F_{N-k}=\\overline{F_k}\\) and each sinusoid splits its amplitude between \\(k\\) and \\(N-k\\) (hence the factor 2, which does not hold for \\(k=0\\) and \\(k=N/2\\)); the noise is white Gaussian, reproducible by the seed. The phase \\(\\varphi_k\\) is that of a cosine: for \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
     "docsLimitations": "Limitations: if \\(f_iT\\) is not an integer there is spectral leakage; frequencies above \\(f_s/2\\) appear folded (aliasing); no window function is applied; the threshold filter is a teaching device and uses the whole block of samples. For \\(N\\) not a power of 2, the library FFT falls back to the direct DFT (cost \\(N^2\\)).",
-    "docsReferences": "References:"
+    "docsReferences": "References:",
+    "ampChartNote": "The frequencies \\(f_k=k/T\\) and amplitudes \\(A_k\\) of each component are obtained from the discrete Fourier transform of the samples \\(x_n\\), computed by the fft function (fast FFT algorithm when \\(N\\) is a power of 2; direct sum otherwise). Each stem is a bin \\(k\\)."
   },
   "es": {
     "title": "Transformada discreta de Fourier: espectro, ruido y filtrado",
@@ -270,6 +272,7 @@
     "docsIntro": "Se toman \\(N\\) muestras \\(x_n\\) en los instantes \\(t_n=nT/N\\), \\(n=0,\\dots,N-1\\). La TDF, la amplitud de un lado con la fase y la reconstrucción con las componentes conservadas por el umbral son:",
     "docsAssumptions": "Hipótesis: la ventana \\([0,T)\\) se repite periódicamente; la señal es real, así que \\(F_{N-k}=\\overline{F_k}\\) y cada senoide reparte su amplitud entre \\(k\\) y \\(N-k\\) (de ahí el factor 2, que no vale para \\(k=0\\) y \\(k=N/2\\)); el ruido es gaussiano blanco, reproducible por la semilla. La fase \\(\\varphi_k\\) es la de un coseno: para \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
     "docsLimitations": "Limitaciones: si \\(f_iT\\) no es entero hay fuga espectral; las frecuencias por encima de \\(f_s/2\\) aparecen plegadas (aliasing); no se aplica ventana; el filtro por umbral es didáctico y usa todo el bloque de muestras. Con \\(N\\) no potencia de 2, la FFT de la biblioteca recurre a la TDF directa (costo \\(N^2\\)).",
-    "docsReferences": "Referencias:"
+    "docsReferences": "Referencias:",
+    "ampChartNote": "Las frecuencias \\(f_k=k/T\\) y las amplitudes \\(A_k\\) de cada componente se obtienen con la transformada discreta de Fourier de las muestras \\(x_n\\), calculada por la función fft (algoritmo rápido FFT cuando \\(N\\) es potencia de 2; suma directa en los demás casos). Cada barra es un bin \\(k\\)."
   }
 }

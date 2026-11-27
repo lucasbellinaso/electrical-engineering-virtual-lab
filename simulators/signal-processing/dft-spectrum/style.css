@@ -29,6 +29,7 @@ table.components input{display:block;width:100%;min-width:0;padding:6px;border:1
 #ampChart{cursor:crosshair}
 .chart-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
 .chart-title{font-weight:600}
+.chart-note{margin:0 0 8px}
 .scale-actions{display:flex;gap:6px}
 .axis-y{position:absolute;left:0;top:45%;transform:rotate(-90deg);transform-origin:left top;white-space:nowrap;font-size:.9rem}
 .axis-x{text-align:center;font-size:.9rem}
