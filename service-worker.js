@@ -1,5 +1,5 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.1.33';
+const VERSION='eevl-v1.1.34';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
@@ -7,7 +7,7 @@ const urls=[
  'assets/css/main.css','assets/js/app.js','assets/js/offline.js','assets/js/common.js','assets/js/i18n.js','assets/js/document.js','assets/js/simulator-authors.js','assets/js/lab.js','assets/js/legacy-i18n.js',
  'assets/js/legacy-runtime.js','assets/js/legacy-locales/siso.js','assets/js/legacy-locales/power.js','assets/js/legacy-locales/opamp-pid.js',
  'data/config.json','data/categories.json','data/simulators.json','data/offline-manifest.json','locales/en.json','locales/pt-BR.json','locales/es.json',
- 'assets/branding/logo-icon.svg','assets/branding/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/images/minimum-search.svg','assets/images/photovoltaic.svg','assets/images/transmission-line.svg','assets/images/digital-modulation.svg',
+ 'assets/branding/logo-icon.svg','assets/branding/favicon.svg','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/images/minimum-search.svg','assets/images/photovoltaic.svg','assets/images/dft-spectrum.svg','assets/images/transmission-line.svg','assets/images/digital-modulation.svg',
  'assets/images/control-lab.svg','assets/images/siso.svg','assets/images/buck.svg','assets/images/buck-step.svg','assets/images/dab.svg','assets/images/opamp.svg','assets/images/nodal-analysis.svg','assets/images/rc-rl.svg','assets/images/rlc.svg','assets/images/nodal-analysis-ac.svg','assets/images/magnetostatics.svg','assets/images/electrostatics.svg'
 ].map(p=>new URL(p,root).href);
 self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(urls)));});

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102e4a">
+<title>Discrete Fourier transform - EEVL</title>
+<link rel="icon" href="../../../assets/branding/favicon.svg">
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="stylesheet" href="../../../assets/vendor/katex/katex.min.css">
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./ui.js"></script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<header class="sim-header">
+ <a class="brand" href="../../../index.html"><img src="../../../assets/branding/logo-icon.svg" width="36" height="36" alt=""><span>EEVL</span></a>
+ <a class="back" href="../../../index.html#catalog" data-i18n="back"></a>
+ <div class="preferences">
+  <select id="language" data-i18n-aria="language"></select>
+  <select id="theme" data-i18n-aria="theme"><option value="auto" data-i18n="auto">Auto</option><option value="light" data-i18n="light">Light</option><option value="dark" data-i18n="dark">Dark</option></select>
+ </div>
+</header>
+<main id="main" class="sim-wrapper">
+ <div class="eyebrow">EEVL / DFT / v1.0.0</div>
+ <h1 data-m="title"></h1>
+ <p class="author">Tiago Martinazzi Buriol (UFSM/DMTM)</p>
+ <p data-m="intro"></p>
+
+ <div class="layout">
+  <section class="panel controls" aria-labelledby="settings-title">
+   <h2 id="settings-title" data-m="settings"></h2>
+   <form id="parameters" novalidate>
+    <fieldset>
+     <legend data-m="experiment"></legend>
+     <label><span data-m="choosePreset"></span>
+      <select id="preset">
+       <option value="example1" data-m="preset_example1"></option>
+       <option value="example2" data-m="preset_example2"></option>
+       <option value="example3" data-m="preset_example3"></option>
+       <option value="example4" data-m="preset_example4"></option>
+       <option value="leakage" data-m="preset_leakage"></option>
+       <option value="aliasing" data-m="preset_aliasing"></option>
+       <option value="custom" data-m="preset_custom"></option>
+      </select>
+     </label>
+     <p id="presetNote" class="hint" aria-live="polite"></p>
+    </fieldset>
+
+    <fieldset>
+     <legend data-m="source"></legend>
+     <label class="radio"><input type="radio" name="source" value="synthetic" checked> <span data-m="sourceSynthetic"></span></label>
+     <label class="radio"><input type="radio" name="source" value="data"> <span data-m="sourceData"></span></label>
+    </fieldset>
+
+    <fieldset id="syntheticFields">
+     <legend data-m="components"></legend>
+     <p class="hint" data-m="componentsFormula"></p>
+     <table class="components">
+      <thead><tr><th scope="col" data-tex="i"></th><th scope="col" data-tex="A_i"></th><th scope="col" data-tex="f_i\;(\mathrm{Hz})"></th><th scope="col" data-tex="\varphi_i\;({}^\circ)"></th></tr></thead>
+      <tbody>
+       <tr><th scope="row">1</th><td><input id="a1" type="number" min="0" max="1000" step="any" value="3" required></td><td><input id="f1" type="number" min="0" max="1000000" step="any" value="1" required></td><td><input id="p1" type="number" min="-360" max="360" step="any" value="0" required></td></tr>
+       <tr><th scope="row">2</th><td><input id="a2" type="number" min="0" max="1000" step="any" value="1" required></td><td><input id="f2" type="number" min="0" max="1000000" step="any" value="4" required></td><td><input id="p2" type="number" min="-360" max="360" step="any" value="0" required></td></tr>
+       <tr><th scope="row">3</th><td><input id="a3" type="number" min="0" max="1000" step="any" value="0.5" required></td><td><input id="f3" type="number" min="0" max="1000000" step="any" value="7" required></td><td><input id="p3" type="number" min="-360" max="360" step="any" value="0" required></td></tr>
+       <tr><th scope="row">4</th><td><input id="a4" type="number" min="0" max="1000" step="any" value="0" required></td><td><input id="f4" type="number" min="0" max="1000000" step="any" value="0" required></td><td><input id="p4" type="number" min="-360" max="360" step="any" value="0" required></td></tr>
+      </tbody>
+     </table>
+     <p class="hint" data-m="componentsHint"></p>
+     <label><span data-m="samples"></span> <span data-tex="N"></span>
+      <input id="samples" type="number" min="8" max="4096" step="1" value="100" required></label>
+     <label><span data-m="noise"></span> <span data-tex="\sigma"></span>
+      <input id="noise" type="number" min="0" max="1000" step="any" value="0" required></label>
+     <label><span data-m="seed"></span>
+      <input id="seed" type="number" min="0" max="4294967295" step="1" value="1" required></label>
+    </fieldset>
+
+    <fieldset id="dataFields" hidden>
+     <legend data-m="data"></legend>
+     <p class="hint" data-m="dataHint"></p>
+     <label><span data-m="dataPaste"></span>
+      <textarea id="dataText" rows="6" spellcheck="false" autocomplete="off"></textarea></label>
+     <label><span data-m="dataFile"></span>
+      <input id="dataFile" type="file" accept=".dat,.csv,.txt,text/plain,text/csv"></label>
+     <div class="actions"><button type="button" id="dataLoad" data-m="dataLoad"></button></div>
+     <p id="dataStatus" class="hint" role="status"></p>
+    </fieldset>
+
+    <fieldset>
+     <legend data-m="window"></legend>
+     <label><span data-m="duration"></span> <span data-tex="T\;(\mathrm{s})"></span>
+      <input id="duration" type="number" min="0.001" max="1000" step="any" value="1" required></label>
+    </fieldset>
+
+    <fieldset>
+     <legend data-m="filter"></legend>
+     <label><span data-m="threshold"></span> <span data-tex="A_{\min}"></span>
+      <input id="threshold" type="number" min="0" max="1000000" step="any" value="0.3" required>
+      <input id="thresholdRange" type="range" min="0" max="10" step="0.01" value="0.3" aria-describedby="thresholdHint"></label>
+     <p id="thresholdHint" class="hint" data-m="thresholdHint"></p>
+    </fieldset>
+    <div class="actions"><button type="button" id="reset" data-m="reset"></button></div>
+   </form>
+   <p id="error" class="error" role="alert"></p>
+  </section>
+
+  <section class="results" aria-labelledby="results-title">
+   <div class="panel">
+    <h2 id="results-title" data-m="results"></h2>
+    <div id="metrics" class="metrics"></div>
+    <p id="warnings" class="warning" role="status" hidden></p>
+
+    <div class="chart">
+     <div class="chart-head"><span class="chart-title" data-m="timeChart"></span>
+      <span class="scale-actions"><button type="button" data-fit="time" data-m="scaleFit"></button><button type="button" data-restore="time" data-m="scaleRestore"></button></span></div>
+     <div class="axis-y" data-tex="x(t)"></div>
+     <svg id="timeChart" viewBox="0 0 640 260" role="img"></svg>
+     <div class="axis-x" data-tex="t\;(\mathrm{s})"></div>
+     <p class="legend"><label class="toggle"><input type="checkbox" id="showSamples" checked> <span class="key noisy"></span> <span data-m="legendNoisy"></span></label> <span id="legendCleanGroup"><span class="key clean"></span> <span data-m="legendClean"></span></span> <span class="key filtered"></span> <span data-m="legendFiltered"></span></p>
+     <p id="timeOut" class="out-of-range" hidden data-m="outOfRange"></p>
+    </div>
+
+    <div class="chart">
+     <div class="chart-head"><span class="chart-title" data-m="ampChart"></span>
+      <span class="scale-actions"><button type="button" data-fit="amp" data-m="scaleFit"></button><button type="button" data-restore="amp" data-m="scaleRestore"></button></span></div>
+     <p class="hint chart-note" data-m="ampChartNote"></p>
+     <fieldset class="view-controls">
+      <legend data-m="view"></legend>
+      <label class="radio"><input type="radio" name="view" value="full"> <span data-m="viewFull"></span></label>
+      <label class="radio"><input type="radio" name="view" value="half" checked> <span data-m="viewHalf"></span></label>
+      <label class="inline"><span data-m="maxFrequency"></span> <span data-tex="(\mathrm{Hz})"></span>
+       <input id="maxFrequency" type="number" min="0.001" max="1000000" step="any" value="50" required></label>
+     </fieldset>
+     <div class="axis-y" id="ampAxis"></div>
+     <svg id="ampChart" viewBox="0 0 640 260" role="img" tabindex="0"></svg>
+     <div class="axis-x" data-tex="f_k=k/T\;(\mathrm{Hz})"></div>
+     <p class="legend"><span class="key stem"></span> <span data-m="legendStem"></span> <span class="key kept"></span> <span data-m="legendKept"></span> <span class="key threshold"></span> <span data-m="legendThreshold"></span></p>
+     <p id="ampOut" class="out-of-range" hidden data-m="outOfRange"></p>
+     <p class="inspection-hint" data-m="inspectHint"></p>
+     <p id="inspection" class="inspection" aria-live="polite"></p>
+    </div>
+
+    <div class="chart">
+     <div class="chart-head"><span class="chart-title" data-m="phaseChart"></span></div>
+     <div class="axis-y" data-tex="\arg F_k\;(\mathrm{rad})"></div>
+     <svg id="phaseChart" viewBox="0 0 640 200" role="img"></svg>
+     <div class="axis-x" data-tex="f_k\;(\mathrm{Hz})"></div>
+     <p class="hint" data-m="phaseHint"></p>
+    </div>
+
+    <h3 data-m="tableTitle"></h3>
+    <p class="hint" data-m="tableHint"></p>
+    <div class="table-wrap"><table id="detected" class="data-table">
+     <thead><tr><th scope="col" data-tex="k"></th><th scope="col" data-tex="f_k\;(\mathrm{Hz})"></th><th scope="col" data-tex="A_k"></th><th scope="col" data-tex="\arg F_k\;(\mathrm{rad})"></th><th scope="col" data-tex="\arg F_k\;({}^\circ)"></th></tr></thead>
+     <tbody></tbody></table></div>
+    <p id="tableNote" class="hint"></p>
+    <div id="referenceBlock">
+     <h3 data-m="referenceTitle"></h3>
+     <div class="table-wrap"><table id="reference" class="data-table">
+      <thead><tr><th scope="col" data-tex="i"></th><th scope="col" data-tex="A_i"></th><th scope="col" data-tex="f_i\;(\mathrm{Hz})"></th><th scope="col" data-tex="\varphi_i\;({}^\circ)"></th><th scope="col" data-tex="\varphi_i-90^\circ\;(\mathrm{rad})"></th><th scope="col" data-m="colObserved"></th></tr></thead>
+      <tbody></tbody></table></div>
+    </div>
+    <div class="actions"><button type="button" id="csv" data-m="csv"></button></div>
+    <p id="message" role="status"></p>
+   </div>
+  </section>
+ </div>
+
+
+ <section class="panel equations" aria-labelledby="eq-title">
+  <h2 id="eq-title" data-m="docsTitle"></h2>
+  <p data-m="docsIntro"></p>
+  <div class="eq" data-display data-tex="F_k=\sum_{n=0}^{N-1}x_n\,e^{-i2\pi kn/N},\qquad f_k=\frac{k}{T},\qquad f_s=\frac{N}{T}"></div>
+  <div class="eq" data-display data-tex="A_k=\frac{2|F_k|}{N}\ \ \left(0&lt;k&lt;\tfrac{N}{2}\right),\qquad A_0=\frac{|F_0|}{N},\qquad \varphi_k=\arg F_k"></div>
+  <div class="eq" data-display data-tex="\tilde x_n=\sum_{A_k\ge A_{\min}}A_k\cos\left(2\pi f_k t_n+\varphi_k\right)"></div>
+  <p data-m="docsAssumptions"></p>
+  <p data-m="docsLimitations"></p>
+  <p class="hint"><span data-m="docsReferences"></span> Chapra e Canale, <cite>Métodos numéricos para engenharia</cite>, 7. ed., 2016 · <a href="https://github.com/tiagoburiol/MatComp_IV/blob/main/04_transformada_discreta_de_fourier.ipynb" target="_blank" rel="noopener noreferrer">MatComp IV — aula 4</a> · <a href="../../../docs/DFT-SPECTRUM.md">docs/DFT-SPECTRUM.md</a></p>
+ </section>
+</main>
+</body>
+</html>
