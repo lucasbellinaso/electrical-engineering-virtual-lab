@@ -6,7 +6,7 @@ export function setupOfflineButton(){
  const path=decodeURIComponent(location.pathname.slice(root.pathname.length));
  if(!path.startsWith('simulators/')||!path.endsWith('/index.html'))return;
  const picker=document.querySelector('#language');if(!picker)return;
- const button=document.createElement('button');button.type='button';button.className='offline-button';button.setAttribute('aria-live','polite');picker.insertAdjacentElement('afterend',button);
+ const button=document.createElement('button');button.type='button';button.disabled=true;button.className='offline-button';button.setAttribute('aria-live','polite');picker.insertAdjacentElement('afterend',button);
  let state='offlineDownload',busy=false,registration=null,simulatorId=null;
  const label=()=>{button.textContent=t(state);button.title=t(state);};
  const setState=next=>{state=next;label();};
@@ -40,5 +40,5 @@ export function setupOfflineButton(){
   }catch(error){console.warn('Offline preparation:',error);setState('offlineError');}
   finally{busy=false;button.disabled=false;}
  });
- start();
+ start().finally(()=>{if(!busy&&state!=='offlineUnsupported')button.disabled=false;});
 }

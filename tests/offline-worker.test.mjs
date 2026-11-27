@@ -15,15 +15,16 @@ async function harness(){
  const self={location:{href:base+'service-worker.js'},addEventListener(type,handler){handlers[type]=handler;},clients:{async claim(){}},skipWaiting(){}};
  const fetch=async url=>address(url)===control.failFetch?new Response('unavailable',{status:503}):new Response('ok');
  const code=await readFile(new URL('../service-worker.js',import.meta.url),'utf8');
+ const version=code.match(/const VERSION='([^']+)'/)?.[1];assert.ok(version);
  runInNewContext(code,{self,caches,fetch,URL,Response,Request,crypto:webcrypto,console});
- const shell=await caches.open('eevl-v1.1.33-shell');await shell.put(base+'data/offline-manifest.json',new Response(JSON.stringify({simulators:{demo:{files:['a.js','b.js']}}})));
+ const shell=await caches.open(version+'-shell');await shell.put(base+'data/offline-manifest.json',new Response(JSON.stringify({simulators:{demo:{files:['a.js','b.js']}}})));
  async function send(type,id='demo') {const messages=[];let pending;handlers.message({data:{type,id},ports:[{postMessage(data){messages.push(data);}}],waitUntil(p){pending=p;}});await pending;return messages;}
- return {send,caches,control,stores};
+ return {send,caches,control,stores,version};
 }
 test('preparation confirms only after every dependency is stored; missing cache invalidates status',async()=>{
  const h=await harness();const messages=await h.send('OFFLINE_PREPARE');assert.equal(messages.at(-1).type,'complete');assert.deepEqual(messages.filter(x=>x.type==='progress').map(x=>x.done),[1,2]);
  assert.equal((await h.send('OFFLINE_STATUS')).at(-1).ready,true);
- const cache=await h.caches.open('eevl-v1.1.33-visited');await cache.delete(base+'a.js');assert.equal((await h.send('OFFLINE_STATUS')).at(-1).ready,false);
+ const cache=await h.caches.open(h.version+'-visited');await cache.delete(base+'a.js');assert.equal((await h.send('OFFLINE_STATUS')).at(-1).ready,false);
 });
 test('failed download or failed cache commit cannot report a new complete preparation',async()=>{
  const h=await harness();h.control.failFetch=base+'b.js';assert.equal((await h.send('OFFLINE_PREPARE')).at(-1).type,'error');assert.equal((await h.send('OFFLINE_STATUS')).at(-1).ready,false);
