@@ -86,22 +86,6 @@ export function synthesize(parameters) {
   return {parameters: p, time, clean, noisy};
 }
 
-/** Direct evaluation of the lesson formula F_k = Σ x_n e^{−i2πkn/N}; O(N²). */
-export function dftDirect(x) {
-  checkSignal(x);
-  const n = x.length, out = new Array(n);
-  for (let k = 0; k < n; k++) {
-    let re = 0, im = 0;
-    for (let j = 0; j < n; j++) {
-      const angle = -2 * Math.PI * k * j / n;
-      re += x[j] * Math.cos(angle);
-      im += x[j] * Math.sin(angle);
-    }
-    out[k] = {re, im};
-  }
-  return out;
-}
-
 /** Terms x_n e^{−i2πkn/N}, running partial sums and F_k for the step-by-step view. */
 export function dftTerms(x, k) {
   checkSignal(x);
@@ -207,12 +191,6 @@ export function simulate(parameters) {
   const signal = synthesize(parameters), p = signal.parameters;
   const analysis = analyze(signal.noisy, p.duration, p.threshold);
   return {...signal, analysis, reference: describeComponents(p.components, p.samples, p.duration)};
-}
-
-/** Complex multiplications: N² for the direct DFT, (N/2)log₂N for radix-2 FFT. */
-export function operationCounts(samples) {
-  const radix2 = Number.isInteger(samples) && samples > 0 && (samples & (samples - 1)) === 0;
-  return {direct: samples * samples, fft: radix2 ? samples / 2 * Math.log2(samples) : samples * samples, radix2};
 }
 
 /**

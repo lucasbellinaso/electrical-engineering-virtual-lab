@@ -1084,9 +1084,9 @@
       "es": "Transformada discreta de Fourier: espectro, ruido y filtrado"
     },
     "description": {
-      "en": "Build sums of sinusoids, compute the DFT step by step, inspect amplitude and phase spectra, remove noise by thresholding and compare the direct DFT with the FFT.",
-      "pt-BR": "Monte somas de senoides, calcule a TDF passo a passo, observe os espectros de amplitude e fase, remova ruído por limiar e compare a TDF direta com a FFT.",
-      "es": "Construya sumas de senoides, calcule la TDF paso a paso, observe los espectros de amplitud y fase, elimine ruido por umbral y compare la TDF directa con la FFT."
+      "en": "Build sums of sinusoids, inspect amplitude and phase spectra, compute the DFT step by step and remove noise by thresholding.",
+      "pt-BR": "Monte somas de senoides, observe os espectros de amplitude e fase, calcule a TDF passo a passo e remova ruído por limiar.",
+      "es": "Construya sumas de senoides, observe los espectros de amplitud y fase, calcule la TDF paso a paso y elimine ruido por umbral."
     },
     "category": "signal-processing",
     "keywords": {

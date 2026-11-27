@@ -72,7 +72,7 @@ label.inline input{width:110px;padding:5px 7px;border:1px solid var(--line);bord
 #detected tbody tr:hover,#detected tbody tr:focus{background:var(--soft)}
 .ellipsis{text-align:center!important}
 /* step-by-step and comparison */
-.step,.compare,.equations{margin:20px 0}
+.step{margin:20px 0}
 .formula{overflow-x:auto;overflow-y:hidden;margin:10px 0}
 .step-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(220px,1fr);gap:20px;align-items:start}
 .walk{margin:0}
@@ -81,7 +81,6 @@ label.inline input{width:110px;padding:5px 7px;border:1px solid var(--line);bord
 .walk-path{stroke:var(--blue);stroke-width:1.4}
 .walk-result{stroke:#d97706;stroke-width:2.4}
 .arrow-head{fill:#d97706}
-.equations li{color:var(--muted);margin:6px 0}
 .katex-display{overflow-x:auto;overflow-y:hidden;padding:2px 0}
 @media(max-width:860px){.layout,.step-layout{grid-template-columns:1fr}}
 /* Wide screens: settings and results scroll independently, so a control stays next to the curve it changes. */

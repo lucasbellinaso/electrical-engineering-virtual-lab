@@ -1,12 +1,9 @@
 import {initialize} from '../../../assets/js/common.js';
 import {language} from '../../../assets/js/i18n.js';
 import katex from '../../../assets/vendor/katex/katex.mjs';
-import {fft} from '../../../assets/js/core/signal.js';
-import {createRandom} from '../../../assets/js/core/random.js';
 import {numberLatex, proseParts} from '../../electrical-circuits/shared/presentation.js';
-import {MAX_COMPONENTS, simulate, analyze, dftDirect, dftTerms, evaluateCosines, evaluateSines, operationCounts, parseSamples, halfLength, sampleTimes} from './model.js';
+import {MAX_COMPONENTS, simulate, analyze, dftTerms, evaluateCosines, evaluateSines, parseSamples, halfLength, sampleTimes} from './model.js';
 import {presets, defaultPreset} from './presets.js';
-import {equationBlocks, compareLatex} from './equations.js';
 
 const $ = id => document.getElementById(id), form = $('parameters'), svgNS = 'http://www.w3.org/2000/svg';
 const area = {left: 58, top: 10, width: 566, height: 0};
@@ -127,7 +124,7 @@ function update(rescale = false) {
 
 function render() {
   if (!result) return;
-  renderMetrics(); renderWarnings(); renderTime(); renderAmplitude(); renderPhase(); renderTables(); renderStep(); renderCompareFormula();
+  renderMetrics(); renderWarnings(); renderTime(); renderAmplitude(); renderPhase(); renderTables(); renderStep();
 }
 
 function renderMetrics() {
@@ -285,50 +282,6 @@ function renderWalk(steps) {
   el.setAttribute('aria-label', plain(tr('stepWalk')));
 }
 
-// ---------- direct DFT × FFT ----------
-function renderCompareFormula() {
-  const counts = operationCounts(result.analysis.samples);
-  math($('compareFormula'), compareLatex(result.analysis.samples, counts, v => tex(v, 6)), true);
-}
-function measure(fn, maxReps) {
-  let reps = 0; const start = performance.now(); let now = start;
-  do { fn(); reps++; now = performance.now(); } while (now - start < 40 && reps < maxReps);
-  return (now - start) / reps;
-}
-function compareRow(x) {
-  const N = x.length, counts = operationCounts(N);
-  let direct, fast;
-  const tDirect = measure(() => { direct = dftDirect(x); }, Math.max(3, Math.ceil(4e6 / (N * N)))), tFft = measure(() => { fast = fft(x); }, 2000);
-  const error = Math.max(...direct.map((z, i) => Math.hypot(z.re - fast[i].re, z.im - fast[i].im)));
-  return {N, counts, tDirect, tFft, error};
-}
-function appendCompare(row) {
-  const table = $('compareTable'), tr0 = table.tBodies[0].insertRow();
-  table.hidden = false;
-  for (const v of [String(row.N), fmt(row.counts.direct, 6), row.counts.radix2 ? fmt(row.counts.fft, 6) : '—', fmt(row.tDirect, 3), fmt(row.tFft, 3), row.tFft > 0 ? fmt(row.tDirect / row.tFft, 3) : '—', row.error.toExponential(1)]) tr0.insertCell().textContent = v;
-}
-const pause = () => new Promise(resolve => setTimeout(resolve, 0));
-async function runCompare(sizes, signalFor) {
-  for (const id of ['compareCurrent', 'compareSweep']) $(id).disabled = true;
-  $('compareTable').tBodies[0].replaceChildren();
-  try {
-    for (const N of sizes) {
-      prose($('compareStatus'), tr('compareRunning', {n: String(N)})); await pause();
-      appendCompare(compareRow(signalFor(N)));
-    }
-    prose($('compareStatus'), tr('compareDone'));
-  } finally { for (const id of ['compareCurrent', 'compareSweep']) $(id).disabled = false; }
-}
-$('compareCurrent').addEventListener('click', () => {
-  if (!result) return;
-  const N = result.noisy.length;
-  runCompare([N], () => result.noisy).then(() => { if (!operationCounts(N).radix2) prose($('compareStatus'), tr('compareNotRadix2', {n: String(N)})); });
-});
-$('compareSweep').addEventListener('click', () => {
-  const random = createRandom(2026);
-  runCompare([64, 128, 256, 512, 1024, 2048, 4096], N => Array.from({length: N}, () => random.normal()));
-});
-
 // ---------- interaction ----------
 function binAtPointer(event) {
   const element = $('ampChart'), info = element.frameInfo;
@@ -446,15 +399,9 @@ $('csv').addEventListener('click', () => {
 function translate() {
   document.querySelectorAll('[data-m]').forEach(e => { if (e.tagName === 'OPTION') e.textContent = plain(tr(e.dataset.m)); else prose(e, tr(e.dataset.m)); });
   document.querySelectorAll('[data-tex]').forEach(e => math(e, e.dataset.tex));
-  const blocks = $('equationBlocks'); blocks.replaceChildren();
-  for (const [key, latex] of equationBlocks) {
-    const p = document.createElement('p'), d = document.createElement('div');
-    prose(p, tr(key)); math(d, latex, true); blocks.append(p, d);
-  }
   document.title = plain(tr('title')) + ' - EEVL';
   presetNote();
   if (data) prose($('dataStatus'), tr('dataLoaded', {count: String(data.values.length), duration: fmt(Number($('duration').value))}));
-  $('compareStatus').textContent = '';
   if (result) render();
 }
 document.addEventListener('languagechange', () => { if (dictionary.en) translate(); });

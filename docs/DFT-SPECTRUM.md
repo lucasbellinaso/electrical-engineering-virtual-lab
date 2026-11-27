@@ -4,6 +4,10 @@ Aplicativo em `simulators/signal-processing/dft-spectrum/`, baseado nos Exemplos
 [4. Transformada discreta de Fourier](https://github.com/tiagoburiol/MatComp_IV/blob/main/04_transformada_discreta_de_fourier.ipynb)
 da disciplina Matemática Computacional IV (T. Buriol). Interface em PT-BR, EN e ES (`locales.json`).
 
+Por decisão de simplicidade da interface, a página não reproduz as equações, o método e as limitações;
+eles estão documentados neste arquivo. As dicas dos controles e os avisos de vazamento e aliasing
+apresentam o essencial durante o uso.
+
 ## Modelo e convenções
 
 - Sinal sintético: até quatro componentes `A_i sin(2π f_i t + φ_i)`, com `φ_i` em graus, mais ruído
@@ -29,8 +33,6 @@ da disciplina Matemática Computacional IV (T. Buriol). Interface em PT-BR, EN e
   mas as componentes detectadas coincidem.
 - Cálculo passo a passo de `F_k` pela fórmula, com as parcelas, as somas parciais no plano complexo e a
   diferença em relação à FFT da biblioteca.
-- Comparação entre a TDF direta (`N²` multiplicações complexas) e a FFT radix-2 (`(N/2) log₂ N`), com tempos
-  medidos no navegador. Os tempos dependem da máquina e não são evidência de validação.
 - Importação de dados. Gramática: um valor por linha ou duas colunas `t x` com `t` crescente e uniformemente
   espaçado (`T = N Δt`); separadores espaço, tabulação, vírgula ou ponto e vírgula; ponto decimal; linhas com
   `#` ou `%` ignoradas; 8 a 4096 amostras. A vírgula nunca é interpretada como separador decimal.
@@ -44,7 +46,7 @@ da disciplina Matemática Computacional IV (T. Buriol). Interface em PT-BR, EN e
 
 Usa `fft`/`ifft` de `assets/js/core/signal.js` e `createRandom` de `assets/js/core/random.js`; reaproveita
 `numberLatex` e `proseParts` de `simulators/electrical-circuits/shared/presentation.js`. A fórmula direta
-(`dftDirect`, `dftTerms`) fica no aplicativo por ser o objeto didático do experimento.
+para um bin (`dftTerms`) fica no aplicativo por ser o objeto didático do cálculo passo a passo.
 
 Proposta para a biblioteca: para `N` que não é potência de 2, `fft` recorre à TDF direta (`O(N²)`). Um algoritmo
 de Bluestein ou de raiz mista tornaria `N = 1000` (Exemplos 2 a 4) `O(N log N)`. Esta contribuição não altera
@@ -62,7 +64,7 @@ rebatidas. `N ≤ 4096` mantém a interação fluida mesmo quando a FFT recorre 
 (entradas armazenadas no fixture, incluindo o ruído). `tests/dft-spectrum.test.mjs` compara espectro complexo,
 amplitude de um lado, bins mantidos e reconstrução filtrada com essa referência, com `N` par, ímpar, radix-2,
 componente DC e bin de Nyquist. Também verifica casos analíticos (Exemplo 1 exato, tons puros e relação de fase),
-igualdade entre a fórmula direta e a FFT, somas parciais, simetria conjugada, reconstrução exata com limiar nulo,
+igualdade entre a fórmula direta e a FFT em todos os bins, somas parciais, simetria conjugada, reconstrução exata com limiar nulo,
 equivalência entre a inversa e a soma de cossenos, vazamento, aliasing, reprodutibilidade do ruído, entradas
 inválidas, a gramática dos dados, paridade das traduções e a renderização KaTeX de todas as fontes LaTeX.
 Isso é verificação numérica de exemplos; o catálogo declara o nível `experimental`.

@@ -4,9 +4,8 @@ import {readFileSync} from 'node:fs';
 import katex from '../assets/vendor/katex/katex.mjs';
 import {fft} from '../assets/js/core/signal.js';
 import {proseParts} from '../simulators/electrical-circuits/shared/presentation.js';
-import {validate, synthesize, simulate, analyze, dftDirect, dftTerms, spectrum, evaluateCosines, describeComponents, aliasFrequency, operationCounts, parseSamples, sampleTimes, wrapPhase, MAX_COMPONENTS} from '../simulators/signal-processing/dft-spectrum/model.js';
+import {validate, synthesize, simulate, analyze, dftTerms, spectrum, evaluateCosines, describeComponents, aliasFrequency, parseSamples, sampleTimes, wrapPhase, MAX_COMPONENTS} from '../simulators/signal-processing/dft-spectrum/model.js';
 import {presets, presetOrder, defaultPreset} from '../simulators/signal-processing/dft-spectrum/presets.js';
-import {equationBlocks, compareLatex} from '../simulators/signal-processing/dft-spectrum/equations.js';
 
 const dir = '../simulators/signal-processing/dft-spectrum/';
 const read = path => readFileSync(new URL(path, import.meta.url), 'utf8');
@@ -46,14 +45,13 @@ test('pure tones: amplitude, phase relation φ − 90°, DC and Nyquist normalis
   assert.equal(a.bins[33].amplitude, null);
 });
 
-test('direct formula equals the shared FFT for radix-2 and other lengths; partial sums reach F_k', () => {
+test('step-by-step formula equals the shared FFT for radix-2 and other lengths; partial sums reach F_k', () => {
   for (const n of [8, 64, 100, 63]) {
-    const x = Array.from({length: n}, (_, i) => Math.sin(1.3 * i) + 0.1 * i), D = dftDirect(x), F = fft(x);
+    const x = Array.from({length: n}, (_, i) => Math.sin(1.3 * i) + 0.1 * i), F = fft(x);
     const scale = Math.max(...F.map(z => Math.hypot(z.re, z.im)));
-    D.forEach((z, k) => { near(z.re, F[k].re, 1e-11, scale); near(z.im, F[k].im, 1e-11, scale); });
-    for (const k of [0, 1, Math.floor(n / 2), n - 1]) {
+    for (let k = 0; k < n; k++) {
       const s = dftTerms(x, k);
-      near(s.sum.re, D[k].re, 1e-12, scale); near(s.sum.im, D[k].im, 1e-12, scale);
+      near(s.sum.re, F[k].re, 1e-11, scale); near(s.sum.im, F[k].im, 1e-11, scale);
       assert.deepEqual(s.partial.at(-1), s.sum); assert.equal(s.terms.length, n);
       near(s.terms[1].angle, -2 * Math.PI * k / n, 1e-15);
     }
@@ -134,11 +132,6 @@ test('data parser follows its documented grammar', () => {
   assert.throws(() => parseSamples('1e999\n'.repeat(8)), RangeError);
 });
 
-test('operation counts', () => {
-  assert.deepEqual(operationCounts(1024), {direct: 1048576, fft: 5120, radix2: true});
-  assert.deepEqual(operationCounts(1000), {direct: 1e6, fft: 1e6, radix2: false});
-});
-
 test('presets validate and the initial form equals the default preset within HTML limits', () => {
   const html = read(dir + 'index.html'), p = presets[defaultPreset];
   for (const key of presetOrder) { validate(presets[key]); assert.ok(html.includes(`value="${key}"`), key); }
@@ -164,7 +157,6 @@ test('three locales share keys and placeholders, and every used key exists', () 
   }
   const html = read(dir + 'index.html'), ui = read(dir + 'ui.js');
   const used = new Set([...html.matchAll(/data-m="(\w+)"/g), ...ui.matchAll(/\btr\('(\w+)'/g)].map(m => m[1]).filter(key => !key.endsWith('_')));
-  for (const [key] of equationBlocks) used.add(key);
   for (const key of [...presetOrder, 'custom']) used.add('presetNote_' + key);
   for (const key of ['noData', 'inputError', 'keptYes', 'keptNo', 'observed', 'observedAlias', 'observedLeakage', 'dataParseError', 'dataColumnsError', 'dataLengthError', 'dataSpacingError']) used.add(key);
   for (const key of used) assert.ok(key in en, `missing ${key}`);
@@ -174,8 +166,6 @@ test('all LaTeX sources render with KaTeX without errors', () => {
   const render = source => katex.renderToString(source, {throwOnError: true, displayMode: true, trust: false});
   const html = read(dir + 'index.html');
   for (const m of html.matchAll(/data-tex="([^"]+)"/g)) render(m[1].replace(/&amp;/g, '&'));
-  for (const [, latex] of equationBlocks) render(latex);
-  render(compareLatex(1024, operationCounts(1024), String)); render(compareLatex(1000, operationCounts(1000), String));
   const dictionary = JSON.parse(read(dir + 'locales.json'));
   for (const messages of Object.values(dictionary)) for (const value of Object.values(messages)) for (const part of proseParts(value)) if (part.latex) render(part.latex);
 });
