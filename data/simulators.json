@@ -1088,7 +1088,7 @@
       "pt-BR": "Monte somas de senoides, observe os espectros de amplitude e fase e remova ruído por limiar com a transformada inversa.",
       "es": "Construya sumas de senoides, observe los espectros de amplitud y fase y elimine ruido por umbral con la transformada inversa."
     },
-    "category": "signal-processing",
+    "category": "numerical-methods",
     "keywords": {
       "en": [
         "Fourier",
@@ -1118,7 +1118,7 @@
     "path": "simulators/signal-processing/dft-spectrum/index.html",
     "thumbnail": "assets/images/dft-spectrum.svg",
     "authors": [
-      "Tiago M. Buriol (UFSM/DMTM)"
+      "Tiago Martinazzi Buriol"
     ],
     "contributors": [],
     "version": "1.0.0",

@@ -6,7 +6,7 @@ initialize().then(updateTitle).catch(error=>{console.error(error);const p=docume
 
 const list = document.querySelector('#contributors-list');
 if (list) {
-  const people = ['Lucas Vizzotto Bellinaso', 'Mauricio Sperandio', 'Carlos Henrique Barriquello'];
+  const people = ['Lucas Vizzotto Bellinaso', 'Mauricio Sperandio', 'Carlos Henrique Barriquello', 'Tiago Martinazzi Buriol'];
   let catalog = [];
   function renderContributors() {
     const table = document.createElement('table');
