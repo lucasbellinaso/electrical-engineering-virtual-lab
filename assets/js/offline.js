@@ -6,9 +6,12 @@ export function setupOfflineButton(){
  const path=decodeURIComponent(location.pathname.slice(root.pathname.length));
  if(!path.startsWith('simulators/')||!path.endsWith('/index.html'))return;
  const picker=document.querySelector('#language');if(!picker)return;
- const button=document.createElement('button');button.type='button';button.disabled=true;button.className='offline-button';button.setAttribute('aria-live','polite');picker.insertAdjacentElement('afterend',button);
+ const button=document.createElement('button');button.type='button';button.disabled=true;button.className='offline-button';button.setAttribute('aria-live','polite');
+ button.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></svg>';
+ picker.insertAdjacentElement('beforebegin',button);
  let state='offlineDownload',busy=false,registration=null,simulatorId=null;
- const label=()=>{button.textContent=t(state);button.title=t(state);};
+ const describe=text=>{button.title=text;button.setAttribute('aria-label',text);};
+ const label=()=>{button.dataset.state=state;describe(t(state));};
  const setState=next=>{state=next;label();};
  document.addEventListener('languagechange',label);label();
  if(!('serviceWorker' in navigator)||!('caches' in window)){button.disabled=true;setState('offlineUnsupported');return;}
@@ -35,7 +38,7 @@ export function setupOfflineButton(){
   try{
    if(!registration||!simulatorId)await start();
    if(!registration||!simulatorId)throw Error('worker unavailable');
-   await request('OFFLINE_PREPARE',message=>{button.textContent=t('offlineProgress',{done:message.done,total:message.total});});
+   await request('OFFLINE_PREPARE',message=>{describe(t('offlineProgress',{done:message.done,total:message.total}));});
    setState('offlineReady');
   }catch(error){console.warn('Offline preparation:',error);setState('offlineError');}
   finally{busy=false;button.disabled=false;}

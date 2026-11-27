@@ -16,4 +16,4 @@ body.is-full{display:flex;flex-direction:column;height:100vh;overflow:hidden}bod
 /* Keep technical thumbnails complete and availability badges clear of artwork. */
 .card-art{padding-top:34px}.card-art img{height:auto;aspect-ratio:2/1;object-fit:contain}.card-art .status{top:7px}.recent-item img{object-fit:contain;background:#edf4f8}
 
-.offline-button{border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);padding:6px 9px;font:inherit;white-space:nowrap}.offline-button:disabled{opacity:.7;cursor:wait}
+.offline-button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);padding:0}.offline-button[data-state=offlineReady]{color:var(--green)}.offline-button[data-state=offlineError]{color:#ba3535}.offline-button:disabled{opacity:.7;cursor:wait}
