@@ -1008,5 +1008,72 @@
     ],
     "validationEvidence": [],
     "references": []
+  },
+  {
+    "id": "photovoltaic-curves",
+    "title": {
+      "en": "Photovoltaic module and array curves",
+      "pt-BR": "Curvas de módulos e arranjos fotovoltaicos",
+      "es": "Curvas de módulos y arreglos fotovoltaicos"
+    },
+    "description": {
+      "en": "Explore I-V and P-V curves with irradiance, cell temperature, series and parallel modules.",
+      "pt-BR": "Explore curvas I-V e P-V variando irradiância, temperatura da célula e associações em série e paralelo.",
+      "es": "Explora curvas I-V y P-V con irradiancia, temperatura de celda y asociaciones en serie y paralelo."
+    },
+    "category": "renewable-energy",
+    "keywords": {
+      "en": [
+        "photovoltaic",
+        "solar",
+        "module",
+        "array",
+        "IV curve"
+      ],
+      "pt-BR": [
+        "fotovoltaico",
+        "solar",
+        "módulo",
+        "arranjo",
+        "curva IV"
+      ],
+      "es": [
+        "fotovoltaico",
+        "solar",
+        "módulo",
+        "arreglo",
+        "curva IV"
+      ]
+    },
+    "path": "simulators/renewable-energy/photovoltaic/index.html",
+    "thumbnail": "assets/images/photovoltaic.svg",
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-27",
+    "updated": "2026-11-27",
+    "difficulty": "intermediate",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "pvlib: single-diode models",
+          "pt-BR": "pvlib: modelos de um diodo",
+          "es": "pvlib: modelos de un diodo"
+        },
+        "url": "https://pvlib-python.readthedocs.io/en/stable/user_guide/modeling_topics/singlediode.html"
+      }
+    ]
   }
 ]
