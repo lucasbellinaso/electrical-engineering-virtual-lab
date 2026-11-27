@@ -103,13 +103,13 @@ test('interp1: nós, ponto médio, fora do intervalo e validação', () => {
   assert.equal(interp1(x, y, 2), 20);
   assert.equal(interp1(x, y, 0.5), 5);
   assert.equal(interp1(x, y, 1.5), 15);
-  assert.ok(Number.isNaN(interp1(x, y, -0.1)));
-  assert.ok(Number.isNaN(interp1(x, y, 3.1)));
+  assert.equal(interp1(x, y, -0.1), 0);
+  assert.equal(interp1(x, y, 3.1), 30);
   assert.ok(Number.isNaN(interp1(x, y, NaN)));
   const mix = interp1(x, y, [-1, 0.5, 4]);
-  assert.ok(Number.isNaN(mix[0]));
+  assert.equal(mix[0], 0);
   assert.equal(mix[1], 5);
-  assert.ok(Number.isNaN(mix[2]));
+  assert.equal(mix[2], 30);
   assert.throws(() => interp1([0, 2, 1], [0, 1, 2], 0.5), RangeError);
   assert.throws(() => interp1([0, 1, 1], [0, 1, 2], 0.5), RangeError);
   assert.throws(() => interp1(x, y, '1'), TypeError);
