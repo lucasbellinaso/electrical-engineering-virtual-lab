@@ -262,5 +262,12 @@
   "circuit_parallelRecover": "Recovering the circuit variables and the impedance.",
   "circuit_energyEquation": "Energy stored and its rate of change (source power minus dissipation).",
   "credits": "Conceived by Prof. Dr. Lucas Vizzotto Bellinaso · Universidade Federal de Santa Maria, RS, Brazil",
-  "languageAvailability": "Application languages: {languages}. A translated catalog description does not imply a translated application."
+  "languageAvailability": "Application languages: {languages}. A translated catalog description does not imply a translated application.",
+  "contributorsTitle": "Contributors",
+  "contributorsIntro": "People who contributed to EEVL applications. All are from the Federal University of Santa Maria (UFSM).",
+  "contributorCount": "{count} application(s) in the catalog",
+  "contributorLucas": "Created and developed the listed applications.",
+  "contributorMauricio": "Author of the transmission line application; suggested the topic and provided material for its creation.",
+  "contributorCarlos": "Author of the digital modulation application.",
+  "simulatorAuthors": "Authors"
 }

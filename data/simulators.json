@@ -36,7 +36,7 @@
     "path": "simulators/control-systems/siso/index.html",
     "thumbnail": "assets/images/siso.svg",
     "authors": [
-      "Lucas V. Bellinaso"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "original-2026-11-25",
@@ -96,7 +96,9 @@
     },
     "path": "simulators/power-electronics/buck/index.html",
     "thumbnail": "assets/images/buck.svg",
-    "authors": [],
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
     "contributors": [],
     "version": "original-2026-11-25",
     "created": "2026-11-25",
@@ -160,7 +162,9 @@
     },
     "path": "simulators/power-electronics/buck-step/index.html",
     "thumbnail": "assets/images/buck-step.svg",
-    "authors": [],
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
     "contributors": [],
     "version": "original-2026-11-25",
     "created": "2026-11-25",
@@ -218,7 +222,9 @@
     },
     "path": "simulators/power-electronics/dab/index.html",
     "thumbnail": "assets/images/dab.svg",
-    "authors": [],
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
     "contributors": [],
     "version": "original-2026-11-25",
     "created": "2026-11-25",
@@ -276,7 +282,9 @@
     },
     "path": "simulators/analog-electronics/opamp/index.html",
     "thumbnail": "assets/images/opamp.svg",
-    "authors": [],
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
     "contributors": [],
     "version": "original-2026-11-25",
     "created": "2026-11-25",
@@ -337,7 +345,9 @@
     },
     "path": "simulators/control-systems/buck-pid/index.html",
     "thumbnail": "assets/images/buck.svg",
-    "authors": [],
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
     "contributors": [],
     "version": "original-2026-11-25+scale.1",
     "created": "2026-11-25",
@@ -404,7 +414,7 @@
     "path": "simulators/electrical-circuits/nodal-analysis/index.html",
     "thumbnail": "assets/images/nodal-analysis.svg",
     "authors": [
-      "EEVL Contributors"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "1.0.1",
@@ -476,7 +486,7 @@
     "path": "simulators/electrical-circuits/rl-rc/index.html",
     "thumbnail": "assets/images/rc-rl.svg",
     "authors": [
-      "EEVL Contributors"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "1.1.0",
@@ -548,7 +558,7 @@
     "path": "simulators/electrical-circuits/rlc-series-parallel/index.html",
     "thumbnail": "assets/images/rlc.svg",
     "authors": [
-      "EEVL Contributors"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "1.1.0",
@@ -623,7 +633,7 @@
     "path": "simulators/electrical-circuits/nodal-analysis-ac/index.html",
     "thumbnail": "assets/images/nodal-analysis-ac.svg",
     "authors": [
-      "EEVL Contributors"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "1.0.0",
@@ -698,7 +708,7 @@
     "path": "simulators/electromagnetics/magnetostatics/index.html",
     "thumbnail": "assets/images/magnetostatics.svg",
     "authors": [
-      "EEVL Contributors"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "1.0.0",
@@ -773,7 +783,7 @@
     "path": "simulators/electromagnetics/electrostatics/index.html",
     "thumbnail": "assets/images/electrostatics.svg",
     "authors": [
-      "EEVL Contributors"
+      "Lucas Vizzotto Bellinaso"
     ],
     "contributors": [],
     "version": "1.0.0",
@@ -845,7 +855,7 @@
     "path": "simulators/power-systems/transmission-line/index.html",
     "thumbnail": "assets/images/transmission-line.svg",
     "authors": [
-      "EEVL Contributors"
+      "Mauricio Sperandio"
     ],
     "contributors": [],
     "version": "1.0.0",
@@ -914,7 +924,7 @@
     "path": "simulators/digital-communications/digital-modulation/index.html",
     "thumbnail": "assets/images/digital-modulation.svg",
     "authors": [
-      "EEVL Contributors"
+      "Carlos Henrique Barriquello"
     ],
     "contributors": [],
     "version": "1.0.0",
