@@ -23,6 +23,14 @@ test('FFT and IFFT match NumPy for radix-2, arbitrary-length and complex vectors
   assert.throws(()=>ifft([{re:1,im:NaN}]),TypeError);
 });
 
+test('FFT of 4095 complex samples matches independent SciPy reference',()=>{
+  const n=4095,input=Array.from({length:n},(_,j)=>({re:Math.sin(j*.173)+.3*Math.cos(j*.031),im:Math.sin(j*.047)}));
+  const expected=[[0,15.613285189020322,36.03107930235905],[1,15.124322281152029,36.463648284582305],[17,25.665048944771847,72.72630134310825],[112,437.7552848412089,428.70227597787414],[500,1.1846346561502443,-1.347554139758147],[1024,.8843902734171152,-.2857315047702942],[2047,.5619787452825549,.3483022941062855],[4094,16.148705929963434,35.67462092644373]];
+  const got=fft(input);
+  for(const [k,re,im] of expected)close(got[k],{re,im},2e-10);
+  const reconstructed=ifft(got);input.forEach((z,i)=>close(reconstructed[i],z,2e-10));
+});
+
 test('lfilter direct-form-II transposed matches SciPy output and final state',()=>{
   const f=ref.signal.filter,got=lfilter(f.b,f.a,f.x,f.zi);
   assert.deepEqual(filter(f.b,f.a,f.x,f.zi),got);

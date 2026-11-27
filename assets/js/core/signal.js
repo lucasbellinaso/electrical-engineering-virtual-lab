@@ -9,7 +9,7 @@ const div=(a,b)=>{if(Math.abs(b.re)>=Math.abs(b.im)){if(b.re===0)throw new Range
 function vector(v,name){if(!Array.isArray(v))throw new TypeError(`${name} deve ser vetor.`);for(let i=0;i<v.length;i++){const z=v[i];if(!(typeof z==='number'&&Number.isFinite(z))&&!(isComplex(z)&&Number.isFinite(z.re)&&Number.isFinite(z.im)))throw new TypeError(`${name}[${i}] deve ser finito.`);}return v.map(c);}
 const output=(z,complex)=>complex?z:z.re;
 
-/** Discrete Fourier transform; radix-2 FFT, with a direct DFT fallback for other lengths. */
+/** Discrete Fourier transform; radix-2 FFT and Bluestein for other lengths. */
 export function fft(input) {
   const src=vector(input,'input'),n=src.length,out=Array.from({length:n},()=>({re:0,im:0}));
   if(n===0)return out;
@@ -20,7 +20,18 @@ export function fft(input) {
     }
     return src;
   }
-  for(let k=0;k<n;k++){let re=0,im=0;for(let t=0;t<n;t++){const angle=-2*Math.PI*k*t/n,co=Math.cos(angle),si=Math.sin(angle);re+=src[t].re*co-src[t].im*si;im+=src[t].re*si+src[t].im*co;}out[k]={re,im};}
+  // Bluestein expresses the DFT as a convolution padded to a power of two.
+  let m=1;while(m<2*n-1)m*=2;
+  const a=Array.from({length:m},()=>({re:0,im:0})),b=Array.from({length:m},()=>({re:0,im:0}));
+  for(let k=0;k<n;k++){
+    const angle=Math.PI*((k*k)%(2*n))/n,chirp={re:Math.cos(angle),im:Math.sin(angle)};
+    a[k]=mul(src[k],{re:chirp.re,im:-chirp.im});b[k]=chirp;if(k)b[m-k]=chirp;
+  }
+  const fa=fft(a),fb=fft(b),conv=ifft(fa.map((z,k)=>mul(z,fb[k])));
+  for(let k=0;k<n;k++){
+    const angle=Math.PI*((k*k)%(2*n))/n;
+    out[k]=mul(conv[k],{re:Math.cos(angle),im:-Math.sin(angle)});
+  }
   return out;
 }
 
