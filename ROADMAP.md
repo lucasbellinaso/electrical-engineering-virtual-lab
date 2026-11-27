@@ -78,14 +78,32 @@ models, SISO functions and suitable legacy consumers with regression tests for e
 
 ## 2. Arquivos e projetos locais
 
-Formatos JSON versionados para plantas, controladores, sinais e projetos; gerenciador
-com abrir/salvar, duplicar, renomear/excluir, importação/exportação, recentes, autosave
-e alterações não salvas. `.eevl`, `.eevlc` e `.eevlp` são nomes propostos. IndexedDB e
-downloads como base; pasta opcional via File System Access API e permissões renováveis.
-Não transmitir arquivos pessoais automaticamente ao repositório.
+Prioridade de infraestrutura: gerenciador compartilhado de arquivos e configurações,
+independente da futura linguagem. Abrir, salvar, salvar como, abrir pasta, recentes,
+autosave, recuperação, duplicar, renomear e excluir com confirmação. Cada aplicativo
+define seu estado serializável; a infraestrutura valida e migra o envelope versionado
+(appId, tipo de conteúdo, versão do esquema e dados). Usar formatos convencionais
+JSON, CSV e ZIP; não criar extensões distintas para plantas, controladores ou projetos.
+A extensão de código da futura linguagem permanece em discussão.
 
-Porta de saída: migrações de formato, recuperação de falhas, testes sem acesso a pastas
-e exportação interoperável. Projetos são opcionais para laboratórios conceituais.
+IndexedDB para recuperação e referências a arquivos; File System Access API opcional,
+com autorização explícita e verificação de permissões. Oferecer importação/download
+convencional quando indisponível. Não sobrescrever arquivos pessoais sem autorização
+nem enviá-los automaticamente ao GitHub. Projetos são opcionais para labs simples.
+Validar inicialmente em um aplicativo existente, incluindo migração, recuperação,
+permissões revogadas e funcionamento sem pasta.
+
+### Infraestrutura transversal (proposta)
+
+- Componentes de UI compartilhados: campos com unidades, menus, gráficos e editores.
+- Gerenciador de tarefas: Web Workers reutilizáveis, fila, progresso, cancelamento,
+  limites de memória e erros; paralelizar apenas tarefas independentes.
+- Registro de modelos: contratos de entradas, saídas, estados, parâmetros, unidades,
+  referenciais, versões e documentação.
+- Visualização 2D/3D e adaptador CesiumJS, independente do interpretador.
+- Continuar ampliando o núcleo matemático existente e seus testes de regressão.
+
+Essas frentes podem avançar em paralelo; não são funcionalidades já disponíveis.
 
 ## 3. Subconjunto matemático e controladores
 
@@ -97,6 +115,40 @@ de linha `%`, inclusive após `;`. Nunca eval/Function. Especificação em
 Controladores com portas, parâmetros, memória explícita, inicialização, execução
 periódica e monitoramento. Scheduler de tempo virtual determinístico, múltiplos períodos
 e ZOH. Implantar primeiro em uma planta simples; documentar ordem de eventos e limites.
+
+### Evolução conceitual da linguagem EEVL
+
+**Ideia preliminar, não validada nem implementada.** Ver [proposta conceitual](language.html).
+Investigar uma extensão da sintaxe MATLAB/Octave com declarações paralelas
+`function`, `model` e `netlist`, encerradas por `end`. Modelos podem ser
+algorítmicos, contínuos, discretos ou compostos, com portas, parâmetros e estados
+nomeados. Estudar `der`, `next`, eventos, portas físicas acausais e equações
+implícitas; nenhuma dessas construções está congelada.
+
+Organização textual candidata, com seções opcionais:
+
+```matlab
+%% INITIAL_SCRIPT
+% imports, parameters, functions and model definitions
+%% NETLIST
+% components, connections and optional diagram geometry
+%% ANALYSIS_SCRIPT
+% simulations, analysis, plots and tests
+```
+
+Metadados e interfaces ficam fora da linguagem. Interfaces específicas continuam
+em JavaScript/HTML/CSS, contribuídas por PR. Um projeto poderá ser reutilizado
+como modelo sem executar automaticamente seu script de análise. Netlist generalizada
+e editor gráfico devem compartilhar uma representação tipada, com inferência de
+tipos, unidades e referenciais, hierarquia e validação de conexões.
+
+Escopo proposto: sistemas de parâmetros concentrados, incluindo circuitos,
+controle, potência, sistemas digitais, híbridos e aeroespaciais. Não incluir
+solvers gerais de PDE/FEM/CFD/FDTD inicialmente. Caracterização SPICE externa,
+com modelos reduzidos e LUTs importáveis, sem ngspice no runtime.
+Validar gramática, semântica, inicialização, eventos e casos numéricos antes de
+promover a proposta a especificação. Reutilizar as APIs matemáticas existentes;
+não executar código arbitrário com eval/Function.
 
 ## 4. Motor genérico e Modeling & Simulation
 

@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EEVL — Language and Modeling Architecture: Conceptual Proposal</title><style>body{font:16px/1.65 system-ui;max-width:960px;margin:40px auto;padding:0 20px;color:#17334b}pre{background:#102e4a;color:white;padding:18px;overflow:auto;border-radius:8px}aside{border:2px solid #b67b24;padding:16px}h2{border-bottom:1px solid #ccd7df}a{color:#12659a}</style><a href="./index.html">EEVL</a><h1>Language and Modeling Architecture — Conceptual Proposal</h1><aside><strong>Unvalidated design ideas / Ideias não validadas / Ideas no validadas</strong><p>This is a preliminary discussion document, not an implemented or validated specification. All syntax, architecture and capabilities are subject to change.</p><p>Esta é uma proposta conceitual preliminar, não uma especificação implementada ou validada. Todas as ideias estão sujeitas a alterações.</p><p>Esta es una propuesta conceptual preliminar, no una especificación implementada o validada. Todas las ideas están sujetas a cambios.</p></aside><h2>1. Vision / Visão</h2><p>Extend MATLAB-like syntax for browser-based lumped-parameter modeling, combining procedural functions, behavioral models and generalized netlists. Specialized interfaces remain JavaScript applications contributed through pull requests. Metadata and UI are outside the modeling language.</p><h2>2. Project structure / Estrutura</h2><pre>%% INITIAL_SCRIPT
+% Imports, parameters, functions, models and reusable netlists
+%% NETLIST
+% Instances, connections and optional graphical layout
+%% ANALYSIS_SCRIPT
+% Simulation, analysis, plots and tests</pre><p>All three sections may be optional. Importing a reusable model must not automatically run its analysis script. Projects may expose ports and parameters and use analysis as a testbench.</p><h2>3. Proposed syntax / Sintaxe proposta</h2><pre>function y = f(u)
+    y = sin(u);
+end
+
+model y = DeadZone(u)
+    parameters
+        delta = 0.1;
+    end
+    if u &gt; delta
+        y = u-delta;
+    elseif u &lt; -delta
+        y = u+delta;
+    else
+        y = 0;
+    end
+end
+
+model [theta,omega] = Pendulum(torque)
+    parameters
+        m=1; l=0.5; b=0.1; gravity=9.81;
+    end
+    states
+        angle=pi/4; speed=0;
+    end
+    der(angle)=speed;
+    der(speed)=(torque-b*speed-m*gravity*l*sin(angle))/(m*l^2);
+    theta=angle; omega=speed;
+end
+
+model u = DigitalPI(e)
+    parameters
+        Kp=1; Ki=10; Ts=1e-3;
+    end
+    states
+        x=0;
+    end
+    every Ts
+        next(x)=x+Ts*Ki*e;
+        u=Kp*e+x;
+    end
+end
+
+netlist u = PIController(e)
+    parameters
+        Kp=1; Ki=10;
+    end
+    B1 Gain e up K=Kp
+    B2 Gain e ei K=Ki
+    B3 Integrator ei ui x0=0
+    B4 Sum up ui u signs="++"
+end</pre><p>Named inputs, outputs, states and parameters follow the spirit of Python Control. Local and imported functions may implement f and g. Pure evaluations can repeat within solver steps; next stages simultaneous state updates. Sampled outputs hold between ticks. Exact event and initialization semantics remain open.</p><h2>4. Physical models / Modelos físicos</h2><pre>model Resistor(p,n)
+    ports
+        electrical p,n;
+    end
+    parameters
+        R=10;
+    end
+    equations
+        p.v-n.v=R*p.i;
+        p.i+n.i=0;
+    end
+end
+
+netlist LCFilter(p,n,out)
+    ports
+        electrical p,n,out;
+    end
+    parameters
+        L=1e-3; C=100e-6;
+    end
+    L1 Inductor p out L=L @pos=[100,50]
+    C1 Capacitor out n C=C
+end</pre><p>Proposed acausal ports conserve flows and share potentials: voltage/current, temperature/heat flow, angular velocity/torque and velocity/force. Flow is positive into components. The equations block distinguishes simultaneous constraints from procedural assignments. DAE structural analysis and consistent initialization are unresolved implementation challenges.</p><h2>5. Hierarchy, editor and libraries / Hierarquia, editor e bibliotecas</h2><p>Use a canonical typed graph shared by textual netlists and graphical diagrams. Stable instance IDs, named ports, local labels, hierarchical paths, optional graphical attributes and automatic layout. Infer scalar/vector/matrix, real/complex/logic, units, reference frames, sample times and conductor groups; reject incompatible connections. Physical wires neutral, signal wires blue, redundant markings for three-phase and digital buses. Ideal voltage sensors are open circuits; ideal current sensors are series shorts. Probes do not alter topology.</p><pre>import "models/LCFilter.eevl" as LCFilter;
+% Example instance:
+F1 LCFilter vin 0 vo L=2e-3</pre><p>Native JavaScript models and language-defined models should share a contract. Version imports; reject recursive structural dependencies; review remote executable imports. Preserve hierarchy for analysis and editing.</p><h2>6. Power systems / Sistemas de potência</h2><p>Distinct power-flow, phasor dynamics, sequence and EMT representations. Three-phase Sbase and regional line-line RMS Vbase propagate through nominal transformer ratios, not taps. Distinguish rated and system bases; detect inconsistent regions. Zbase=Vbase²/Sbase; Ibase=Sbase/(sqrt(3)*Vbase). Explicit abc, dq0, alpha-beta-zero and sequence [0,1,2] conventions.</p><h2>7. Digital and hybrid systems / Sistemas digitais e híbridos</h2><p>Gates, flip-flops, registers, state machines, sampled algorithms, multirate clocks, events, delays, logic 0/1/X/Z, fixed-point arithmetic and overflow. Separate per-run random tolerances from temporal noise. Define simultaneous updates and zero-crossing semantics.</p><h2>8. Device characterization / Caracterização de dispositivos</h2><p>No ngspice integration in the browser runtime. External characterization scripts may extract conduction and switching LUTs, reduced models and thermal networks from SPICE or measurements. LUTs are parameters with axes, units, interpolation, validity and provenance. Validate independent cases and avoid double-counting switching/recovery losses.</p><h2>9. Aerospace / Aeroespacial</h2><p>CesiumJS as visualization adapter, not dynamics solver. Integrate quadcopters, aircraft, rockets and satellites from student projects using common time, position and orientation interfaces, glTF/GLB assets, trajectories, plots and playback. Explicit ECI/ECEF, NED/ENU, body, wind and orbital frames; document quaternion order and rotation direction. Validate coordinate transformations and numerical trajectories against reference models.</p><h2>10. Proposed roadmap / Roteiro proposto</h2><p>Parser and AST, typed graph, hierarchy elaboration, connection equations, structural analysis, solver scheduling and named results. Begin with procedural math, explicit ODEs, discrete blocks and simple MNA; expand to nonlinear DAEs, hybrid events, power flow, linearization, optimization and identification. No general PDE, FEM, CFD or FDTD solver in initial scope. Test numerical accuracy, text/diagram round trips, units, event timing and resource limits; avoid unrestricted eval. Grammar, DAE index reduction, initialization, events and import contracts remain open design work.</p><footer><a href="https://python-control.readthedocs.io/">Python Control</a> · <a href="https://specification.modelica.org/">Modelica</a> · <a href="https://cesium.com/platform/cesiumjs/">CesiumJS</a></footer></html>
