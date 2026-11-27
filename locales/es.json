@@ -275,5 +275,12 @@
   "copyAiSuccess": "Texto copiado.",
   "copyAiFailure": "No se pudo copiar. Selecciona y copia el texto anterior.",
   "contributePrTitle": "Enviar una contribución",
-  "contributeSubmitText": "Si tienes una cuenta de GitHub, puedes enviar tu contribución mediante un pull request. Si no tienes cuenta, envía la aplicación por correo electrónico a"
+  "contributeSubmitText": "Si tienes una cuenta de GitHub, puedes enviar tu contribución mediante un pull request. Si no tienes cuenta, envía la aplicación por correo electrónico a",
+  "offlineDownload": "Guardar para uso sin conexión",
+  "offlineReady": "Disponible sin conexión",
+  "offlinePreparing": "Preparando...",
+  "offlineProgress": "Guardando {done}/{total}",
+  "offlineError": "Error. Reintentar",
+  "offlineUnsupported": "Sin conexión no disponible",
+  "offlineNeedsUpdate": "Actualizar para descargar"
 }
