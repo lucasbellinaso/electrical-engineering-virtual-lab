@@ -868,5 +868,83 @@
       }
     ],
     "references": []
+  },
+  {
+    "id": "digital-modulation",
+    "title": {
+      "pt-BR": "Modulação digital M-ária e canal AWGN",
+      "en": "M-ary digital modulation over AWGN",
+      "es": "Modulación digital M-aria y canal AWGN"
+    },
+    "description": {
+      "pt-BR": "Explore constelações I/Q, regiões de decisão ML, codificação Gray e curvas teóricas e Monte Carlo de BER/SER para BPSK, QPSK, 8-PSK, 16-QAM e 64-QAM.",
+      "en": "Explore I/Q constellations, ML decision boundaries, Gray coding and theoretical vs. Monte Carlo BER/SER curves for BPSK, QPSK, 8-PSK, 16-QAM and 64-QAM.",
+      "es": "Explora constelaciones I/Q, fronteras de decisión ML, codificación Gray y curvas teóricas y Monte Carlo de BER/SER para BPSK, QPSK, 8-PSK, 16-QAM y 64-QAM."
+    },
+    "category": "digital-communications",
+    "keywords": {
+      "pt-BR": [
+        "comunicações digitais",
+        "constelação",
+        "BPSK",
+        "QPSK",
+        "QAM",
+        "AWGN",
+        "BER"
+      ],
+      "en": [
+        "digital communications",
+        "constellation",
+        "BPSK",
+        "QPSK",
+        "QAM",
+        "AWGN",
+        "BER"
+      ],
+      "es": [
+        "comunicaciones digitales",
+        "constelación",
+        "BPSK",
+        "QPSK",
+        "QAM",
+        "AWGN",
+        "BER"
+      ]
+    },
+    "path": "simulators/digital-communications/digital-modulation/index.html",
+    "thumbnail": "assets/images/digital-modulation.svg",
+    "authors": [
+      "EEVL Contributors"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-27",
+    "updated": "2026-11-27",
+    "difficulty": "intermediate",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "analytically-verified"
+    ],
+    "validationEvidence": [
+      {
+        "level": "analytically-verified",
+        "path": "docs/validation/digital-modulation.md"
+      }
+    ],
+    "references": [
+      {
+        "title": {
+          "en": "Proakis & Salehi, Digital Communications (general background; derivations and code are original to EEVL).",
+          "pt-BR": "Proakis & Salehi, Digital Communications (referência geral; deduções e código são originais do EEVL).",
+          "es": "Proakis & Salehi, Digital Communications (referencia general; las deducciones y el código son originales de EEVL)."
+        },
+        "url": null
+      }
+    ]
   }
 ]
