@@ -29,7 +29,9 @@ reconstrução), as hipóteses e as limitações; este arquivo traz os detalhes.
 
 - Experimentos pré-configurados: Exemplos 1 a 4 da aula, vazamento espectral (`f T` não inteiro) e aliasing
   (`f > f_s/2`). Nos Exemplos 2 a 4 a aula usa ruído sem semente; os valores numéricos diferem a cada execução,
-  mas as componentes detectadas coincidem.
+  mas as componentes detectadas coincidem. Os Exemplos 2 a 4 usam `N = 1024 = 2¹⁰` (a aula usa `N = 1000`)
+  para que `fft` execute a FFT radix-2; com `T = 1 s` a resolução continua `Δf = 1 Hz` e as frequências caem
+  em bins inteiros. O Exemplo 1 mantém `N = 100`, como na aula.
 - Importação de dados. Gramática: um valor por linha ou duas colunas `t x` com `t` crescente e uniformemente
   espaçado (`T = N Δt`); separadores espaço, tabulação, vírgula ou ponto e vírgula; ponto decimal; linhas com
   `#` ou `%` ignoradas; 8 a 4096 amostras. A vírgula nunca é interpretada como separador decimal.
@@ -45,7 +47,7 @@ Usa `fft`/`ifft` de `assets/js/core/signal.js` e `createRandom` de `assets/js/co
 `proseParts` de `simulators/electrical-circuits/shared/presentation.js`.
 
 Proposta para a biblioteca: para `N` que não é potência de 2, `fft` recorre à TDF direta (`O(N²)`). Um algoritmo
-de Bluestein ou de raiz mista tornaria `N = 1000` (Exemplos 2 a 4) `O(N log N)`. Esta contribuição não altera
+de Bluestein ou de raiz mista tornaria `O(N log N)` também os tamanhos como `N = 100` ou `N = 1000`, comuns em dados importados. Esta contribuição não altera
 `signal.js`.
 
 ## Limitações

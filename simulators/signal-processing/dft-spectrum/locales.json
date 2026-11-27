@@ -13,9 +13,9 @@
     "preset_aliasing": "Extra — aliasing",
     "preset_custom": "Personalizado",
     "presetNote_example1": "\\(3\\sin(2\\pi t)+\\sin(8\\pi t)+0{,}5\\sin(14\\pi t)\\) com \\(N=100\\) amostras em \\(T=1\\,\\mathrm{s}\\). A TDF recupera as amplitudes \\(3\\), \\(1\\) e \\(0{,}5\\) em \\(k=1,4,7\\); a vista completa mostra o espelhamento em \\(N-k\\).",
-    "presetNote_example2": "Senoide de \\(10\\,\\mathrm{Hz}\\) com ruído gaussiano \\(\\sigma=0{,}5\\). O limiar \\(A_{\\min}=0{,}5\\) mantém somente o pico e a inversa devolve o sinal limpo.",
-    "presetNote_example3": "\\(\\sin(2\\pi\\,50t)+\\sin(2\\pi\\,120t)\\) com ruído forte \\(\\sigma=2{,}5\\): no tempo o sinal é irreconhecível, mas no espectro os dois picos se destacam do ruído.",
-    "presetNote_example4": "\\(5\\sin(2\\pi\\,10t)+3\\sin(2\\pi\\,15t-\\pi/3)+\\cos(2\\pi\\,30t)\\) com \\(\\sigma=2{,}5\\). Compare as fases detectadas \\(\\arg F_k\\) com \\(\\varphi_i-90^\\circ\\) na tabela de referência.",
+    "presetNote_example2": "Senoide de \\(10\\,\\mathrm{Hz}\\) com ruído gaussiano \\(\\sigma=0{,}5\\). O limiar \\(A_{\\min}=0{,}5\\) mantém somente o pico e a inversa devolve o sinal limpo. Aqui \\(N=1024=2^{10}\\) (a aula usa \\(N=1000\\)), o que permite o algoritmo rápido da FFT.",
+    "presetNote_example3": "\\(\\sin(2\\pi\\,50t)+\\sin(2\\pi\\,120t)\\) com ruído forte \\(\\sigma=2{,}5\\): no tempo o sinal é irreconhecível, mas no espectro os dois picos se destacam do ruído. Aqui \\(N=1024=2^{10}\\) (a aula usa \\(N=1000\\)), o que permite o algoritmo rápido da FFT.",
+    "presetNote_example4": "\\(5\\sin(2\\pi\\,10t)+3\\sin(2\\pi\\,15t-\\pi/3)+\\cos(2\\pi\\,30t)\\) com \\(\\sigma=2{,}5\\). Compare as fases detectadas \\(\\arg F_k\\) com \\(\\varphi_i-90^\\circ\\) na tabela de referência. Aqui \\(N=1024=2^{10}\\) (a aula usa \\(N=1000\\)), o que permite o algoritmo rápido da FFT.",
     "presetNote_leakage": "Frequência \\(4{,}5\\,\\mathrm{Hz}\\) com \\(T=1\\,\\mathrm{s}\\): a janela não contém um número inteiro de ciclos, a energia se espalha por vários \\(k\\) e nenhum bin atinge a amplitude \\(1\\).",
     "presetNote_aliasing": "Senoide de \\(60\\,\\mathrm{Hz}\\) amostrada a \\(f_s=100\\,\\mathrm{Hz}\\), acima de \\(f_s/2\\). O pico aparece em \\(40\\,\\mathrm{Hz}\\) e a reconstrução passa pelas mesmas amostras com outra frequência.",
     "presetNote_custom": "Parâmetros definidos por você.",
@@ -89,7 +89,7 @@
     "docsAssumptions": "Hipóteses: a janela \\([0,T)\\) se repete periodicamente; o sinal é real, então \\(F_{N-k}=\\overline{F_k}\\) e cada senoide divide sua amplitude entre \\(k\\) e \\(N-k\\) (daí o fator 2, que não vale para \\(k=0\\) e \\(k=N/2\\)); o ruído é gaussiano branco, reprodutível pela semente. A fase \\(\\varphi_k\\) é a de um cosseno: para \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
     "docsLimitations": "Limitações: se \\(f_iT\\) não é inteiro há vazamento espectral; frequências acima de \\(f_s/2\\) aparecem rebatidas (aliasing); não há janelamento; o filtro por limiar é didático e usa o bloco inteiro de amostras. Com \\(N\\) que não é potência de 2, a FFT da biblioteca recorre à TDF direta (custo \\(N^2\\)).",
     "docsReferences": "Referências:",
-    "ampChartNote": "As frequências \\(f_k=k/T\\) e as amplitudes \\(A_k\\) de cada componente são obtidas pela transformada discreta de Fourier das amostras \\(x_n\\), calculada pela função fft (algoritmo rápido FFT quando \\(N\\) é potência de 2; soma direta nos demais casos). Cada haste é um bin \\(k\\)."
+    "ampChartNote": "As frequências \\(f_k=k/T\\) e as amplitudes \\(A_k\\) de cada componente são obtidas pela transformada discreta de Fourier das amostras \\(x_n\\), calculada pela função fft, que usa o algoritmo rápido FFT quando \\(N\\) é potência de 2, como nos Exemplos 2 a 4. Cada haste é um bin \\(k\\)."
   },
   "en": {
     "title": "Discrete Fourier transform: spectrum, noise and filtering",
@@ -105,9 +105,9 @@
     "preset_aliasing": "Extra — aliasing",
     "preset_custom": "Custom",
     "presetNote_example1": "\\(3\\sin(2\\pi t)+\\sin(8\\pi t)+0.5\\sin(14\\pi t)\\) with \\(N=100\\) samples over \\(T=1\\,\\mathrm{s}\\). The DFT recovers amplitudes \\(3\\), \\(1\\) and \\(0.5\\) at \\(k=1,4,7\\); the full view shows the mirror image at \\(N-k\\).",
-    "presetNote_example2": "A \\(10\\,\\mathrm{Hz}\\) sinusoid with Gaussian noise \\(\\sigma=0.5\\). The threshold \\(A_{\\min}=0.5\\) keeps only the peak and the inverse returns the clean signal.",
-    "presetNote_example3": "\\(\\sin(2\\pi\\,50t)+\\sin(2\\pi\\,120t)\\) with strong noise \\(\\sigma=2.5\\): the signal is unrecognizable in time, but the two peaks stand out of the noise in the spectrum.",
-    "presetNote_example4": "\\(5\\sin(2\\pi\\,10t)+3\\sin(2\\pi\\,15t-\\pi/3)+\\cos(2\\pi\\,30t)\\) with \\(\\sigma=2.5\\). Compare the detected phases \\(\\arg F_k\\) with \\(\\varphi_i-90^\\circ\\) in the reference table.",
+    "presetNote_example2": "A \\(10\\,\\mathrm{Hz}\\) sinusoid with Gaussian noise \\(\\sigma=0.5\\). The threshold \\(A_{\\min}=0.5\\) keeps only the peak and the inverse returns the clean signal. Here \\(N=1024=2^{10}\\) (the lesson uses \\(N=1000\\)), which allows the fast FFT algorithm.",
+    "presetNote_example3": "\\(\\sin(2\\pi\\,50t)+\\sin(2\\pi\\,120t)\\) with strong noise \\(\\sigma=2.5\\): the signal is unrecognizable in time, but the two peaks stand out of the noise in the spectrum. Here \\(N=1024=2^{10}\\) (the lesson uses \\(N=1000\\)), which allows the fast FFT algorithm.",
+    "presetNote_example4": "\\(5\\sin(2\\pi\\,10t)+3\\sin(2\\pi\\,15t-\\pi/3)+\\cos(2\\pi\\,30t)\\) with \\(\\sigma=2.5\\). Compare the detected phases \\(\\arg F_k\\) with \\(\\varphi_i-90^\\circ\\) in the reference table. Here \\(N=1024=2^{10}\\) (the lesson uses \\(N=1000\\)), which allows the fast FFT algorithm.",
     "presetNote_leakage": "Frequency \\(4.5\\,\\mathrm{Hz}\\) with \\(T=1\\,\\mathrm{s}\\): the window does not hold an integer number of cycles, so energy spreads over several \\(k\\) and no bin reaches amplitude \\(1\\).",
     "presetNote_aliasing": "A \\(60\\,\\mathrm{Hz}\\) sinusoid sampled at \\(f_s=100\\,\\mathrm{Hz}\\), above \\(f_s/2\\). The peak appears at \\(40\\,\\mathrm{Hz}\\) and the reconstruction goes through the same samples with another frequency.",
     "presetNote_custom": "Parameters defined by you.",
@@ -181,7 +181,7 @@
     "docsAssumptions": "Assumptions: the window \\([0,T)\\) repeats periodically; the signal is real, so \\(F_{N-k}=\\overline{F_k}\\) and each sinusoid splits its amplitude between \\(k\\) and \\(N-k\\) (hence the factor 2, which does not hold for \\(k=0\\) and \\(k=N/2\\)); the noise is white Gaussian, reproducible by the seed. The phase \\(\\varphi_k\\) is that of a cosine: for \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
     "docsLimitations": "Limitations: if \\(f_iT\\) is not an integer there is spectral leakage; frequencies above \\(f_s/2\\) appear folded (aliasing); no window function is applied; the threshold filter is a teaching device and uses the whole block of samples. For \\(N\\) not a power of 2, the library FFT falls back to the direct DFT (cost \\(N^2\\)).",
     "docsReferences": "References:",
-    "ampChartNote": "The frequencies \\(f_k=k/T\\) and amplitudes \\(A_k\\) of each component are obtained from the discrete Fourier transform of the samples \\(x_n\\), computed by the fft function (fast FFT algorithm when \\(N\\) is a power of 2; direct sum otherwise). Each stem is a bin \\(k\\)."
+    "ampChartNote": "The frequencies \\(f_k=k/T\\) and amplitudes \\(A_k\\) of each component are obtained from the discrete Fourier transform of the samples \\(x_n\\), computed by the fft function, which uses the fast FFT algorithm when \\(N\\) is a power of 2, as in Examples 2 to 4. Each stem is a bin \\(k\\)."
   },
   "es": {
     "title": "Transformada discreta de Fourier: espectro, ruido y filtrado",
@@ -197,9 +197,9 @@
     "preset_aliasing": "Extra — aliasing",
     "preset_custom": "Personalizado",
     "presetNote_example1": "\\(3\\sin(2\\pi t)+\\sin(8\\pi t)+0{,}5\\sin(14\\pi t)\\) con \\(N=100\\) muestras en \\(T=1\\,\\mathrm{s}\\). La TDF recupera las amplitudes \\(3\\), \\(1\\) y \\(0{,}5\\) en \\(k=1,4,7\\); la vista completa muestra la imagen especular en \\(N-k\\).",
-    "presetNote_example2": "Senoide de \\(10\\,\\mathrm{Hz}\\) con ruido gaussiano \\(\\sigma=0{,}5\\). El umbral \\(A_{\\min}=0{,}5\\) conserva solo el pico y la inversa devuelve la señal limpia.",
-    "presetNote_example3": "\\(\\sin(2\\pi\\,50t)+\\sin(2\\pi\\,120t)\\) con ruido fuerte \\(\\sigma=2{,}5\\): en el tiempo la señal es irreconocible, pero en el espectro los dos picos sobresalen del ruido.",
-    "presetNote_example4": "\\(5\\sin(2\\pi\\,10t)+3\\sin(2\\pi\\,15t-\\pi/3)+\\cos(2\\pi\\,30t)\\) con \\(\\sigma=2{,}5\\). Compare las fases detectadas \\(\\arg F_k\\) con \\(\\varphi_i-90^\\circ\\) en la tabla de referencia.",
+    "presetNote_example2": "Senoide de \\(10\\,\\mathrm{Hz}\\) con ruido gaussiano \\(\\sigma=0{,}5\\). El umbral \\(A_{\\min}=0{,}5\\) conserva solo el pico y la inversa devuelve la señal limpia. Aquí \\(N=1024=2^{10}\\) (la clase usa \\(N=1000\\)), lo que permite el algoritmo rápido de la FFT.",
+    "presetNote_example3": "\\(\\sin(2\\pi\\,50t)+\\sin(2\\pi\\,120t)\\) con ruido fuerte \\(\\sigma=2{,}5\\): en el tiempo la señal es irreconocible, pero en el espectro los dos picos sobresalen del ruido. Aquí \\(N=1024=2^{10}\\) (la clase usa \\(N=1000\\)), lo que permite el algoritmo rápido de la FFT.",
+    "presetNote_example4": "\\(5\\sin(2\\pi\\,10t)+3\\sin(2\\pi\\,15t-\\pi/3)+\\cos(2\\pi\\,30t)\\) con \\(\\sigma=2{,}5\\). Compare las fases detectadas \\(\\arg F_k\\) con \\(\\varphi_i-90^\\circ\\) en la tabla de referencia. Aquí \\(N=1024=2^{10}\\) (la clase usa \\(N=1000\\)), lo que permite el algoritmo rápido de la FFT.",
     "presetNote_leakage": "Frecuencia \\(4{,}5\\,\\mathrm{Hz}\\) con \\(T=1\\,\\mathrm{s}\\): la ventana no contiene un número entero de ciclos, la energía se reparte entre varios \\(k\\) y ningún bin alcanza la amplitud \\(1\\).",
     "presetNote_aliasing": "Senoide de \\(60\\,\\mathrm{Hz}\\) muestreada a \\(f_s=100\\,\\mathrm{Hz}\\), por encima de \\(f_s/2\\). El pico aparece en \\(40\\,\\mathrm{Hz}\\) y la reconstrucción pasa por las mismas muestras con otra frecuencia.",
     "presetNote_custom": "Parámetros definidos por usted.",
@@ -273,6 +273,6 @@
     "docsAssumptions": "Hipótesis: la ventana \\([0,T)\\) se repite periódicamente; la señal es real, así que \\(F_{N-k}=\\overline{F_k}\\) y cada senoide reparte su amplitud entre \\(k\\) y \\(N-k\\) (de ahí el factor 2, que no vale para \\(k=0\\) y \\(k=N/2\\)); el ruido es gaussiano blanco, reproducible por la semilla. La fase \\(\\varphi_k\\) es la de un coseno: para \\(A\\sin(2\\pi ft+\\varphi)\\), \\(\\varphi_k=\\varphi-90^\\circ\\).",
     "docsLimitations": "Limitaciones: si \\(f_iT\\) no es entero hay fuga espectral; las frecuencias por encima de \\(f_s/2\\) aparecen plegadas (aliasing); no se aplica ventana; el filtro por umbral es didáctico y usa todo el bloque de muestras. Con \\(N\\) no potencia de 2, la FFT de la biblioteca recurre a la TDF directa (costo \\(N^2\\)).",
     "docsReferences": "Referencias:",
-    "ampChartNote": "Las frecuencias \\(f_k=k/T\\) y las amplitudes \\(A_k\\) de cada componente se obtienen con la transformada discreta de Fourier de las muestras \\(x_n\\), calculada por la función fft (algoritmo rápido FFT cuando \\(N\\) es potencia de 2; suma directa en los demás casos). Cada barra es un bin \\(k\\)."
+    "ampChartNote": "Las frecuencias \\(f_k=k/T\\) y las amplitudes \\(A_k\\) de cada componente se obtienen con la transformada discreta de Fourier de las muestras \\(x_n\\), calculada por la función fft, que usa el algoritmo rápido FFT cuando \\(N\\) es potencia de 2, como en los Ejemplos 2 a 4. Cada barra es un bin \\(k\\)."
   }
 }
