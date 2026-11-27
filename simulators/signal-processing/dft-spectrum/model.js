@@ -86,21 +86,6 @@ export function synthesize(parameters) {
   return {parameters: p, time, clean, noisy};
 }
 
-/** Terms x_n e^{−i2πkn/N}, running partial sums and F_k for the step-by-step view. */
-export function dftTerms(x, k) {
-  checkSignal(x);
-  const n = x.length;
-  if (!Number.isInteger(k) || k < 0 || k >= n) throw new RangeError('Invalid bin');
-  const terms = [], partial = [];
-  let re = 0, im = 0;
-  for (let j = 0; j < n; j++) {
-    const angle = -2 * Math.PI * k * j / n, term = {re: x[j] * Math.cos(angle), im: x[j] * Math.sin(angle), angle};
-    re += term.re; im += term.im;
-    terms.push(term); partial.push({re, im});
-  }
-  return {k, terms, partial, sum: {re, im}};
-}
-
 function checkSignal(x) {
   if (!Array.isArray(x) || x.length < MIN_SAMPLES || x.length > MAX_SAMPLES) throw new RangeError('Invalid signal length');
   for (const v of x) if (!finite(v)) throw new RangeError('Signal values must be finite');

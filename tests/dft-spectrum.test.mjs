@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import katex from '../assets/vendor/katex/katex.mjs';
 import {fft} from '../assets/js/core/signal.js';
 import {proseParts} from '../simulators/electrical-circuits/shared/presentation.js';
-import {validate, synthesize, simulate, analyze, dftTerms, spectrum, evaluateCosines, describeComponents, aliasFrequency, parseSamples, sampleTimes, wrapPhase, MAX_COMPONENTS} from '../simulators/signal-processing/dft-spectrum/model.js';
+import {validate, synthesize, simulate, analyze, spectrum, evaluateCosines, describeComponents, aliasFrequency, parseSamples, sampleTimes, wrapPhase, MAX_COMPONENTS} from '../simulators/signal-processing/dft-spectrum/model.js';
 import {presets, presetOrder, defaultPreset} from '../simulators/signal-processing/dft-spectrum/presets.js';
 
 const dir = '../simulators/signal-processing/dft-spectrum/';
@@ -45,18 +45,16 @@ test('pure tones: amplitude, phase relation φ − 90°, DC and Nyquist normalis
   assert.equal(a.bins[33].amplitude, null);
 });
 
-test('step-by-step formula equals the shared FFT for radix-2 and other lengths; partial sums reach F_k', () => {
+test('spectrum equals the lesson formula F_k = Σ x_n e^(−i2πkn/N) for radix-2 and other lengths', () => {
   for (const n of [8, 64, 100, 63]) {
-    const x = Array.from({length: n}, (_, i) => Math.sin(1.3 * i) + 0.1 * i), F = fft(x);
+    const x = Array.from({length: n}, (_, i) => Math.sin(1.3 * i) + 0.1 * i), F = analyze(x, 1).F;
     const scale = Math.max(...F.map(z => Math.hypot(z.re, z.im)));
     for (let k = 0; k < n; k++) {
-      const s = dftTerms(x, k);
-      near(s.sum.re, F[k].re, 1e-11, scale); near(s.sum.im, F[k].im, 1e-11, scale);
-      assert.deepEqual(s.partial.at(-1), s.sum); assert.equal(s.terms.length, n);
-      near(s.terms[1].angle, -2 * Math.PI * k / n, 1e-15);
+      let re = 0, im = 0;
+      for (let j = 0; j < n; j++) { re += x[j] * Math.cos(-2 * Math.PI * k * j / n); im += x[j] * Math.sin(-2 * Math.PI * k * j / n); }
+      near(F[k].re, re, 1e-11, scale); near(F[k].im, im, 1e-11, scale);
     }
   }
-  assert.throws(() => dftTerms(new Array(8).fill(0), 8), RangeError);
 });
 
 test('real signals give conjugate-symmetric spectra; zero threshold reconstructs exactly', () => {

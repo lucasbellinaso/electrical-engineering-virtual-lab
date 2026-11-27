@@ -1,8 +1,8 @@
 import {initialize} from '../../../assets/js/common.js';
 import {language} from '../../../assets/js/i18n.js';
 import katex from '../../../assets/vendor/katex/katex.mjs';
-import {numberLatex, proseParts} from '../../electrical-circuits/shared/presentation.js';
-import {MAX_COMPONENTS, simulate, analyze, dftTerms, evaluateCosines, evaluateSines, parseSamples, halfLength, sampleTimes} from './model.js';
+import {proseParts} from '../../electrical-circuits/shared/presentation.js';
+import {MAX_COMPONENTS, simulate, analyze, evaluateCosines, evaluateSines, parseSamples, halfLength, sampleTimes} from './model.js';
 import {presets, defaultPreset} from './presets.js';
 
 const $ = id => document.getElementById(id), form = $('parameters'), svgNS = 'http://www.w3.org/2000/svg';
@@ -13,7 +13,6 @@ const scales = {time: {ref: null, cur: null}, amp: {ref: null, cur: null}};
 // ---------- presentation helpers ----------
 const tr = (key, vars = {}) => String(dictionary[language]?.[key] ?? dictionary.en?.[key] ?? key).replace(/\{(\w+)\}/g, (match, name) => Object.hasOwn(vars, name) ? vars[name] : match);
 const fmt = (value, digits = 4) => new Intl.NumberFormat(language, {maximumSignificantDigits: digits}).format(Math.abs(value) < 1e-12 ? 0 : value);
-const tex = (value, digits = 5) => numberLatex(Math.abs(value) < 1e-12 ? 0 : value, language, digits);
 const math = (node, source, display = false) => katex.render(source, node, {throwOnError: false, displayMode: display, trust: false});
 function prose(node, value) {
   node.replaceChildren();
@@ -111,7 +110,6 @@ function update(rescale = false) {
     if (rescale || !scales.time.ref) setReferenceScales();
     if (selectFirstComponent) { selectedK = result.reference[0]?.bin || 1; selectFirstComponent = false; }
     selectedK = Math.min(selectedK, result.analysis.samples - 1);
-    $('stepK').max = String(result.analysis.samples - 1);
     $('error').textContent = '';
     document.querySelector('.results').classList.remove('stale');
     render();
@@ -124,7 +122,7 @@ function update(rescale = false) {
 
 function render() {
   if (!result) return;
-  renderMetrics(); renderWarnings(); renderTime(); renderAmplitude(); renderPhase(); renderTables(); renderStep();
+  renderMetrics(); renderWarnings(); renderTime(); renderAmplitude(); renderPhase(); renderTables();
 }
 
 function renderMetrics() {
@@ -242,46 +240,6 @@ function renderTables() {
   });
 }
 
-// ---------- step-by-step DFT for one bin ----------
-function renderStep() {
-  const x = result.noisy, N = x.length, k = selectedK, steps = dftTerms(x, k), F = result.analysis.F[k];
-  $('stepK').value = String(k);
-  const term = (n, first) => `${x[n] < 0 ? '-' : first ? '' : '+'}${tex(Math.abs(x[n]), 4)}\\,e^{i(${tex(steps.terms[n].angle, 4)})}`;
-  const indices = N <= 4 ? [...Array(N).keys()] : [0, 1, 2, null, N - 1];
-  const shown = indices.map((n, i) => n === null ? String.raw`+\cdots` : term(n, i === 0)).join('');
-  math($('stepFormula'), `F_{${k}}=\\sum_{n=0}^{${N - 1}}x_n\\,e^{-i2\\pi\\,${k}\\,n/${N}}=${shown}`, true);
-  const body = $('stepTerms').tBodies[0]; body.replaceChildren();
-  const rows = N <= 10 ? [...Array(N).keys()] : [0, 1, 2, 3, 4, 5, 6, 7, null, N - 2, N - 1];
-  for (const n of rows) {
-    const row = body.insertRow();
-    if (n === null) { const cell = row.insertCell(); cell.colSpan = 5; cell.className = 'ellipsis'; math(cell, String.raw`\vdots`); continue; }
-    const t = steps.terms[n];
-    for (const v of [String(n), fmt(x[n], 5), fmt(t.angle, 5), fmt(t.re, 5), fmt(t.im, 5)]) row.insertCell().textContent = v;
-  }
-  const s = steps.sum, mag = Math.hypot(s.re, s.im), b = result.analysis.bins[k], diff = Math.hypot(s.re - F.re, s.im - F.im);
-  const sign = s.im < 0 ? '-' : '+';
-  math($('stepResult'), String.raw`F_{${k}}=${tex(s.re, 6)}${sign}${tex(Math.abs(s.im), 6)}\,i,\quad |F_{${k}}|=${tex(mag, 6)},\quad \frac{2|F_{${k}}|}{N}=${tex(2 * mag / N, 6)},\quad \arg F_{${k}}=${tex(b.phase, 5)}\,\mathrm{rad},\quad \left|F^{\mathrm{TDF}}_{${k}}-F^{\mathrm{FFT}}_{${k}}\right|=${tex(diff, 2)}`, true);
-  renderWalk(steps);
-}
-
-function renderWalk(steps) {
-  const el = $('walkChart'), pts = [{re: 0, im: 0}, ...steps.partial];
-  el.replaceChildren();
-  let minX = Math.min(...pts.map(p => p.re)), maxX = Math.max(...pts.map(p => p.re)), minY = Math.min(...pts.map(p => p.im)), maxY = Math.max(...pts.map(p => p.im));
-  const span = Math.max(maxX - minX, maxY - minY, 1e-9) * 1.15, cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
-  minX = cx - span / 2; maxX = cx + span / 2; minY = cy - span / 2; maxY = cy + span / 2;
-  const X = v => 10 + (v - minX) / (maxX - minX) * 300, Y = v => 310 - (v - minY) / (maxY - minY) * 300;
-  el.append(svg('rect', {x: 10, y: 10, width: 300, height: 300, class: 'plot-bg'}));
-  if (minY <= 0 && maxY >= 0) el.append(svg('line', {x1: 10, x2: 310, y1: Y(0), y2: Y(0), class: 'axis'}));
-  if (minX <= 0 && maxX >= 0) el.append(svg('line', {x1: X(0), x2: X(0), y1: 10, y2: 310, class: 'axis'}));
-  const defs = svg('defs'), marker = svg('marker', {id: 'walkArrow', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse'});
-  marker.append(svg('path', {d: 'M0,0 L10,5 L0,10 Z', class: 'arrow-head'})); defs.append(marker); el.append(defs);
-  el.append(svg('polyline', {points: pts.map(p => X(p.re).toFixed(2) + ',' + Y(p.im).toFixed(2)).join(' '), class: 'line walk-path'}));
-  const end = pts.at(-1);
-  el.append(svg('line', {x1: X(0), y1: Y(0), x2: X(end.re), y2: Y(end.im), class: 'walk-result', 'marker-end': 'url(#walkArrow)'}));
-  el.setAttribute('aria-label', plain(tr('stepWalk')));
-}
-
 // ---------- interaction ----------
 function binAtPointer(event) {
   const element = $('ampChart'), info = element.frameInfo;
@@ -305,12 +263,7 @@ amp.addEventListener('keydown', e => {
 });
 $('detected').addEventListener('click', e => { const row = e.target.closest('tr[data-k]'); if (row) selectBin(Number(row.dataset.k)); });
 $('detected').addEventListener('keydown', e => { const row = e.target.closest('tr[data-k]'); if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); selectBin(Number(row.dataset.k)); } });
-function selectBin(k) { selectedK = k; hoverK = null; renderAmplitude(); renderStep(); }
-$('stepK').addEventListener('input', () => {
-  const input = $('stepK');
-  if (!result || input.value.trim() === '' || !input.checkValidity()) return;
-  selectBin(Number(input.value));
-});
+function selectBin(k) { selectedK = k; hoverK = null; renderAmplitude(); }
 
 const syntheticIds = ['samples', 'noise', 'seed', ...Array.from({length: MAX_COMPONENTS}, (_, i) => ['a', 'f', 'p'].map(s => s + (i + 1))).flat()];
 form.addEventListener('input', e => {

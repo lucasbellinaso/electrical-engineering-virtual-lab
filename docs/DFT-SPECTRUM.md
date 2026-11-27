@@ -30,8 +30,6 @@ reconstrução), as hipóteses e as limitações; este arquivo traz os detalhes.
 - Experimentos pré-configurados: Exemplos 1 a 4 da aula, vazamento espectral (`f T` não inteiro) e aliasing
   (`f > f_s/2`). Nos Exemplos 2 a 4 a aula usa ruído sem semente; os valores numéricos diferem a cada execução,
   mas as componentes detectadas coincidem.
-- Cálculo passo a passo de `F_k` pela fórmula, com as parcelas, as somas parciais no plano complexo e a
-  diferença em relação à FFT da biblioteca.
 - Importação de dados. Gramática: um valor por linha ou duas colunas `t x` com `t` crescente e uniformemente
   espaçado (`T = N Δt`); separadores espaço, tabulação, vírgula ou ponto e vírgula; ponto decimal; linhas com
   `#` ou `%` ignoradas; 8 a 4096 amostras. A vírgula nunca é interpretada como separador decimal.
@@ -44,8 +42,7 @@ reconstrução), as hipóteses e as limitações; este arquivo traz os detalhes.
 ## Biblioteca compartilhada
 
 Usa `fft`/`ifft` de `assets/js/core/signal.js` e `createRandom` de `assets/js/core/random.js`; reaproveita
-`numberLatex` e `proseParts` de `simulators/electrical-circuits/shared/presentation.js`. A fórmula direta
-para um bin (`dftTerms`) fica no aplicativo por ser o objeto didático do cálculo passo a passo.
+`proseParts` de `simulators/electrical-circuits/shared/presentation.js`.
 
 Proposta para a biblioteca: para `N` que não é potência de 2, `fft` recorre à TDF direta (`O(N²)`). Um algoritmo
 de Bluestein ou de raiz mista tornaria `N = 1000` (Exemplos 2 a 4) `O(N log N)`. Esta contribuição não altera
@@ -63,7 +60,7 @@ rebatidas. `N ≤ 4096` mantém a interação fluida mesmo quando a FFT recorre 
 (entradas armazenadas no fixture, incluindo o ruído). `tests/dft-spectrum.test.mjs` compara espectro complexo,
 amplitude de um lado, bins mantidos e reconstrução filtrada com essa referência, com `N` par, ímpar, radix-2,
 componente DC e bin de Nyquist. Também verifica casos analíticos (Exemplo 1 exato, tons puros e relação de fase),
-igualdade entre a fórmula direta e a FFT em todos os bins, somas parciais, simetria conjugada, reconstrução exata com limiar nulo,
+igualdade entre a fórmula da aula e o espectro calculado em todos os bins, simetria conjugada, reconstrução exata com limiar nulo,
 equivalência entre a inversa e a soma de cossenos, vazamento, aliasing, reprodutibilidade do ruído, entradas
 inválidas, a gramática dos dados, paridade das traduções e a renderização KaTeX de todas as fontes LaTeX.
 Isso é verificação numérica de exemplos; o catálogo declara o nível `experimental`.
