@@ -264,10 +264,16 @@
   "credits": "Idealizador: Prof. Dr. Lucas Vizzotto Bellinaso · Universidade Federal de Santa Maria, RS, Brasil",
   "languageAvailability": "Idiomas do aplicativo: {languages}. A descrição traduzida no catálogo não significa que o aplicativo esteja traduzido.",
   "contributorsTitle": "Colaboradores",
-  "contributorsIntro": "Pessoas que contribu?ram para os aplicativos do EEVL. Todos s?o da Universidade Federal de Santa Maria (UFSM).",
-  "contributorCount": "{count} aplicativo(s) no cat?logo",
-  "contributorLucas": "Cria??o e desenvolvimento dos aplicativos indicados.",
-  "contributorMauricio": "Autor do aplicativo de linhas de transmiss?o; sugeriu o tema e forneceu o material para sua cria??o.",
-  "contributorCarlos": "Autor do aplicativo de modula??o digital.",
-  "simulatorAuthors": "Autoria"
+  "simulatorAuthors": "Autoria",
+  "contributorName": "Nome",
+  "contributorInstitution": "Instituição",
+  "contributorApplications": "Aplicativos",
+  "contributeAiTitle": "Contribua com ajuda de uma IA",
+  "contributeAiText": "Cole o endereço do repositório em uma IA que possa acessar o projeto e descreva o aplicativo ou a melhoria que deseja propor. Por exemplo:",
+  "contributeAiPrompt": "Acesse https://github.com/lucasbellinaso/electrical-engineering-virtual-lab, leia AGENTS.md, CONTRIBUTING.md e .agents/skills/eevl-simulator/SKILL.md, siga suas orientações e ajude-me a criar um aplicativo para [descreva sua ideia].",
+  "copyAiPrompt": "Copiar texto",
+  "copyAiSuccess": "Texto copiado.",
+  "copyAiFailure": "Não foi possível copiar. Selecione e copie o texto acima.",
+  "contributePrTitle": "Enviar uma contribuição",
+  "contributeSubmitText": "Se você tem conta no GitHub, pode enviar sua contribuição por pull request. Se não tem conta, envie o aplicativo por e-mail para"
 }

@@ -10,6 +10,12 @@
 - Distinga recursos implementados em [docs/API.md](docs/API.md) de propostas em
   [docs/LANGUAGE.md](docs/LANGUAGE.md) e ROADMAP. Não anuncie planejamento como pronto.
 
+## Aplicativos e biblioteca compartilhada
+
+- Ao criar ou modificar um aplicativo, consulte a skill [eevl-simulator](.agents/skills/eevl-simulator/SKILL.md) e siga [CONTRIBUTING.md](CONTRIBUTING.md). A skill aponta para as fontes do projeto; não substitui suas regras.
+- Antes de implementar cálculos, consulte [docs/API.md](docs/API.md) e `assets/js/core/`. Reutilize funções adequadas e proponha na PR a inclusão de funções gerais ausentes, conforme o guia de contribuição.
+- Leia e grave textos em UTF-8; preserve acentos, símbolos e traduções. Confira o conteúdo gravado ao usar ferramentas ou shells com codificação diferente.
+
 ## Implementação e experiência
 
 - Mantenha execução normal no navegador, hospedagem estática e caminhos relativos.
