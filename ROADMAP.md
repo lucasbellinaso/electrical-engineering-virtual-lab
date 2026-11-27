@@ -22,10 +22,11 @@ de UI e incluir comparações numéricas reproduzíveis, sem inventar certifica�
 **Status: em andamento.** `assets/js/core/` já oferece módulos importáveis para matemática,
 complexos, matrizes reais e complexas, polinômios, sistemas e análise de controle, resposta
 temporal, projeto, cálculo de polos e zeros e solvers não lineares. Há testes e fixtures;
-contratos, convenções e limites estão em [docs/API.md](docs/API.md). O laboratório de LT é o
-primeiro consumidor do núcleo. A extração/adaptação das funções legadas do SISO e dos modelos
-nodais e de circuitos para o núcleo continua pendente; funções equivalentes no núcleo não
-significam que esses aplicativos já as importem.
+contratos, convenções e limites estão em [docs/API.md](docs/API.md). O laboratório de LT foi o
+primeiro consumidor do núcleo; os modelos nodais DC e AC também passaram a usar os
+solucionadores compartilhados. A extração de funções legadas do SISO e a migração dos modelos
+RC/RL/RLC para o núcleo continuam pendentes; funções equivalentes no núcleo não significam
+que esses aplicativos já as importem.
 
 ### Inventário de extração
 
@@ -36,7 +37,7 @@ compare algoritmos, contratos e convenções antes de cada migração.
 | Origem | Funções numéricas independentes de DOM | Disponibilidade no núcleo / situação |
 |---|---|---|
 | `nodal-analysis/model.js` | DC MNA solve | Migrated to `matrix.js` `msolve(A,B,{absTol: LIMITS.singularPivotTol, relTol: 0})`; public `SINGULAR_SYSTEM` is preserved. |
-| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | `complex.js` e `cmatrix.js`: `csolve(A,B,opts)`; tolerância AC equivalente disponível. Convenções angulares e divisão diferem; ainda usa código próprio. |
+| `nodal-analysis-ac/model.js` | `cx` (aritmética complexa), `solveComplexSystem` | Migrados para `complex.js` e `cmatrix.js` (`csolve`, com tolerância relativa). O adaptador preserva ângulos em graus, fasores de pico e erros públicos; divisão complexa estável e validação vêm do núcleo. |
 | `electrical-circuits/shared/model.js` | RK4 e solução analítica de RC/RL/RLC | O próprio modelo já exporta `rk4Step` e soluções locais; `timeresp.js` oferece resposta de sistemas LTI, não substituto direto do modelo de circuito. |
 | `siso/app.html` (protegido) | polinômios e raízes (`pmul`, `roots`, `aberth`, `matchRoots`) | Equivalentes em `polynomial.js`; o SISO integrado mantém as funções internas. |
 | `siso/app.html` | matrizes (`msolve`, `expm`, `charpoly`) | Equivalentes em `matrix.js`; o SISO integrado mantém as funções internas. |
