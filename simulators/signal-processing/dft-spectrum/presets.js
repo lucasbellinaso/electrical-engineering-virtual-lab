@@ -1,6 +1,6 @@
 /**
  * Experiments from "Matemática Computacional IV — 4. Transformada discreta de Fourier"
- * (T. Buriol, github.com/tiagoburiol/MatComp_IV). Components: A sin(2π f t + φ), φ in degrees.
+ * (T. M. Buriol, github.com/tiagoburiol/MatComp_IV). Components: A sin(2π f t + φ), φ in degrees.
  * The lesson uses unseeded numpy noise; here the seed only makes the run reproducible.
  * view: 'full' (0 ≤ k < N) or 'half' (0 ≤ k ≤ N/2); maxFrequency limits the half view (Hz).
  */

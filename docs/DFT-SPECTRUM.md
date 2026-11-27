@@ -2,7 +2,7 @@
 
 Aplicativo em `simulators/signal-processing/dft-spectrum/`, baseado nos Exemplos 1 a 4 da aula
 [4. Transformada discreta de Fourier](https://github.com/tiagoburiol/MatComp_IV/blob/main/04_transformada_discreta_de_fourier.ipynb)
-da disciplina Matemática Computacional IV (T. Buriol). Interface em PT-BR, EN e ES (`locales.json`).
+da disciplina Matemática Computacional IV (T. M. Buriol). Interface em PT-BR, EN e ES (`locales.json`).
 
 A página apresenta, de forma resumida, as equações principais (TDF, amplitude de um lado com fase e
 reconstrução), as hipóteses e as limitações; este arquivo traz os detalhes.
