@@ -1,4 +1,4 @@
-﻿/**
+/**
  * M-ary digital modulation over memoryless baseband AWGN channel.
  *
  * Conventions and normalizations:
@@ -499,4 +499,3 @@ export function simulate(input = defaults) {
     comparisons
   };
 }
-
