@@ -156,14 +156,17 @@ disponível.
 
 | Família | Já disponível em `assets/js/core/` | Ainda proposto |
 |---|---|---|
-| Matemática | zeros, eye, linspace, logspace, sum, mean, std, diff, norm, eig, inv, expm | ones, diag, reshape, svd, rank, pinv |
+| Matemática | zeros, ones, eye, diag, reshape, linspace, logspace, sum, mean, median, std, quantile, percentile, diff, norm, eig, svd, svdvals, rank, pinv, inv, expm, erf, erfc | — |
+| Probabilidade | qfunc, ndtr, ndtri, normalInterval | — |
 | Sistemas | tf, ss, zpk, tf2ss, ss2tf, c2d, d2c, feedback, series, parallel, ctrb, obsv | — |
 | Análise | step, impulse, lsim, bode, nyquist, margin, rlocus, pole, zero | — |
 | Projeto | place, acker, lqr, dlqr, care, dare, lyap, dlyap | lqi, kalman |
 | Identificação | — | iddata, arx, tfest, ssest, compare |
 | Otimização | — | fminsearch, fminunc, fmincon, lsqnonlin |
-| Sinais | `conv` (convolução de vetores/coefs em `polynomial.js`; não é um módulo genérico de sinais) | fft, ifft, filter |
-| Integração | trapz, cumtrapz | ode45 |
+| Sinais | `conv` (convolução de vetores/coefs em `polynomial.js`), fft, ifft, filter/lfilter | — |
+| Integração | trapz, cumtrapz, simpson, quad (Simpson adaptativo em intervalo finito) | ode45 |
+| Estatística | histogram | — |
+| Aleatoriedade | gerador com semente (`mulberry32`), amostragem normal (Box–Muller) | — |
 | Simbólico | — | sym, diff (sobre `sym`), jacobian, simplify, solve |
 
 Funções com nomes semelhantes existem encapsuladas no SISO, em modelos locais ou em

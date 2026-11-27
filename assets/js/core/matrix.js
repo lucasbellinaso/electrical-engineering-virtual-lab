@@ -123,6 +123,12 @@ export function zeros(r, c) {
   return kzeros(r, c);
 }
 
+/** Matriz r x c preenchida com uns. */
+export function ones(r,c) {
+  checkDim(r,'r');checkDim(c,'c');
+  return Array.from({length:r},()=>new Array(c).fill(1));
+}
+
 /**
  * Matriz identidade n x n.
  * @param {number} n @returns {number[][]}
@@ -130,6 +136,37 @@ export function zeros(r, c) {
 export function eye(n) {
   checkDim(n, 'n');
   return keye(n);
+}
+
+/** Diagonal de um vetor (matriz) ou vetor diagonal de uma matriz; k > 0 acima. */
+export function diag(value,k=0) {
+  if(!Number.isInteger(k))throw new TypeError('k deve ser inteiro.');
+  if((Array.isArray(value)||value instanceof Float64Array)&&(!value.length||!(Array.isArray(value[0])||value[0] instanceof Float64Array))) {
+    for(let i=0;i<value.length;i++)checkFinite(value[i],`v[${i}]`);
+    const n=value.length+Math.abs(k),out=kzeros(n,n),r=k<0?-k:0,c=k>0?k:0;
+    for(let i=0;i<value.length;i++)out[r+i][c+i]=value[i];
+    return out;
+  }
+  const A=matrixForExtensions(value),{r,c}=assertMatrix(A,'A'),out=[];
+  let i=Math.max(0,-k),j=Math.max(0,k);
+  while(i<r&&j<c){out.push(A[i][j]);i++;j++;}
+  return out;
+}
+
+/** Redimensiona vetor/matriz preservando ordem por linhas (NumPy C order). */
+export function reshape(value,r,c) {
+  checkDim(r,'r');checkDim(c,'c');
+  let flat;
+  if(!(Array.isArray(value)||value instanceof Float64Array))throw new TypeError('A deve ser um array.');
+  if(!value.length)flat=[];
+  else if(Array.isArray(value[0])||value[0] instanceof Float64Array){
+    const A=matrixForExtensions(value),{r:rows}=assertMatrix(A,'A');flat=[];
+    for(let i=0;i<rows;i++)for(const x of A[i])flat.push(x);
+  }else{
+    flat=Array.from(value);for(let i=0;i<flat.length;i++)checkFinite(flat[i],`A[${i}]`);
+  }
+  if(flat.length!==r*c)throw new RangeError(`reshape: ${flat.length} elementos não cabem em ${r}x${c}.`);
+  return Array.from({length:r},(_,i)=>flat.slice(i*c,(i+1)*c));
 }
 
 /* ------------------------- operações básicas ------------------------- */
@@ -369,4 +406,98 @@ export function logm(A) {
   const E = expm(L);
   if (!Number.isFinite(n1(E)) || n1(kmadd(E, A, -1)) > 1e-8 * Math.max(1, n1(A))) throw falha();
   return L;
+}
+
+/* ------------------------- decomposição em valores singulares ------------------------- */
+
+function matrixForExtensions(A) {
+  if (!Array.isArray(A)) throw new TypeError('A deve ser um array de linhas');
+  return A.map(row => { if (!(Array.isArray(row) || row instanceof Float64Array)) throw new TypeError('cada linha deve ser um array'); return Array.from(row); });
+}
+
+function transposeUnchecked(A) {
+  if(!A.length||!A[0].length)return [];
+  return Array.from({length:A[0].length},(_,j)=>A.map(row=>row[j]));
+}
+
+/** One-sided Jacobi SVD for a tall matrix; returns reduced U, s and Vh. */
+function jacobiTall(A) {
+  const m=A.length,n=m?A[0].length:0;
+  let scale=0; for(const row of A) for(const x of row) scale=Math.max(scale,Math.abs(x));
+  const B=A.map(row=>row.map(x=>scale===0?0:x/scale)),V=keye(n);
+  for(let sweep=0;sweep<100;sweep++){
+    let changed=false;
+    for(let p=0;p<n-1;p++)for(let q=p+1;q<n;q++){
+      let alpha=0,beta=0,gamma=0;
+      for(let i=0;i<m;i++){const x=B[i][p],y=B[i][q];alpha+=x*x;beta+=y*y;gamma+=x*y;}
+      const scale=Math.sqrt(alpha)*Math.sqrt(beta);
+      if(gamma===0||Math.abs(gamma)<=4*Number.EPSILON*scale)continue;
+      const tau=(beta-alpha)/(2*gamma);
+      const t=tau===0?1:Math.sign(tau)/(Math.abs(tau)+Math.hypot(1,tau));
+      const c=1/Math.sqrt(1+t*t),s=c*t;
+      for(let i=0;i<m;i++){const x=B[i][p],y=B[i][q];B[i][p]=c*x-s*y;B[i][q]=s*x+c*y;}
+      for(let i=0;i<n;i++){const x=V[i][p],y=V[i][q];V[i][p]=c*x-s*y;V[i][q]=s*x+c*y;}
+      changed=true;
+    }
+    if(!changed)break;
+  }
+  const cols=Array.from({length:n},(_,j)=>{let norm=0;for(let i=0;i<m;i++)norm=Math.hypot(norm,B[i][j]);return {j,norm};}).sort((a,b)=>b.norm-a.norm);
+  const Ucols=[],svals=[],Vcols=[];
+  for(const item of cols){
+    svals.push(item.norm*scale);Vcols.push(V.map(row=>row[item.j]));
+    if(item.norm>0)Ucols.push(B.map(row=>row[item.j]/item.norm));
+    else Ucols.push(null);
+  }
+  // Complete left singular vectors for zero singular values with deterministic orthonormal vectors.
+  for(let k=0;k<Ucols.length;k++)if(Ucols[k]===null){
+    let found=null;
+    for(let basis=0;basis<m&&!found;basis++){
+      const v=new Array(m).fill(0);v[basis]=1;
+      for(const prior of Ucols){if(!prior)continue;let dot=0;for(let i=0;i<m;i++)dot+=v[i]*prior[i];for(let i=0;i<m;i++)v[i]-=dot*prior[i];}
+      const norm=Math.hypot(...v);if(norm>1e-12)found=v.map(x=>x/norm);
+    }
+    Ucols[k]=found||new Array(m).fill(0);
+  }
+  const U=Array.from({length:m},(_,i)=>Ucols.map(col=>col[i]));
+  const Vh=Vcols.map(col=>col.slice());
+  return {U,s:svals,Vh};
+}
+
+/**
+ * Reduced real SVD A = U diag(s) Vh using one-sided Jacobi rotations.
+ * Singular values are descending; U is m×k and Vh is k×n, k=min(m,n).
+ */
+export function svd(A) {
+  A=matrixForExtensions(A);
+  const {r:m,c:n}=assertMatrix(A,'A');
+  if(m===0||n===0)return {U:Array.from({length:m},()=>[]),s:[],Vh:[]};
+  if(m>=n)return jacobiTall(A);
+  const t=jacobiTall(transposeUnchecked(A));
+  return {U:transposeUnchecked(t.Vh),s:t.s,Vh:transposeUnchecked(t.U)};
+}
+
+/** Descending singular values of a real matrix. */
+export function svdvals(A) { return svd(A).s; }
+
+function singularCutoff(s,m,n,tol) {
+  if(tol===undefined)return Math.max(m,n)*Number.EPSILON*(s[0]||0);
+  checkFinite(tol,'tol');if(tol<0)throw new RangeError('tol deve ser não negativo.');return tol;
+}
+
+/** Numerical rank, with NumPy-style default cutoff max(m,n)*eps*smax. */
+export function rank(A,tol) {
+  A=matrixForExtensions(A);
+  const {r:m,c:n}=assertMatrix(A,'A'),s=svd(A).s,cut=singularCutoff(s,m,n,tol);
+  return s.filter(x=>x>cut).length;
+}
+
+/** Moore-Penrose pseudoinverse; tol is an optional absolute singular-value cutoff. */
+export function pinv(A,tol) {
+  A=matrixForExtensions(A);
+  const {r:m,c:n}=assertMatrix(A,'A'),{U,s,Vh}=svd(A),cut=singularCutoff(s,m,n,tol),out=kzeros(n,m);
+  for(let k=0;k<s.length;k++)if(s[k]>cut){
+    const invs=1/s[k];
+    for(let i=0;i<n;i++)for(let j=0;j<m;j++)out[i][j]+=Vh[k][i]*invs*U[j][k];
+  }
+  return out;
 }
