@@ -281,7 +281,9 @@ export function diff(v) {
 
 function avalia(x, y, q) {
   const n = x.length;
-  if (!(q >= x[0] && q <= x[n - 1])) return NaN; // fora do intervalo ou NaN
+  if (Number.isNaN(q)) return NaN;
+  if (q <= x[0]) return y[0];
+  if (q >= x[n - 1]) return y[n - 1];
   // Invariante: x[lo] ≤ q ≤ x[hi]
   let lo = 0, hi = n - 1;
   while (hi - lo > 1) {
@@ -294,7 +296,7 @@ function avalia(x, y, q) {
 }
 
 /**
- * Interpolação linear 1-D. x deve ser estritamente crescente; fora do intervalo → NaN.
+ * Interpolação linear 1-D. x deve ser estritamente crescente; fora do intervalo → saturação nos limites.
  * @param {number[]|Float64Array} x @param {number[]|Float64Array} y
  * @param {number|number[]|Float64Array} xq escalar ou vetor de consulta
  * @returns {number|number[]}
@@ -315,4 +317,45 @@ export function interp1(x, y, xq) {
     out[i] = avalia(x, y, xq[i]);
   }
   return out;
+}
+
+
+/** Bilinear interpolation over a rectilinear grid; Z[row][col] = f(x[col], y[row]). */
+export function interp2(x, y, z, xq, yq) {
+  vetor(x, 'x'); vetor(y, 'y');
+  if (x.length < 2 || y.length < 2) throw new RangeError('interp2 requires at least two coordinates per axis.');
+  const direction = (v, name) => {
+    const sign = Math.sign(v[1] - v[0]);
+    if (!sign) throw new RangeError(`${name} must be strictly monotonic.`);
+    for (let i=1; i<v.length; i++) if (Math.sign(v[i]-v[i-1]) !== sign) throw new RangeError(`${name} must be strictly monotonic.`);
+    return sign;
+  };
+  const dx = direction(x, 'x'), dy = direction(y, 'y');
+  if (!Array.isArray(z) || z.length !== y.length) throw new RangeError('z must have one row per y coordinate.');
+  for (const row of z) { vetor(row, 'z row'); if (row.length !== x.length) throw new RangeError('z must have one column per x coordinate.'); }
+  const locate = (axis, sign, value) => {
+    if (typeof value !== 'number') throw new TypeError('Query coordinates must be numbers.');
+    if (Number.isNaN(value)) return -1;
+    let lo=0, hi=axis.length-1;
+    while (hi-lo>1) { const mid=(lo+hi)>>>1; if (sign*(value-axis[mid])>=0) lo=mid; else hi=mid; }
+    return lo;
+  };
+  const point = (qx, qy) => {
+    if (typeof qx !== 'number' || typeof qy !== 'number') throw new TypeError('Query coordinates must be numbers.');
+    if (Number.isNaN(qx) || Number.isNaN(qy)) return NaN;
+    qx=Math.max(Math.min(x[0],x[x.length-1]),Math.min(Math.max(x[0],x[x.length-1]),qx));
+    qy=Math.max(Math.min(y[0],y[y.length-1]),Math.min(Math.max(y[0],y[y.length-1]),qy));
+    const i=locate(x,dx,qx), j=locate(y,dy,qy);
+    const tx=(qx-x[i])/(x[i+1]-x[i]), ty=(qy-y[j])/(y[j+1]-y[j]);
+    const a=z[j][i]*(1-tx)+z[j][i+1]*tx, b=z[j+1][i]*(1-tx)+z[j+1][i+1]*tx;
+    return a*(1-ty)+b*ty;
+  };
+  const query = (a,b) => {
+    const av=isVec(a), bv=isVec(b);
+    if (!av && !bv) return point(a,b);
+    if (av && bv && a.length!==b.length) throw new RangeError('Query shapes must match.');
+    const n=av?a.length:b.length;
+    return Array.from({length:n},(_,i)=>query(av?a[i]:a,bv?b[i]:b));
+  };
+  return query(xq,yq);
 }

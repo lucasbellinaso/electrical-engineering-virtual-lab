@@ -195,10 +195,13 @@ TypeError/RangeError. `det` e `cdet` não têm a opção (devolvem 0 só para pi
 | polynomial.js | ptrim, pmul, padd, pscale, pdeg, plead, pprod, polyFromRoots (só parte real), roots, aberth, matchRoots; ★polyval, polyvalComplex, polyder, polyint, conv, deconv→{q,r} |
 | matrix.js | zeros, eye, ones, diag, reshape (ordem por linhas), mmul, madd, mscale, msolve(A, B, opts), expm (Padé 6), charpoly; ★transpose, trace, det, inv(A, opts), norm1, normInf, isSquare, logm, svd (real, reduzida: `{U,s,Vh}`), svdvals, rank, pinv |
 | control.js | tf2ss, c2d (ZOH), pade, makeFR, bisect, margins; ★ss2tf, series, parallel, feedback, dcgain, evalTF, d2c (`d2c(sys, 'zoh'\|'tustin')`, `sys` = `{A,B,C,D,dt}` MIMO ou `{num,den,dt}` SISO, `dt > 0`; ZOH usa Γ = ∫e^{Aτ}dτ e funciona com integrador) |
-| numeric.js | logspace (n≥2, como o SISO); ★linspace, trapz, cumtrapz, simpson, quad (Simpson adaptativo em intervalo finito), cumsum, sum, mean, median, std (N−1), quantile/percentile (linear/type 7), histogram (contagens e bordas), norm, diff, interp1 (NaN fora do intervalo) |
+| numeric.js | logspace (n≥2, como o SISO); ★linspace, trapz, cumtrapz, simpson, quad (Simpson adaptativo em intervalo finito), cumsum, sum, mean, median, std (N−1), quantile/percentile (linear/type 7), histogram (contagens e bordas), norm, diff, interp1, interp2 (saturação nas bordas) |
 | special.js | erf, erfc (aproximação de Cody), qfunc, ndtr (CDF normal padrão), ndtri (inversa), normalInterval |
 | signal.js | fft, ifft (vetores reais/complexos; saída em `{re,im}`), filter/lfilter (DF-II transposta; `{y,zf}`) |
 | random.js | mulberry32 (uniforme reproduzível em [0,1)), createRandom(seed) com `uniform()` e `normal(mean,std)` (Box–Muller) |
+| quantization.js | `quantize`: quantização uniforme com saturação, níveis ou bits e arredondamento configurável. |
+| rounding.js | `round`, `floor`, `ceil`, `fix`: arredondamento de escalares reais ou complexos, vetores e matrizes, componente a componente. |
+| coordinates.js | `cart2pol`, `pol2cart`, `cart2sph`, `sph2cart`, `deg2rad`, `rad2deg`: escalares, vetores e matrizes reais; conversões de coordenadas retornam arrays de saídas na ordem do Octave. |
 | complex.js | ★objetos `{re,im}`: make, add, sub, mul, div, conj, scale, abs, arg, fromPolar/fromPolarDeg, toPolar/toPolarDeg, exp, sqrt, pow, fromPair/toPair, equalsWithin; ★sinh, cosh, tanh (estouro: componentes ±Infinity, sem lançar; tanh estável perto dos polos e assintótico para \|x\| > 20); ★sinhc (auxiliar, API ainda instável: sinh(z)/z, sinhc(0) = 1) |
 | cmatrix.js | ★matrizes complexas: array de linhas de `{re,im}` (mesmo formato de complex.js; aritmética importada dele). czeros, ceye, fromReal, fromParts(Re, Im), realPart, imagPart, cadd, csub, cscale(A, z) (z real ou `{re,im}`), cmmul (retangulares), ctranspose (sem conjugar), chermitian (conjugada), ctrace, cdet, cinv(A, opts), csolve(A, B, opts) (lança `Error('Matriz singular')`, `code = 'SINGULAR_MATRIX'`), cnorm1, cnormInf, cnormFro |
 
@@ -206,6 +209,7 @@ TypeError/RangeError. `det` e `cdet` não têm a opção (devolvem 0 só para pi
 | timeresp.js | ★tfToSS, lsim (entrada ZOH, passo uniforme; discreto = dlsim), step, impulse (C·e^{At}·B; D·δ ignorado), initial, stepinfo, defaultTime |
 | design.js | ★ctrb, obsv, acker, place (**só entrada única**; multi-entrada lança RangeError), lyap, dlyap (n ≤ 12, Kronecker) |
 | solvers.js | ★fsolve (F(x) = 0, n×n, retorno `{x, fval, exitflag, output}` como o MATLAB; `algorithm: 'newton-raphson'` (padrão; Jacobiano analítico via `options.jacobian` ou diferenças finitas; `lineSearch` opcional) ou `'gauss-seidel'` (Newton escalar por componente, ou forma de ponto fixo via `options.update(x, i)`; `accel` = fator de aceleração/SOR; convergência linear, só condicional); `output.history` guarda ‖F‖∞ por iteração), numjac |
+| optimize.js | `minimize` (BFGS sem restrições), `leastSquares` (Gauss?Newton amortecido) e `curveFit` (ajuste de curvas por mínimos quadrados) |
 | eigen.js | ★eig (`{values, vectors}`, como `[V,D] = eig(A)`), eigvals (como `e = eig(A)`). A real n×n; autovalores `[re, im]` e `vectors[i][k] = [re, im]`. Balanceamento + Hessenberg + QR de Francis (forma de Schur real) + autovetores por Schur complexa; simétrica → autovalores crescentes e V ortonormal; autovetores com norma 1 e maior componente real positiva. Autovalores múltiplos de matriz defeituosa perdem precisão (ε^(1/m)) |
 | riccati.js | ★care (função sinal matricial), dare (dobramento SDA), lqr, dlqr (com N), lqe, dlqe; autovalores de E via eigvals (eigen.js), precisos também para n ≥ 5 |
 | analysis.js | ★pole, zero (SS só SISO), damp, tfdata, tf2zpk, zpk2tf, zpk2ss, ss2zpk, freqresp, bode, nyquist, evalfr, margin, minreal, rlocus, gangof4, mag2db, db2mag, unwrap |
@@ -259,3 +263,32 @@ SISO, Buck, DAB, amp-ops e Buck PID não exportam módulos numéricos públicos.
 com nomes conhecidos no HTML não são imports de uma API geral. Inventário, assinatura
 e estratégia de extração em [SISO.md](SISO.md). Modelos, convenções e testes de cada
 aplicativo ficam em seus relatórios, sem promessa de compatibilidade MATLAB completa.
+
+
+### Otimização e ajuste de curvas
+
+`optimize.js` oferece `minimize(fun, x0, options)`, `leastSquares(fun, x0, options)` e `curveFit(model, xdata, ydata, p0, options)`. Todos trabalham com vetores reais e aceitam `maxIter` (padrão 500) e `tol` (padrão 1e-8). Retornam `success`, `status`, `iterations` e `evaluations`, além dos resultados; confira a convergência antes de usar a solução.
+
+- `minimize`: BFGS com busca de passo por condições fortes de Wolfe; `options.gradient` fornece gradiente analítico, ou usa diferenças centrais. `maxEval` limita chamadas da função, incluindo diferenciação numérica; `c1` e `c2` configuram as condições de Wolfe e `history: true` registra iterados aceitos, avaliações acumuladas, direção e tamanho do passo usado para chegar a cada ponto. Retorna `x`, `fun`, `gradient`, `hessInv`, `evaluations`, `gradientEvaluations` e, opcionalmente, `history`. `status` distingue convergência, limite de iterações ou avaliações e falha de busca. Se o orçamento acabar antes do primeiro gradiente completo, `gradient` é `null`.
+- `leastSquares`: minimiza metade da soma dos quadrados dos resíduos usando Gauss?Newton amortecido; aceita `options.jacobian` ou usa diferenças centrais. Retorna `x`, `fun` (resíduos), `cost` e `jac`.
+- `curveFit`: modelo `model(x, params)`, dados e estimativa inicial; retorna os campos de `leastSquares`, `params` e `covariance` estimada a partir de resíduos quando há graus de liberdade e posto completo; caso contrário, `covariance` é `null`.
+
+Estas rotinas não oferecem limites, restrições, pesos, perdas robustas nem equivalência completa de opções com SciPy. A convergência depende do ponto inicial e do condicionamento. Referências SciPy estão em `tests/fixtures/optimize-scipy.json`, geradas por `scripts/reference/gen_optimize.py`.
+
+
+### Conversões de coordenadas
+
+`coordinates.js` fornece `cart2pol(x,y[,z])`, `pol2cart(theta,r[,z])`, `cart2sph(x,y,z)`, `sph2cart(theta,phi,r)`, `deg2rad(x)` e `rad2deg(x)`. As funções de coordenadas retornam um array com as saídas na ordem do Octave: por exemplo, `const [theta,r] = cart2pol(x,y)`. Ângulos são em radianos; `phi` é a elevação medida a partir do plano XY. As funções aceitam escalares, arrays e `Float64Array`, propagando escalares sobre arrays de formato igual; as conversões também aceitam uma matriz cujas linhas são pontos. Em JavaScript as múltiplas saídas são sempre retornadas juntas, diferentemente da seleção de saídas do Octave.
+
+
+`interp2(x,y,z,xq,yq)` faz interpolação bilinear em grade retangular: `z[j][i]` corresponde a `(x[i], y[j])`. Eixos devem ser estritamente crescentes ou decrescentes; consultas podem ser escalares ou arrays de mesmo formato, com expansão de escalar. Fora da grade, cada coordenada é limitada à borda mais próxima; `NaN` retorna `NaN`. `interp1` também satura consultas nos extremos. Esta API cobre a forma com vetores de eixos e consultas explícitas; não implementa as demais assinaturas, métodos ou extrapolação do Octave.
+
+
+`rounding.js` segue as convenções do Octave: `round` arredonda empates para longe de zero; `floor` para menos infinito; `ceil` para mais infinito; `fix` para zero. Complexos `{re,im}` são arredondados por componente. Arrays e `Float64Array` são retornados como arrays JavaScript.
+
+
+### Quantização uniforme
+
+`quantize(input, {min, max, levels | bits, rounding})` limita a entrada a `[min,max]` e usa níveis uniformes que incluem os dois extremos. Informe exatamente um entre `levels` (inteiro seguro ≥ 2) e `bits` (inteiro de 1 a 52; `levels = 2**bits`). `rounding` é `nearest` (padrão, empate para o nível superior), `floor` ou `ceil`. Retorna `{values, indices, error, step, levels}`; `error = values - input` inclui erro por saturação. Escalares, arrays e `Float64Array` reais finitos são aceitos, preservando o formato em arrays JavaScript; índices são base zero.
+
+Para `min=0`, `max=5`, `bits=8`, o passo é `5/255` V e os níveis incluem 0 e 5 V. Isso representa um quantizador ideal com extremos inclusos; ADCs podem usar outros limiares e uma convenção de LSB `5/256` V. Faixas simétricas com número par de níveis não incluem zero exato.

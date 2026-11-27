@@ -956,5 +956,57 @@
         "url": null
       }
     ]
+  },
+  {
+    "id": "minimum-search",
+    "title": {
+      "en": "Finding minima",
+      "pt-BR": "Busca de mínimos",
+      "es": "Búsqueda de mínimos"
+    },
+    "description": {
+      "en": "Explore BFGS iterations on curves and surfaces in 2D and 3D.",
+      "pt-BR": "Explore as iterações do BFGS em curvas e superfícies em 2D e 3D.",
+      "es": "Explora las iteraciones de BFGS en curvas y superficies en 2D y 3D."
+    },
+    "category": "numerical-methods",
+    "keywords": {
+      "en": [
+        "optimization",
+        "BFGS",
+        "minimum"
+      ],
+      "pt-BR": [
+        "otimização",
+        "BFGS",
+        "mínimo"
+      ],
+      "es": [
+        "optimización",
+        "BFGS",
+        "mínimo"
+      ]
+    },
+    "path": "simulators/numerical-methods/minimum-search/index.html",
+    "thumbnail": "assets/images/minimum-search.svg",
+    "authors": [
+      "Lucas Vizzotto Bellinaso"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-27",
+    "updated": "2026-11-27",
+    "difficulty": "intermediate",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": []
   }
 ]
