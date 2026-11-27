@@ -18,6 +18,16 @@ LaTeX em equações e variáveis de toda a UI e limites Y estáveis durante atua
 5. Registre o aplicativo em `data/simulators.json` e categorias novas em `data/categories.json`. Inclua os arquivos no caminho indicado. Não altere os originais fornecidos; preserve autoria, licenças e hashes de proveniência.
 6. Atualize `VERSION` em `service-worker.js` quando mudar recursos publicados. Evite dependências de execução externas e mantenha caminhos relativos.
 
+## Biblioteca compartilhada
+
+Antes de implementar cálculos, consulte [docs/API.md](docs/API.md) e os módulos em `assets/js/core/`. Reutilize as funções existentes quando atenderem às necessidades do aplicativo; confira entradas, saídas, convenções e limites numéricos.
+
+Quando faltar uma função de uso geral necessária ao experimento, apresente no pull request uma proposta para incluí-la na biblioteca compartilhada. Descreva sua finalidade, API, hipóteses, limites e uso pelo aplicativo, além de testes e evidências de correção. Quando possível, inclua a implementação genérica, sua documentação e os testes no próprio pull request e faça o aplicativo chamá-la. A lógica específica do experimento deve permanecer no aplicativo.
+
+> **EN:** Check the shared API before implementing calculations. If a reusable function is missing, propose its addition in the pull request, including its contract and validation; when possible, implement and document it in the shared library and use it from the application.
+>
+> **ES:** Consulte la API compartida antes de implementar cálculos. Si falta una función reutilizable, proponga su incorporación en la solicitud de cambios, con su contrato y validación; cuando sea posible, impleméntela y documéntela en la biblioteca compartida y utilícela desde la aplicación.
+
 ## Exemplo de registro no catálogo
 
 Os textos abaixo ilustram o formato completo. Ajuste `languages` à implementação real: neste exemplo, a interface está disponível em EN/PT-BR, sem espanhol.
