@@ -69,6 +69,12 @@ Os textos abaixo ilustram o formato completo. Ajuste `languages` à implementaç
 
 Para registros `planned`, use `path: null`, versão nula e validação vazia; não apresente recursos planejados como disponíveis. Títulos, descrições e palavras-chave do catálogo podem ter traduções em espanhol independentemente dos idiomas efetivos do app. Consulte o contrato vigente em [ARCHITECTURE.md](ARCHITECTURE.md) e [docs/I18N.md](docs/I18N.md).
 
+## Dependências para uso offline
+
+O botão de preparação offline usa `data/offline-manifest.json`, gerado por `npm run offline:manifest`. O gerador percorre os arquivos do diretório de cada simulador, importações locais, referências estáticas de HTML e CSS e URLs locais literais de módulos e workers. Recursos comuns de interface e os três idiomas também entram no inventário.
+
+Ao criar ou mudar um simulador, execute o gerador e inclua o manifesto atualizado no pull request. Referências calculadas dinamicamente fora do diretório do simulador não podem ser inferidas com segurança: liste os arquivos ou diretórios locais adicionais em `offlineDependencies` no registro de `data/simulators.json`. Não dependa de recursos externos para executar o simulador offline. Após preparar o aplicativo com a rede ligada, teste em uma sessão limpa sem rede, incluindo modos, idiomas e carregamentos sob demanda pertinentes. O teste automático verifica se o manifesto está atualizado, mas não comprova todos os caminhos dinâmicos de execução.
+
 ## Testes e pull request
 
 Execute `npm.cmd test` no Windows (ou `npm test`), com Node.js 22 ou superior; não é necessária instalação de pacotes. Verifique os fluxos afetados, idiomas, teclado, responsividade e paths em subdiretório. Relate testes não executados e limites conhecidos.

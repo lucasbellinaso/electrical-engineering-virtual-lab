@@ -161,6 +161,8 @@ Interface funcional não prova validação completa; nenhuma extração extensa 
 
 ## PWA, transparência e validação
 
+Cada simulador oferece um botão próximo ao seletor de idioma para preparar seus recursos offline. O inventário `data/offline-manifest.json` é gerado por `npm run offline:manifest`, com dependências estáticas e possíveis adições declaradas em `offlineDependencies`; veja [CONTRIBUTING.md](CONTRIBUTING.md). O service worker baixa os recursos em cache temporário e só confirma a disponibilidade após conferir todos. A confirmação é específica do navegador e da versão do cache; remova ou reprepare dados conforme necessário. Recursos externos, como fichas técnicas em sites de terceiros, não são incluídos.
+
 As [convenções de apresentação](docs/UI-CONVENTIONS.md) exigem equações e variáveis
 renderizadas a partir de LaTeX em toda a interface, inclusive controles e desenhos,
 e escala Y estável nos gráficos atualizados continuamente, com reenquadramento

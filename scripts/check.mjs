@@ -37,6 +37,7 @@ for(const file of files){
   }
  }
 }
+const offlineCheck=spawnSync(process.execPath,[resolve(root,'scripts/build-offline-manifest.mjs'),'--check'],{encoding:'utf8'});check(offlineCheck.status===0,`Offline dependency manifest: ${offlineCheck.stderr}`);
 const [catalog,categories]=await Promise.all(['data/simulators.json','data/categories.json'].map(load));
 const dictionaries=Object.fromEntries(await Promise.all(languages.map(async code=>[code,await load(`locales/${code}.json`)])));
 const en=dictionaries.en;

@@ -1,4 +1,5 @@
 import {language, setLanguage, t, storage, configureLanguagePicker} from './i18n.js';
+import {setupOfflineButton} from './offline.js';
 export const siteRoot = new URL('../../', import.meta.url);
 export let config = {};
 const system = matchMedia('(prefers-color-scheme: dark)');
@@ -15,6 +16,7 @@ export async function initialize() {
   try { const res = await fetch(new URL('data/config.json',siteRoot)); if (res.ok) config = await res.json(); } catch { /* A repository link is optional. */ }
   document.querySelectorAll('[data-repository]').forEach(a => { if (config.repositoryUrl && /^https:\/\/github\.com\//.test(config.repositoryUrl)) { a.href = config.repositoryUrl; a.target = '_blank'; a.rel = 'noopener noreferrer'; } else a.hidden = true; });
   registerPWA();
+  setupOfflineButton();
 }
 async function registerPWA() {
   if (!('serviceWorker' in navigator)) return;

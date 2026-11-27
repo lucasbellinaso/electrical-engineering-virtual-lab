@@ -275,5 +275,12 @@
   "copyAiSuccess": "Text copied.",
   "copyAiFailure": "Could not copy. Select and copy the text above.",
   "contributePrTitle": "Submit a contribution",
-  "contributeSubmitText": "If you have a GitHub account, you can submit your contribution through a pull request. Without an account, send the application by email to"
+  "contributeSubmitText": "If you have a GitHub account, you can submit your contribution through a pull request. Without an account, send the application by email to",
+  "offlineDownload": "Make available offline",
+  "offlineReady": "Available offline",
+  "offlinePreparing": "Preparing...",
+  "offlineProgress": "Saving {done}/{total}",
+  "offlineError": "Failed. Retry",
+  "offlineUnsupported": "Offline unavailable",
+  "offlineNeedsUpdate": "Update to download"
 }
