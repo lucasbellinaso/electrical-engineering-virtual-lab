@@ -1075,5 +1075,83 @@
         "url": "https://pvlib-python.readthedocs.io/en/stable/user_guide/modeling_topics/singlediode.html"
       }
     ]
+  },
+  {
+    "id": "dft-spectrum",
+    "title": {
+      "en": "Discrete Fourier transform: spectrum, noise and filtering",
+      "pt-BR": "Transformada discreta de Fourier: espectro, ruído e filtragem",
+      "es": "Transformada discreta de Fourier: espectro, ruido y filtrado"
+    },
+    "description": {
+      "en": "Build sums of sinusoids, compute the DFT step by step, inspect amplitude and phase spectra, remove noise by thresholding and compare the direct DFT with the FFT.",
+      "pt-BR": "Monte somas de senoides, calcule a TDF passo a passo, observe os espectros de amplitude e fase, remova ruído por limiar e compare a TDF direta com a FFT.",
+      "es": "Construya sumas de senoides, calcule la TDF paso a paso, observe los espectros de amplitud y fase, elimine ruido por umbral y compare la TDF directa con la FFT."
+    },
+    "category": "signal-processing",
+    "keywords": {
+      "en": [
+        "Fourier",
+        "DFT",
+        "FFT",
+        "spectrum",
+        "noise",
+        "aliasing"
+      ],
+      "pt-BR": [
+        "Fourier",
+        "TDF",
+        "FFT",
+        "espectro",
+        "ruído",
+        "aliasing"
+      ],
+      "es": [
+        "Fourier",
+        "TDF",
+        "FFT",
+        "espectro",
+        "ruido",
+        "aliasing"
+      ]
+    },
+    "path": "simulators/signal-processing/dft-spectrum/index.html",
+    "thumbnail": "assets/images/dft-spectrum.svg",
+    "authors": [
+      "Tiago Buriol"
+    ],
+    "contributors": [],
+    "version": "1.0.0",
+    "created": "2026-11-27",
+    "updated": "2026-11-27",
+    "difficulty": "beginner",
+    "languages": [
+      "pt-BR",
+      "en",
+      "es"
+    ],
+    "status": "available",
+    "validation": [
+      "experimental"
+    ],
+    "validationEvidence": [],
+    "references": [
+      {
+        "title": {
+          "en": "Lesson notebook: Computational Mathematics IV — 4. Discrete Fourier transform (in Portuguese)",
+          "pt-BR": "Caderno da aula: Matemática Computacional IV — 4. Transformada discreta de Fourier",
+          "es": "Cuaderno de la clase: Matemática Computacional IV — 4. Transformada discreta de Fourier (en portugués)"
+        },
+        "url": "https://github.com/tiagoburiol/MatComp_IV/blob/main/04_transformada_discreta_de_fourier.ipynb"
+      },
+      {
+        "title": {
+          "en": "Chapra and Canale, Numerical Methods for Engineers, 7th ed.",
+          "pt-BR": "Chapra e Canale, Métodos numéricos para engenharia, 7. ed.",
+          "es": "Chapra y Canale, Métodos numéricos para ingenieros, 7.ª ed."
+        },
+        "url": null
+      }
+    ]
   }
 ]
