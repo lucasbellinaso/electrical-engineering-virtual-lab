@@ -262,5 +262,12 @@
   "circuit_parallelRecover": "Recuperación de las variables del circuito y de la impedancia.",
   "circuit_energyEquation": "Energía almacenada y su variación temporal (potencia de la fuente menos disipación).",
   "credits": "Creador: Lucas Vizzotto Bellinaso",
-  "languageAvailability": "Idiomas de la aplicación: {languages}. Una descripción traducida en el catálogo no implica que la aplicación esté traducida."
+  "languageAvailability": "Idiomas de la aplicación: {languages}. Una descripción traducida en el catálogo no implica que la aplicación esté traducida.",
+  "contributorsTitle": "Colaboradores",
+  "contributorsIntro": "Personas que contribuyeron a las aplicaciones de EEVL. Todas son de la Universidad Federal de Santa Maria (UFSM).",
+  "contributorCount": "{count} aplicaci?n(es) en el cat?logo",
+  "contributorLucas": "Creaci?n y desarrollo de las aplicaciones indicadas.",
+  "contributorMauricio": "Autor de la aplicaci?n de l?neas de transmisi?n; sugiri? el tema y proporcion? material para su creaci?n.",
+  "contributorCarlos": "Autor de la aplicaci?n de modulaci?n digital.",
+  "simulatorAuthors": "Autor?a"
 }

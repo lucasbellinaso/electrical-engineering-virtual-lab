@@ -262,5 +262,12 @@
   "circuit_parallelRecover": "Recuperação das variáveis do circuito e da impedância.",
   "circuit_energyEquation": "Energia armazenada e sua taxa de variação (potência da fonte menos dissipação).",
   "credits": "Idealizador: Prof. Dr. Lucas Vizzotto Bellinaso · Universidade Federal de Santa Maria, RS, Brasil",
-  "languageAvailability": "Idiomas do aplicativo: {languages}. A descrição traduzida no catálogo não significa que o aplicativo esteja traduzido."
+  "languageAvailability": "Idiomas do aplicativo: {languages}. A descrição traduzida no catálogo não significa que o aplicativo esteja traduzido.",
+  "contributorsTitle": "Colaboradores",
+  "contributorsIntro": "Pessoas que contribu?ram para os aplicativos do EEVL. Todos s?o da Universidade Federal de Santa Maria (UFSM).",
+  "contributorCount": "{count} aplicativo(s) no cat?logo",
+  "contributorLucas": "Cria??o e desenvolvimento dos aplicativos indicados.",
+  "contributorMauricio": "Autor do aplicativo de linhas de transmiss?o; sugeriu o tema e forneceu o material para sua cria??o.",
+  "contributorCarlos": "Autor do aplicativo de modula??o digital.",
+  "simulatorAuthors": "Autoria"
 }
