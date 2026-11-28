@@ -1,5 +1,5 @@
 /* Increment VERSION whenever any cached resource changes. Paths are scope-relative. */
-const VERSION='eevl-v1.1.34';
+const VERSION='eevl-v1.1.35';
 const SHELL=VERSION+'-shell', VISITED=VERSION+'-visited';
 const root=new URL('./',self.location.href);
 const urls=[
