@@ -1,0 +1,443 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Section",
+      "title": "Planta",
+      "raw": "%% Planta",
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":10,"start":0,"end":9}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "s",
+          "loc": {"line":2,"col":1,"endLine":2,"endCol":2,"start":10,"end":11}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "tf",
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":7,"start":14,"end":16}
+        },
+        "args": [
+          {
+            "type": "String",
+            "value": "s",
+            "quote": "'",
+            "loc": {"line":2,"col":8,"endLine":2,"endCol":11,"start":17,"end":20}
+          }
+        ],
+        "loc": {"line":2,"col":5,"endLine":2,"endCol":12,"start":14,"end":21}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":13,"start":10,"end":22}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "G",
+          "loc": {"line":3,"col":1,"endLine":3,"endCol":2,"start":23,"end":24}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Binary",
+        "operator": "/",
+        "left": {
+          "type": "Number",
+          "value": 10,
+          "raw": "10",
+          "imaginary": false,
+          "loc": {"line":3,"col":5,"endLine":3,"endCol":7,"start":27,"end":29}
+        },
+        "right": {
+          "type": "Paren",
+          "expression": {
+            "type": "Binary",
+            "operator": "+",
+            "left": {
+              "type": "Binary",
+              "operator": "+",
+              "left": {
+                "type": "Binary",
+                "operator": "^",
+                "left": {
+                  "type": "Ident",
+                  "name": "s",
+                  "loc": {"line":3,"col":11,"endLine":3,"endCol":12,"start":33,"end":34}
+                },
+                "right": {
+                  "type": "Number",
+                  "value": 2,
+                  "raw": "2",
+                  "imaginary": false,
+                  "loc": {"line":3,"col":13,"endLine":3,"endCol":14,"start":35,"end":36}
+                },
+                "loc": {"line":3,"col":11,"endLine":3,"endCol":14,"start":33,"end":36}
+              },
+              "right": {
+                "type": "Binary",
+                "operator": "*",
+                "left": {
+                  "type": "Number",
+                  "value": 2,
+                  "raw": "2",
+                  "imaginary": false,
+                  "loc": {"line":3,"col":17,"endLine":3,"endCol":18,"start":39,"end":40}
+                },
+                "right": {
+                  "type": "Ident",
+                  "name": "s",
+                  "loc": {"line":3,"col":19,"endLine":3,"endCol":20,"start":41,"end":42}
+                },
+                "loc": {"line":3,"col":17,"endLine":3,"endCol":20,"start":39,"end":42}
+              },
+              "loc": {"line":3,"col":11,"endLine":3,"endCol":20,"start":33,"end":42}
+            },
+            "right": {
+              "type": "Number",
+              "value": 10,
+              "raw": "10",
+              "imaginary": false,
+              "loc": {"line":3,"col":23,"endLine":3,"endCol":25,"start":45,"end":47}
+            },
+            "loc": {"line":3,"col":11,"endLine":3,"endCol":25,"start":33,"end":47}
+          },
+          "loc": {"line":3,"col":10,"endLine":3,"endCol":26,"start":32,"end":48}
+        },
+        "loc": {"line":3,"col":5,"endLine":3,"endCol":26,"start":27,"end":48}
+      },
+      "display": true,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":26,"start":23,"end":48}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "C",
+          "loc": {"line":4,"col":1,"endLine":4,"endCol":2,"start":49,"end":50}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Binary",
+        "operator": "+",
+        "left": {
+          "type": "Number",
+          "value": 2,
+          "raw": "2",
+          "imaginary": false,
+          "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":53,"end":54}
+        },
+        "right": {
+          "type": "Binary",
+          "operator": "/",
+          "left": {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":4,"col":9,"endLine":4,"endCol":10,"start":57,"end":58}
+          },
+          "right": {
+            "type": "Ident",
+            "name": "s",
+            "loc": {"line":4,"col":11,"endLine":4,"endCol":12,"start":59,"end":60}
+          },
+          "loc": {"line":4,"col":9,"endLine":4,"endCol":12,"start":57,"end":60}
+        },
+        "loc": {"line":4,"col":5,"endLine":4,"endCol":12,"start":53,"end":60}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":13,"start":49,"end":61}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "H",
+          "loc": {"line":5,"col":1,"endLine":5,"endCol":2,"start":62,"end":63}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "tf",
+          "loc": {"line":5,"col":5,"endLine":5,"endCol":7,"start":66,"end":68}
+        },
+        "args": [
+          {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":5,"col":8,"endLine":5,"endCol":9,"start":69,"end":70}
+          },
+          {
+            "type": "Matrix",
+            "rows": [
+              [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":5,"col":12,"endLine":5,"endCol":13,"start":73,"end":74}
+                },
+                {
+                  "type": "Number",
+                  "value": 5,
+                  "raw": "5",
+                  "imaginary": false,
+                  "loc": {"line":5,"col":14,"endLine":5,"endCol":15,"start":75,"end":76}
+                }
+              ]
+            ],
+            "loc": {"line":5,"col":11,"endLine":5,"endCol":16,"start":72,"end":77}
+          }
+        ],
+        "loc": {"line":5,"col":5,"endLine":5,"endCol":17,"start":66,"end":78}
+      },
+      "display": false,
+      "loc": {"line":5,"col":1,"endLine":5,"endCol":18,"start":62,"end":79}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "T",
+          "loc": {"line":6,"col":1,"endLine":6,"endCol":2,"start":80,"end":81}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "feedback",
+          "loc": {"line":6,"col":5,"endLine":6,"endCol":13,"start":84,"end":92}
+        },
+        "args": [
+          {
+            "type": "Binary",
+            "operator": "*",
+            "left": {
+              "type": "Ident",
+              "name": "C",
+              "loc": {"line":6,"col":14,"endLine":6,"endCol":15,"start":93,"end":94}
+            },
+            "right": {
+              "type": "Ident",
+              "name": "G",
+              "loc": {"line":6,"col":16,"endLine":6,"endCol":17,"start":95,"end":96}
+            },
+            "loc": {"line":6,"col":14,"endLine":6,"endCol":17,"start":93,"end":96}
+          },
+          {
+            "type": "Ident",
+            "name": "H",
+            "loc": {"line":6,"col":19,"endLine":6,"endCol":20,"start":98,"end":99}
+          }
+        ],
+        "loc": {"line":6,"col":5,"endLine":6,"endCol":21,"start":84,"end":100}
+      },
+      "display": true,
+      "loc": {"line":6,"col":1,"endLine":6,"endCol":21,"start":80,"end":100}
+    },
+    {
+      "type": "Section",
+      "title": "Resposta",
+      "raw": "%% Resposta",
+      "loc": {"line":8,"col":1,"endLine":8,"endCol":12,"start":102,"end":113}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "y",
+          "loc": {"line":9,"col":2,"endLine":9,"endCol":3,"start":115,"end":116}
+        },
+        {
+          "type": "Ident",
+          "name": "t",
+          "loc": {"line":9,"col":5,"endLine":9,"endCol":6,"start":118,"end":119}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "step",
+          "loc": {"line":9,"col":10,"endLine":9,"endCol":14,"start":123,"end":127}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "T",
+            "loc": {"line":9,"col":15,"endLine":9,"endCol":16,"start":128,"end":129}
+          }
+        ],
+        "loc": {"line":9,"col":10,"endLine":9,"endCol":17,"start":123,"end":130}
+      },
+      "display": false,
+      "loc": {"line":9,"col":1,"endLine":9,"endCol":18,"start":114,"end":131}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "overshoot",
+          "loc": {"line":10,"col":1,"endLine":10,"endCol":10,"start":132,"end":141}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Binary",
+        "operator": "*",
+        "left": {
+          "type": "Binary",
+          "operator": "/",
+          "left": {
+            "type": "Paren",
+            "expression": {
+              "type": "Binary",
+              "operator": "-",
+              "left": {
+                "type": "CallOrIndex",
+                "callee": {
+                  "type": "Ident",
+                  "name": "max",
+                  "loc": {"line":10,"col":14,"endLine":10,"endCol":17,"start":145,"end":148}
+                },
+                "args": [
+                  {
+                    "type": "Ident",
+                    "name": "y",
+                    "loc": {"line":10,"col":18,"endLine":10,"endCol":19,"start":149,"end":150}
+                  }
+                ],
+                "loc": {"line":10,"col":14,"endLine":10,"endCol":20,"start":145,"end":151}
+              },
+              "right": {
+                "type": "CallOrIndex",
+                "callee": {
+                  "type": "Ident",
+                  "name": "y",
+                  "loc": {"line":10,"col":23,"endLine":10,"endCol":24,"start":154,"end":155}
+                },
+                "args": [
+                  {
+                    "type": "End",
+                    "loc": {"line":10,"col":25,"endLine":10,"endCol":28,"start":156,"end":159}
+                  }
+                ],
+                "loc": {"line":10,"col":23,"endLine":10,"endCol":29,"start":154,"end":160}
+              },
+              "loc": {"line":10,"col":14,"endLine":10,"endCol":29,"start":145,"end":160}
+            },
+            "loc": {"line":10,"col":13,"endLine":10,"endCol":30,"start":144,"end":161}
+          },
+          "right": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "y",
+              "loc": {"line":10,"col":33,"endLine":10,"endCol":34,"start":164,"end":165}
+            },
+            "args": [
+              {
+                "type": "End",
+                "loc": {"line":10,"col":35,"endLine":10,"endCol":38,"start":166,"end":169}
+              }
+            ],
+            "loc": {"line":10,"col":33,"endLine":10,"endCol":39,"start":164,"end":170}
+          },
+          "loc": {"line":10,"col":13,"endLine":10,"endCol":39,"start":144,"end":170}
+        },
+        "right": {
+          "type": "Number",
+          "value": 100,
+          "raw": "100",
+          "imaginary": false,
+          "loc": {"line":10,"col":42,"endLine":10,"endCol":45,"start":173,"end":176}
+        },
+        "loc": {"line":10,"col":13,"endLine":10,"endCol":45,"start":144,"end":176}
+      },
+      "display": false,
+      "loc": {"line":10,"col":1,"endLine":10,"endCol":46,"start":132,"end":177}
+    },
+    {
+      "type": "ExprStmt",
+      "expression": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "fprintf",
+          "loc": {"line":11,"col":1,"endLine":11,"endCol":8,"start":178,"end":185}
+        },
+        "args": [
+          {
+            "type": "String",
+            "value": "Sobressinal: %.2f %%\\n",
+            "quote": "'",
+            "loc": {"line":11,"col":9,"endLine":11,"endCol":33,"start":186,"end":210}
+          },
+          {
+            "type": "Ident",
+            "name": "overshoot",
+            "loc": {"line":11,"col":35,"endLine":11,"endCol":44,"start":212,"end":221}
+          }
+        ],
+        "loc": {"line":11,"col":1,"endLine":11,"endCol":45,"start":178,"end":222}
+      },
+      "display": false,
+      "loc": {"line":11,"col":1,"endLine":11,"endCol":46,"start":178,"end":223}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "p",
+          "loc": {"line":12,"col":1,"endLine":12,"endCol":2,"start":224,"end":225}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "pole",
+          "loc": {"line":12,"col":5,"endLine":12,"endCol":9,"start":228,"end":232}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "T",
+            "loc": {"line":12,"col":10,"endLine":12,"endCol":11,"start":233,"end":234}
+          }
+        ],
+        "loc": {"line":12,"col":5,"endLine":12,"endCol":12,"start":228,"end":235}
+      },
+      "display": false,
+      "loc": {"line":12,"col":1,"endLine":12,"endCol":13,"start":224,"end":236}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":13,"endCol":1,"start":0,"end":237}
+}

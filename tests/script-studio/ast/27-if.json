@@ -1,0 +1,290 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "If",
+      "condition": {
+        "type": "Binary",
+        "operator": ">",
+        "left": {
+          "type": "Ident",
+          "name": "x",
+          "loc": {"line":1,"col":4,"endLine":1,"endCol":5,"start":3,"end":4}
+        },
+        "right": {
+          "type": "Number",
+          "value": 0,
+          "raw": "0",
+          "imaginary": false,
+          "loc": {"line":1,"col":8,"endLine":1,"endCol":9,"start":7,"end":8}
+        },
+        "loc": {"line":1,"col":4,"endLine":1,"endCol":9,"start":3,"end":8}
+      },
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "y",
+              "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":13,"end":14}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":2,"col":9,"endLine":2,"endCol":10,"start":17,"end":18}
+          },
+          "display": false,
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":11,"start":13,"end":19}
+        }
+      ],
+      "elseifs": [
+        {
+          "type": "ElseIf",
+          "condition": {
+            "type": "Binary",
+            "operator": "<",
+            "left": {
+              "type": "Ident",
+              "name": "x",
+              "loc": {"line":3,"col":8,"endLine":3,"endCol":9,"start":27,"end":28}
+            },
+            "right": {
+              "type": "Number",
+              "value": 0,
+              "raw": "0",
+              "imaginary": false,
+              "loc": {"line":3,"col":12,"endLine":3,"endCol":13,"start":31,"end":32}
+            },
+            "loc": {"line":3,"col":8,"endLine":3,"endCol":13,"start":27,"end":32}
+          },
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "Ident",
+                  "name": "y",
+                  "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":37,"end":38}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "Unary",
+                "operator": "-",
+                "operand": {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":4,"col":10,"endLine":4,"endCol":11,"start":42,"end":43}
+                },
+                "loc": {"line":4,"col":9,"endLine":4,"endCol":11,"start":41,"end":43}
+              },
+              "display": false,
+              "loc": {"line":4,"col":5,"endLine":4,"endCol":12,"start":37,"end":44}
+            }
+          ],
+          "loc": {"line":3,"col":1,"endLine":4,"endCol":12,"start":20,"end":44}
+        }
+      ],
+      "elseBody": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "y",
+              "loc": {"line":6,"col":5,"endLine":6,"endCol":6,"start":54,"end":55}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Number",
+            "value": 0,
+            "raw": "0",
+            "imaginary": false,
+            "loc": {"line":6,"col":9,"endLine":6,"endCol":10,"start":58,"end":59}
+          },
+          "display": false,
+          "loc": {"line":6,"col":5,"endLine":6,"endCol":11,"start":54,"end":60}
+        }
+      ],
+      "loc": {"line":1,"col":1,"endLine":7,"endCol":4,"start":0,"end":64}
+    },
+    {
+      "type": "If",
+      "condition": {
+        "type": "Ident",
+        "name": "a",
+        "loc": {"line":8,"col":4,"endLine":8,"endCol":5,"start":68,"end":69}
+      },
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "b",
+              "loc": {"line":8,"col":7,"endLine":8,"endCol":8,"start":71,"end":72}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":8,"col":11,"endLine":8,"endCol":12,"start":75,"end":76}
+          },
+          "display": false,
+          "loc": {"line":8,"col":7,"endLine":8,"endCol":13,"start":71,"end":77}
+        }
+      ],
+      "elseifs": [],
+      "elseBody": null,
+      "loc": {"line":8,"col":1,"endLine":8,"endCol":17,"start":65,"end":81}
+    },
+    {
+      "type": "If",
+      "condition": {
+        "type": "Paren",
+        "expression": {
+          "type": "Binary",
+          "operator": "==",
+          "left": {
+            "type": "Ident",
+            "name": "x",
+            "loc": {"line":9,"col":5,"endLine":9,"endCol":6,"start":86,"end":87}
+          },
+          "right": {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":9,"col":10,"endLine":9,"endCol":11,"start":91,"end":92}
+          },
+          "loc": {"line":9,"col":5,"endLine":9,"endCol":11,"start":86,"end":92}
+        },
+        "loc": {"line":9,"col":4,"endLine":9,"endCol":12,"start":85,"end":93}
+      },
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "y",
+              "loc": {"line":9,"col":13,"endLine":9,"endCol":14,"start":94,"end":95}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Number",
+            "value": 2,
+            "raw": "2",
+            "imaginary": false,
+            "loc": {"line":9,"col":17,"endLine":9,"endCol":18,"start":98,"end":99}
+          },
+          "display": false,
+          "loc": {"line":9,"col":13,"endLine":9,"endCol":19,"start":94,"end":100}
+        }
+      ],
+      "elseifs": [],
+      "elseBody": null,
+      "loc": {"line":9,"col":1,"endLine":9,"endCol":23,"start":82,"end":104}
+    },
+    {
+      "type": "If",
+      "condition": {
+        "type": "Binary",
+        "operator": "&&",
+        "left": {
+          "type": "Unary",
+          "operator": "~",
+          "operand": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "isempty",
+              "loc": {"line":10,"col":5,"endLine":10,"endCol":12,"start":109,"end":116}
+            },
+            "args": [
+              {
+                "type": "Ident",
+                "name": "v",
+                "loc": {"line":10,"col":13,"endLine":10,"endCol":14,"start":117,"end":118}
+              }
+            ],
+            "loc": {"line":10,"col":5,"endLine":10,"endCol":15,"start":109,"end":119}
+          },
+          "loc": {"line":10,"col":4,"endLine":10,"endCol":15,"start":108,"end":119}
+        },
+        "right": {
+          "type": "Binary",
+          "operator": ">",
+          "left": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "v",
+              "loc": {"line":10,"col":19,"endLine":10,"endCol":20,"start":123,"end":124}
+            },
+            "args": [
+              {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":10,"col":21,"endLine":10,"endCol":22,"start":125,"end":126}
+              }
+            ],
+            "loc": {"line":10,"col":19,"endLine":10,"endCol":23,"start":123,"end":127}
+          },
+          "right": {
+            "type": "Number",
+            "value": 0,
+            "raw": "0",
+            "imaginary": false,
+            "loc": {"line":10,"col":26,"endLine":10,"endCol":27,"start":130,"end":131}
+          },
+          "loc": {"line":10,"col":19,"endLine":10,"endCol":27,"start":123,"end":131}
+        },
+        "loc": {"line":10,"col":4,"endLine":10,"endCol":27,"start":108,"end":131}
+      },
+      "body": [
+        {
+          "type": "ExprStmt",
+          "expression": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "disp",
+              "loc": {"line":10,"col":29,"endLine":10,"endCol":33,"start":133,"end":137}
+            },
+            "args": [
+              {
+                "type": "String",
+                "value": "ok",
+                "quote": "'",
+                "loc": {"line":10,"col":34,"endLine":10,"endCol":38,"start":138,"end":142}
+              }
+            ],
+            "loc": {"line":10,"col":29,"endLine":10,"endCol":39,"start":133,"end":143}
+          },
+          "display": true,
+          "loc": {"line":10,"col":29,"endLine":10,"endCol":40,"start":133,"end":144}
+        }
+      ],
+      "elseifs": [],
+      "elseBody": null,
+      "loc": {"line":10,"col":1,"endLine":10,"endCol":44,"start":105,"end":148}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":11,"endCol":1,"start":0,"end":149}
+}

@@ -68,3 +68,78 @@ export function lfilter(b,a,x,zi) {
 
 /** MATLAB/Octave name for the same direct-form-II transposed kernel. */
 export const filter=lfilter;
+
+/* ---- fftshift / ifftshift e janelas (semântica do MATLAB) ---- */
+
+function shiftBy(input,shiftFn){
+  vector(input,'input');
+  const n=input.length,s=shiftFn(n);
+  const out=new Array(n);
+  for(let i=0;i<n;i++){const z=input[i];out[(i+s)%n]=typeof z==='number'?z:{re:z.re,im:z.im};}
+  return out;
+}
+
+/**
+ * Move a componente de frequência zero para o centro: troca circularmente por
+ * floor(N/2) posições, como o fftshift do MATLAB (N par: troca as metades;
+ * N ímpar: o elemento 0 vai para o índice (N-1)/2). Só vetores (reais ou
+ * `{re,im}`); preserva o tipo de cada elemento e não altera a entrada.
+ */
+export function fftshift(x){return shiftBy(x,n=>Math.floor(n/2));}
+
+/** Inversa de `fftshift` (deslocamento por ceil(N/2)); idêntica a fftshift para N par. */
+export function ifftshift(x){return shiftBy(x,n=>Math.ceil(n/2));}
+
+function windowLength(L,name){
+  if(typeof L!=='number'||!Number.isFinite(L))throw new TypeError(`${name}: L deve ser um número finito.`);
+  if(!Number.isInteger(L)||L<0)throw new RangeError(`${name}: L deve ser inteiro ≥ 0.`);
+}
+function windowFlag(flag,name){
+  if(flag===undefined)return 'symmetric';
+  const f=typeof flag==='string'?flag.toLowerCase():flag;
+  if(f!=='symmetric'&&f!=='periodic')throw new RangeError(`${name}: flag deve ser 'symmetric' ou 'periodic'.`);
+  return f;
+}
+// Janela simétrica de soma de cossenos Σ a[k]·cos(2πkn/(L-1)): calcula a primeira
+// metade e espelha, garantindo simetria exata (w[i] === w[L-1-i]).
+function symmetricCosineWindow(L,terms){
+  if(L===0)return [];
+  if(L===1)return [1];
+  const half=Math.ceil(L/2),w=new Array(L);
+  for(let i=0;i<half;i++){
+    let v=0;for(let k=0;k<terms.length;k++)v+=terms[k]*Math.cos(2*Math.PI*k*i/(L-1));
+    w[i]=v;w[L-1-i]=v;
+  }
+  return w;
+}
+function cosineWindow(L,flag,terms,name){
+  windowLength(L,name);
+  const f=windowFlag(flag,name);
+  if(L<=1)return L===0?[]:[1];
+  // Periódica = simétrica de comprimento L+1 sem a última amostra (como o MATLAB).
+  return f==='periodic'?symmetricCosineWindow(L+1,terms).slice(0,L):symmetricCosineWindow(L,terms);
+}
+
+/**
+ * Janela de Hamming: w[n] = 0,54 − 0,46·cos(2πn/(L−1)), n = 0…L−1. `flag`:
+ * 'symmetric' (padrão) ou 'periodic' (= simétrica de L+1 sem a última amostra).
+ * L = 0 → []; L = 1 → [1]. L deve ser inteiro ≥ 0 (o MATLAB arredonda com aviso;
+ * aqui lança RangeError).
+ */
+export function hamming(L,flag){return cosineWindow(L,flag,[0.54,-0.46],'hamming');}
+
+/**
+ * Janela de Hann como no MATLAB (`hann`): w[n] = 0,5·(1 − cos(2πn/(L−1))). No caso
+ * simétrico as extremidades são exatamente zero (diferente de `hanning`, que exclui
+ * os zeros e equivale a hann(L+2) sem as pontas). 'periodic': hann(L+1) sem o último.
+ * L = 0 → []; L = 1 → [1].
+ */
+export function hann(L,flag){return cosineWindow(L,flag,[0.5,-0.5],'hann');}
+
+/**
+ * Janela de Blackman: w[n] = 0,42 − 0,5·cos(2πn/(L−1)) + 0,08·cos(4πn/(L−1)).
+ * Calculada pela primeira metade e espelhada (simetria exata). Os valores das
+ * pontas não são exatamente zero, e sim ruído de arredondamento (~ −1,4e−17),
+ * como no MATLAB. L = 0 → []; L = 1 → [1].
+ */
+export function blackman(L,flag){return cosineWindow(L,flag,[0.42,-0.5,0.08],'blackman');}

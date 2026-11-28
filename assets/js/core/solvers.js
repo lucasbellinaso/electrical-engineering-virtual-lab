@@ -294,3 +294,154 @@ export function fsolve(fun, x0, options = {}) {
     },
   };
 }
+
+/* ------------------------- fzero ------------------------- */
+
+/**
+ * Raiz de uma função escalar f(x) = 0 (≈ fzero do MATLAB): busca de intervalo com mudança de sinal
+ * (se x0 for escalar) e método de Brent–Dekker (bisseção + secante + interpolação quadrática inversa).
+ *
+ *   fzero(f, x0, opts) → { x, fval, exitflag, output }     (≈ [x, fval, exitflag, output] do MATLAB)
+ *
+ *   f    função x → número (escalar)
+ *   x0   número: procura um intervalo [a, b] em torno de x0 com f(a)·f(b) ≤ 0, expandindo
+ *        simetricamente (passo inicial |x0|/50, ou 1/50 se x0 = 0, multiplicado por √2 a cada vez),
+ *        como o MATLAB; ou [a, b]: intervalo dado, que deve ter f(a)·f(b) ≤ 0 (senão RangeError).
+ *
+ * Opções (todas opcionais):
+ *   TolX         Number.EPSILON  tolerância em x: para quando o intervalo de incerteza ≤ 2·TolX·max(|x|, 1)
+ *   MaxIter      1000            máximo de iterações de Brent (exitflag 0 ao atingir)
+ *   MaxFunEvals  Infinity        máximo de avaliações de f, incluindo a busca de intervalo (exitflag 0)
+ *
+ * exitflag:   1 raiz localizada (intervalo ≤ tolerância, ou f(x) = 0 exato)
+ *             0 MaxIter ou MaxFunEvals atingido (x é a melhor estimativa)
+ *            −5 convergiu para um ponto onde |f| é maior que nos extremos do intervalo inicial: provável
+ *               descontinuidade (polo) e não raiz; x é devolvido mesmo assim, como o MATLAB faz
+ *
+ * output: { iterations, funcCount, interval: [a, b] (intervalo inicial com mudança de sinal), message }.
+ *
+ * Descontinuidades: uma função descontínua que muda de sinal (p. ex. tan(x) em [1, 2], ou 1/x em [−1, 2])
+ * faz o algoritmo convergir para o ponto de descontinuidade; fzero o devolve (exitflag −5 quando |f| ali é
+ * maior que nos extremos), e não garante que seja uma raiz. Raízes sem mudança de sinal (p. ex. x² em x = 0,
+ * multiplicidade par) não são encontradas por nenhuma forma desta função.
+ *
+ * Erros: TypeError para tipo inválido; RangeError para valor inválido (x0 ou intervalo não finito,
+ * f não finita nos pontos iniciais, intervalo sem mudança de sinal, opção fora do domínio) ou se a
+ * busca a partir de x0 escalar não achar mudança de sinal antes de x deixar de ser finito.
+ *
+ * @param {(x:number)=>number} f @param {number|number[]} x0
+ * @param {{TolX?:number, MaxIter?:number, MaxFunEvals?:number}} [opts]
+ */
+export function fzero(f, x0, opts = {}) {
+  if (typeof f !== 'function') throw new TypeError('f deve ser uma função');
+  if (opts === null || typeof opts !== 'object') throw new TypeError('opts deve ser um objeto');
+  const pos = (v, padrao, nome) => {
+    if (v === undefined) return padrao;
+    if (typeof v !== 'number' || Number.isNaN(v) || v <= 0) throw new RangeError(`${nome} deve ser um número > 0 (recebido ${v})`);
+    return v;
+  };
+  const tol = pos(opts.TolX, Number.EPSILON, 'TolX');
+  const maxIter = pos(opts.MaxIter, 1000, 'MaxIter');
+  const maxEvals = pos(opts.MaxFunEvals, Infinity, 'MaxFunEvals');
+
+  let funcCount = 0;
+  const F = (x, rotulo) => {
+    funcCount++;
+    const v = f(x);
+    if (typeof v !== 'number') throw new TypeError('f deve devolver um número');
+    if (Number.isNaN(v)) throw new RangeError(`f(${rotulo ?? x}) é NaN`);
+    return v;
+  };
+  const pos0 = (v) => v > 0;
+
+  let a, b, fa, fb;
+  if (typeof x0 === 'number') {
+    if (!Number.isFinite(x0)) throw new RangeError('x0 deve ser finito');
+    fa = F(x0);
+    if (!Number.isFinite(fa)) throw new RangeError(`f(x0) = ${fa} não é finita`);
+    if (fa === 0) {
+      return { x: x0, fval: 0, exitflag: 1, output: { iterations: 0, funcCount, interval: [x0, x0], message: 'f(x0) = 0' } };
+    }
+    let dx = x0 !== 0 ? Math.abs(x0) / 50 : 1 / 50;
+    const sinal0 = pos0(fa);   // f0 ≠ 0: o intervalo termina quando algum ponto tem sinal oposto
+    a = x0; b = x0; fb = fa;
+    let achou = false;
+    while (!achou) {
+      dx *= Math.SQRT2;
+      const lo = x0 - dx, hi = x0 + dx;
+      if (!Number.isFinite(lo) || !Number.isFinite(hi) || funcCount >= maxEvals) break;
+      const flo = F(lo);
+      if (flo === 0 || pos0(flo) !== sinal0) { a = lo; fa = flo; achou = true; break; }   // b: ponto anterior (sinal de f0)
+      if (funcCount >= maxEvals) break;
+      const fhi = F(hi);
+      a = lo; fa = flo; b = hi; fb = fhi;
+      if (fhi === 0 || pos0(fhi) !== sinal0) achou = true;
+    }
+    if (!achou) {
+      if (funcCount >= maxEvals) {
+        return { x: x0, fval: F(x0), exitflag: 0, output: { iterations: 0, funcCount, interval: [a, b], message: 'MaxFunEvals atingido na busca de intervalo' } };
+      }
+      throw new RangeError(`fzero: não foi possível achar um intervalo com mudança de sinal em torno de x0 = ${x0}`);
+    }
+  } else if (Array.isArray(x0) && x0.length === 2) {
+    [a, b] = x0;
+    if (typeof a !== 'number' || typeof b !== 'number') throw new TypeError('x0 deve ser um número ou um intervalo [a, b] de números');
+    if (!Number.isFinite(a) || !Number.isFinite(b)) throw new RangeError('os extremos do intervalo devem ser finitos');
+    fa = F(a, 'a'); fb = F(b, 'b');
+    if (!Number.isFinite(fa) || !Number.isFinite(fb)) throw new RangeError(`f deve ser finita nos extremos do intervalo (f(a) = ${fa}, f(b) = ${fb})`);
+    if (fa !== 0 && fb !== 0 && pos0(fa) === pos0(fb)) {
+      throw new RangeError(`f(a) e f(b) devem ter sinais opostos (f(${a}) = ${fa}, f(${b}) = ${fb})`);
+    }
+  } else {
+    throw new TypeError('x0 deve ser um número ou um intervalo [a, b] de números');
+  }
+
+  const fMax0 = Math.max(Math.abs(fa), Math.abs(fb));
+  const intervalo = [Math.min(a, b), Math.max(a, b)];
+
+  // Brent–Dekker (porte do algoritmo do fzero do MATLAB)
+  let c = a, fc = fa, d = b - a, e = d;
+  let iter = 0;
+  let esgotou = false;
+  while (fb !== 0 && a !== b) {
+    if (pos0(fb) === pos0(fc) && fc !== 0) { c = a; fc = fa; d = b - a; e = d; }
+    if (Math.abs(fc) < Math.abs(fb)) { a = b; b = c; c = a; fa = fb; fb = fc; fc = fa; }
+    if (iter >= maxIter || funcCount >= maxEvals) { esgotou = true; break; }
+    const m = 0.5 * (c - b);
+    const toler = 2 * tol * Math.max(Math.abs(b), 1);
+    if (Math.abs(m) <= toler || fb === 0) break;
+    if (Math.abs(e) < toler || Math.abs(fa) <= Math.abs(fb)) { d = m; e = m; }
+    else {
+      const s = fb / fa;
+      let p, q;
+      if (a === c) { p = 2 * m * s; q = 1 - s; }
+      else {
+        q = fa / fc;
+        const r = fb / fc;
+        p = s * (2 * m * q * (q - r) - (b - a) * (r - 1));
+        q = (q - 1) * (r - 1) * (s - 1);
+      }
+      if (p > 0) q = -q; else p = -p;
+      if (2 * p < 3 * m * q - Math.abs(toler * q) && p < Math.abs(0.5 * e * q)) { e = d; d = p / q; }
+      else { d = m; e = m; }
+    }
+    a = b; fa = fb;
+    if (Math.abs(d) > toler) b += d;
+    else if (b > c) b -= toler;
+    else b += toler;
+    fb = F(b);
+    iter++;
+    if (Number.isNaN(fb)) throw new RangeError(`f(${b}) é NaN`);
+  }
+
+  let exitflag = 1;
+  let message = 'Raiz localizada: intervalo de incerteza dentro de TolX';
+  if (esgotou) {
+    exitflag = 0;
+    message = iter >= maxIter ? 'MaxIter atingido antes de convergir' : 'MaxFunEvals atingido antes de convergir';
+  } else if (Math.abs(fb) > fMax0) {
+    exitflag = -5;
+    message = 'Convergiu para um ponto onde |f| é maior que nos extremos do intervalo inicial: provável descontinuidade (polo), não raiz';
+  }
+  return { x: b, fval: fb, exitflag, output: { iterations: iter, funcCount, interval: intervalo, message } };
+}

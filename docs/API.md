@@ -150,6 +150,71 @@ como `[re, im]`, frequências em rad/s, fase em graus. Entradas inválidas lanç
 TypeError/RangeError; os kernels portados não validam resultados intermediários
 (podem produzir Infinity/NaN como o original).
 
+### Fatorações, EDOs, ajuste polinomial e janelas
+
+Funções acrescentadas para o Script Studio ([SCRIPT-STUDIO.md](SCRIPT-STUDIO.md), seção 7.1) e
+disponíveis para qualquer aplicativo. Seguem as convenções acima, validam as entradas
+(TypeError/RangeError) e não modificam os argumentos. Testes em `tests/core-matrix-factorizations`,
+`core-ode`, `core-fzero`, `core-polyfit` e `core-signal-windows` (`.test.mjs`).
+
+**matrix.js**
+
+- `qr(A, {econ, pivot})` → `{Q, R}`. Householder; `Q` m×m e `R` m×n (com `econ`: m×k e k×n,
+  k = min(m,n)). Com `pivot`, troca a coluna restante de maior norma e devolve também `perm`
+  (base 0, `A[:,perm] = Q·R`) e `P` (`A·P = Q·R`). O sinal da diagonal de `R` não é único.
+- `lu(A)` → `{L, U, P, perm}` com `P·A = L·U` (pivotamento parcial; aceita retangular).
+  Matriz singular não é erro: `U` fica com pivô nulo.
+- `chol(A)` → `R` com `Rᵀ·R = A`. Exige A simétrica (tolerância 1e-12·máx|aᵢⱼ|); se não for
+  definida positiva, lança erro com `code = 'NOT_POSITIVE_DEFINITE'` e `p` (base 1).
+  `cholp(A)` → `{R, p}` não lança, como `[R,p] = chol(A)`.
+- `cond(A, p = 2)`: p = 2 por `svdvals` (aceita retangular; `Infinity` se singular; `cond([]) = 0`);
+  p = 1, `Infinity` ou `'fro'` exigem A quadrada.
+- `lstsq(A, B, {tol})` → `{X, rank, rankDeficient, perm}`: mínimos quadrados por QR com pivô;
+  solução básica, não a de norma mínima (essa é `pinv(A)·B`). Posto = nº de |Rᵢᵢ| > max(m,n)·ε·|R₀₀|.
+- `mldivide(A, B, {details, tol})`: operador `\` do MATLAB. Quadrada usa `msolve` (singular lança
+  `SINGULAR_MATRIX`, onde o MATLAB só avisa); retangular usa `lstsq`. Com `details`, devolve
+  `{X, rank, rankDeficient, method}`.
+
+**ode.js** (novo)
+
+- `ode45(f, tspan, y0, opts)` (Dormand–Prince 5(4)) e `ode23` (Bogacki–Shampine 3(2)) →
+  `{t, y, stats}`, com `y[k]` o estado em `t[k]` e `stats = {nsteps, nfailed, nfevals}`.
+  `f(t, y)` recebe uma cópia de `y` (`number[]`) e devolve `number[]` (com `y0` escalar, pode
+  devolver número). `tspan = [t0, tf]` devolve os passos refinados pela interpolação contínua
+  (`Refine`: 4 no ode45, 1 no ode23); com 3 ou mais instantes, devolve exatamente neles;
+  `tf < t0` integra para trás. Opções no estilo `odeset`: `RelTol` 1e-3, `AbsTol` 1e-6 (escalar
+  ou vetor), `InitialStep` (automático como no MATLAB), `MaxStep` (|tf − t0|/10), `MaxSteps` (1e6).
+  Passo menor que 16·eps(t) lança erro com o instante. A tolerância controla o erro local; o
+  global pode excedê-la. **Limitações:** sem `Events` (lança RangeError), `Mass`, `Jacobian`,
+  `OutputFcn`; métodos explícitos (problemas rígidos terminam, com passo limitado pela
+  estabilidade); a interpolação do ode23 é Hermite cúbica, não a `ntrp23` do MATLAB.
+
+**solvers.js**
+
+- `fzero(f, x0, opts)` → `{x, fval, exitflag, output}`: raiz escalar por Brent–Dekker. `x0` número
+  (busca de intervalo com mudança de sinal em torno de `x0`, como o MATLAB) ou `[a, b]` com
+  `f(a)·f(b) ≤ 0` (senão RangeError). Opções `TolX` (eps), `MaxIter` (1000), `MaxFunEvals`.
+  `exitflag`: 1 raiz; 0 limite atingido; −5 descontinuidade (por exemplo `tan` em `[1, 2]`).
+  Raízes sem mudança de sinal (multiplicidade par) não são encontradas.
+
+**polynomial.js**
+
+- `polyfit(x, y, n, {normalize})` → `{p, S, mu}`, como `[p,S,mu] = polyfit(x,y,n)`: mínimos
+  quadrados de grau `n` pela Vandermonde resolvida por QR (sem equações normais), coeficientes
+  em ordem decrescente. `S = {R, df, normr, rcond, illConditioned}`; `illConditioned` é `true`
+  quando `rcond < eps` (aviso, não erro). Com `normalize`, ajusta em `(x − mu[0])/mu[1]`, com
+  `mu = [média, desvio]`. Lança RangeError se `n ≥` número de valores distintos de `x`.
+
+**signal.js**
+
+- `fftshift(x)` e `ifftshift(x)`: vetores reais ou `{re, im}`; deslocamento circular de
+  `floor(N/2)` e `ceil(N/2)`, como no MATLAB.
+- `hamming(L, flag)`, `hann(L, flag)`, `blackman(L, flag)`: fórmulas do MATLAB, `flag`
+  `'symmetric'` (padrão) ou `'periodic'` (a simétrica de L+1 sem a última amostra). `L = 0` → `[]`,
+  `L = 1` → `[1]`; `L` não inteiro lança RangeError (o MATLAB arredonda com aviso). `hann`
+  simétrica tem zeros exatos nas extremidades (diferente de `hanning`); as extremidades de
+  `blackman` ficam em ruído de arredondamento (≈ −1,4·10⁻¹⁷). Simetria exata por espelhamento.
+
 ## LT: simulators/power-systems/transmission-line/model.js
 
 `defaults`, `presets`, `bounds`, `validate(input)`, `lineParameters(input)` e

@@ -1,0 +1,366 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "y",
+          "loc": {"line":1,"col":1,"endLine":1,"endCol":2,"start":0,"end":1}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "filtro",
+          "loc": {"line":1,"col":5,"endLine":1,"endCol":11,"start":4,"end":10}
+        },
+        "args": [
+          {
+            "type": "Matrix",
+            "rows": [
+              [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":1,"col":13,"endLine":1,"endCol":14,"start":12,"end":13}
+                },
+                {
+                  "type": "Number",
+                  "value": 2,
+                  "raw": "2",
+                  "imaginary": false,
+                  "loc": {"line":1,"col":15,"endLine":1,"endCol":16,"start":14,"end":15}
+                },
+                {
+                  "type": "Number",
+                  "value": 3,
+                  "raw": "3",
+                  "imaginary": false,
+                  "loc": {"line":1,"col":17,"endLine":1,"endCol":18,"start":16,"end":17}
+                }
+              ]
+            ],
+            "loc": {"line":1,"col":12,"endLine":1,"endCol":19,"start":11,"end":18}
+          },
+          {
+            "type": "Number",
+            "value": 2,
+            "raw": "2",
+            "imaginary": false,
+            "loc": {"line":1,"col":21,"endLine":1,"endCol":22,"start":20,"end":21}
+          }
+        ],
+        "loc": {"line":1,"col":5,"endLine":1,"endCol":23,"start":4,"end":22}
+      },
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":24,"start":0,"end":23}
+    }
+  ],
+  "functions": [
+    {
+      "type": "Function",
+      "name": "filtro",
+      "outputs": [
+        {
+          "type": "Param",
+          "name": "y",
+          "ignored": false,
+          "loc": {"line":3,"col":10,"endLine":3,"endCol":11,"start":34,"end":35}
+        }
+      ],
+      "params": [
+        {
+          "type": "Param",
+          "name": "x",
+          "ignored": false,
+          "loc": {"line":3,"col":21,"endLine":3,"endCol":22,"start":45,"end":46}
+        },
+        {
+          "type": "Param",
+          "name": "a",
+          "ignored": false,
+          "loc": {"line":3,"col":24,"endLine":3,"endCol":25,"start":48,"end":49}
+        },
+        {
+          "type": "Param",
+          "name": "n",
+          "ignored": false,
+          "loc": {"line":3,"col":27,"endLine":3,"endCol":28,"start":51,"end":52}
+        }
+      ],
+      "argumentBlocks": [
+        {
+          "type": "ArgumentsBlock",
+          "attributes": [],
+          "entries": [
+            {
+              "type": "ArgumentDecl",
+              "name": "x",
+              "dims": [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":5,"col":12,"endLine":5,"endCol":13,"start":79,"end":80}
+                },
+                {
+                  "type": "Colon",
+                  "loc": {"line":5,"col":14,"endLine":5,"endCol":15,"start":81,"end":82}
+                }
+              ],
+              "className": "double",
+              "validators": null,
+              "defaultValue": null,
+              "loc": {"line":5,"col":9,"endLine":5,"endCol":23,"start":76,"end":90}
+            },
+            {
+              "type": "ArgumentDecl",
+              "name": "a",
+              "dims": [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":6,"col":12,"endLine":6,"endCol":13,"start":102,"end":103}
+                },
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":6,"col":14,"endLine":6,"endCol":15,"start":104,"end":105}
+                }
+              ],
+              "className": "double",
+              "validators": [
+                {
+                  "type": "Ident",
+                  "name": "mustBeReal",
+                  "loc": {"line":6,"col":25,"endLine":6,"endCol":35,"start":115,"end":125}
+                }
+              ],
+              "defaultValue": null,
+              "loc": {"line":6,"col":9,"endLine":6,"endCol":36,"start":99,"end":126}
+            },
+            {
+              "type": "ArgumentDecl",
+              "name": "n",
+              "dims": [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":7,"col":12,"endLine":7,"endCol":13,"start":138,"end":139}
+                },
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":7,"col":14,"endLine":7,"endCol":15,"start":140,"end":141}
+                }
+              ],
+              "className": "double",
+              "validators": [
+                {
+                  "type": "Ident",
+                  "name": "mustBeInteger",
+                  "loc": {"line":7,"col":25,"endLine":7,"endCol":38,"start":151,"end":164}
+                },
+                {
+                  "type": "Ident",
+                  "name": "mustBePositive",
+                  "loc": {"line":7,"col":40,"endLine":7,"endCol":54,"start":166,"end":180}
+                }
+              ],
+              "defaultValue": {
+                "type": "Number",
+                "value": 10,
+                "raw": "10",
+                "imaginary": false,
+                "loc": {"line":7,"col":58,"endLine":7,"endCol":60,"start":184,"end":186}
+              },
+              "loc": {"line":7,"col":9,"endLine":7,"endCol":60,"start":135,"end":186}
+            }
+          ],
+          "loc": {"line":4,"col":5,"endLine":8,"endCol":8,"start":58,"end":194}
+        }
+      ],
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "y",
+              "loc": {"line":9,"col":5,"endLine":9,"endCol":6,"start":199,"end":200}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "+",
+            "left": {
+              "type": "Binary",
+              "operator": "*",
+              "left": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":9,"col":9,"endLine":9,"endCol":10,"start":203,"end":204}
+              },
+              "right": {
+                "type": "Ident",
+                "name": "x",
+                "loc": {"line":9,"col":13,"endLine":9,"endCol":14,"start":207,"end":208}
+              },
+              "loc": {"line":9,"col":9,"endLine":9,"endCol":14,"start":203,"end":208}
+            },
+            "right": {
+              "type": "Ident",
+              "name": "n",
+              "loc": {"line":9,"col":17,"endLine":9,"endCol":18,"start":211,"end":212}
+            },
+            "loc": {"line":9,"col":9,"endLine":9,"endCol":18,"start":203,"end":212}
+          },
+          "display": false,
+          "loc": {"line":9,"col":5,"endLine":9,"endCol":19,"start":199,"end":213}
+        }
+      ],
+      "loc": {"line":3,"col":1,"endLine":10,"endCol":4,"start":25,"end":217}
+    },
+    {
+      "type": "Function",
+      "name": "outra",
+      "outputs": [
+        {
+          "type": "Param",
+          "name": "r",
+          "ignored": false,
+          "loc": {"line":12,"col":10,"endLine":12,"endCol":11,"start":228,"end":229}
+        }
+      ],
+      "params": [
+        {
+          "type": "Param",
+          "name": "v",
+          "ignored": false,
+          "loc": {"line":12,"col":20,"endLine":12,"endCol":21,"start":238,"end":239}
+        },
+        {
+          "type": "Param",
+          "name": "opts",
+          "ignored": false,
+          "loc": {"line":12,"col":23,"endLine":12,"endCol":27,"start":241,"end":245}
+        }
+      ],
+      "argumentBlocks": [
+        {
+          "type": "ArgumentsBlock",
+          "attributes": [],
+          "entries": [
+            {
+              "type": "ArgumentDecl",
+              "name": "v",
+              "dims": null,
+              "className": null,
+              "validators": null,
+              "defaultValue": null,
+              "loc": {"line":14,"col":9,"endLine":14,"endCol":10,"start":269,"end":270}
+            },
+            {
+              "type": "ArgumentDecl",
+              "name": "opts.nome",
+              "dims": null,
+              "className": "char",
+              "validators": null,
+              "defaultValue": {
+                "type": "String",
+                "value": "padrao",
+                "quote": "'",
+                "loc": {"line":15,"col":26,"endLine":15,"endCol":34,"start":296,"end":304}
+              },
+              "loc": {"line":15,"col":9,"endLine":15,"endCol":34,"start":279,"end":304}
+            },
+            {
+              "type": "ArgumentDecl",
+              "name": "opts.fator",
+              "dims": [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":16,"col":21,"endLine":16,"endCol":22,"start":325,"end":326}
+                },
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":16,"col":23,"endLine":16,"endCol":24,"start":327,"end":328}
+                }
+              ],
+              "className": null,
+              "validators": null,
+              "defaultValue": {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":16,"col":28,"endLine":16,"endCol":29,"start":332,"end":333}
+              },
+              "loc": {"line":16,"col":9,"endLine":16,"endCol":29,"start":313,"end":333}
+            }
+          ],
+          "loc": {"line":13,"col":5,"endLine":17,"endCol":8,"start":251,"end":341}
+        }
+      ],
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "r",
+              "loc": {"line":18,"col":5,"endLine":18,"endCol":6,"start":346,"end":347}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "*",
+            "left": {
+              "type": "Ident",
+              "name": "v",
+              "loc": {"line":18,"col":9,"endLine":18,"endCol":10,"start":350,"end":351}
+            },
+            "right": {
+              "type": "Field",
+              "object": {
+                "type": "Ident",
+                "name": "opts",
+                "loc": {"line":18,"col":13,"endLine":18,"endCol":17,"start":354,"end":358}
+              },
+              "name": "fator",
+              "loc": {"line":18,"col":13,"endLine":18,"endCol":23,"start":354,"end":364}
+            },
+            "loc": {"line":18,"col":9,"endLine":18,"endCol":23,"start":350,"end":364}
+          },
+          "display": false,
+          "loc": {"line":18,"col":5,"endLine":18,"endCol":24,"start":346,"end":365}
+        }
+      ],
+      "loc": {"line":12,"col":1,"endLine":19,"endCol":4,"start":219,"end":369}
+    }
+  ],
+  "loc": {"line":1,"col":1,"endLine":20,"endCol":1,"start":0,"end":370}
+}

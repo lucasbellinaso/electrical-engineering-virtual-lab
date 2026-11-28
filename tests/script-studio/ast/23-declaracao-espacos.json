@@ -1,0 +1,109 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "x",
+          "init": null,
+          "loc": {"line":1,"col":6,"endLine":1,"endCol":7,"start":5,"end":6}
+        },
+        {
+          "type": "Declarator",
+          "name": "y",
+          "init": null,
+          "loc": {"line":1,"col":8,"endLine":1,"endCol":9,"start":7,"end":8}
+        },
+        {
+          "type": "Declarator",
+          "name": "z",
+          "init": null,
+          "loc": {"line":1,"col":10,"endLine":1,"endCol":11,"start":9,"end":10}
+        }
+      ],
+      "display": true,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":11,"start":0,"end":10}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "int",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "i",
+          "init": null,
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":15,"end":16}
+        },
+        {
+          "type": "Declarator",
+          "name": "j",
+          "init": null,
+          "loc": {"line":2,"col":7,"endLine":2,"endCol":8,"start":17,"end":18}
+        },
+        {
+          "type": "Declarator",
+          "name": "k",
+          "init": null,
+          "loc": {"line":2,"col":9,"endLine":2,"endCol":10,"start":19,"end":20}
+        }
+      ],
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":11,"start":11,"end":21}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "bool",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "a",
+          "init": null,
+          "loc": {"line":3,"col":6,"endLine":3,"endCol":7,"start":27,"end":28}
+        },
+        {
+          "type": "Declarator",
+          "name": "b",
+          "init": null,
+          "loc": {"line":3,"col":8,"endLine":3,"endCol":9,"start":29,"end":30}
+        }
+      ],
+      "display": true,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":9,"start":22,"end":30}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "char",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "s",
+          "init": null,
+          "loc": {"line":4,"col":6,"endLine":4,"endCol":7,"start":36,"end":37}
+        },
+        {
+          "type": "Declarator",
+          "name": "t",
+          "init": null,
+          "loc": {"line":4,"col":8,"endLine":4,"endCol":9,"start":38,"end":39}
+        },
+        {
+          "type": "Declarator",
+          "name": "u",
+          "init": null,
+          "loc": {"line":4,"col":10,"endLine":4,"endCol":11,"start":40,"end":41}
+        }
+      ],
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":12,"start":31,"end":42}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":5,"endCol":1,"start":0,"end":43}
+}

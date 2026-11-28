@@ -1,0 +1,169 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Switch",
+      "subject": {
+        "type": "Ident",
+        "name": "n",
+        "loc": {"line":1,"col":8,"endLine":1,"endCol":9,"start":7,"end":8}
+      },
+      "cases": [
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":2,"col":11,"endLine":2,"endCol":12,"start":19,"end":20}
+            },
+            {
+              "type": "Number",
+              "value": 2,
+              "raw": "2",
+              "imaginary": false,
+              "loc": {"line":2,"col":14,"endLine":2,"endCol":15,"start":22,"end":23}
+            }
+          ],
+          "cell": true,
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "Ident",
+                  "name": "t",
+                  "loc": {"line":3,"col":9,"endLine":3,"endCol":10,"start":33,"end":34}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "String",
+                "value": "baixo",
+                "quote": "'",
+                "loc": {"line":3,"col":13,"endLine":3,"endCol":20,"start":37,"end":44}
+              },
+              "display": false,
+              "loc": {"line":3,"col":9,"endLine":3,"endCol":21,"start":33,"end":45}
+            }
+          ],
+          "loc": {"line":2,"col":5,"endLine":3,"endCol":21,"start":13,"end":45}
+        },
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "Number",
+              "value": 3,
+              "raw": "3",
+              "imaginary": false,
+              "loc": {"line":4,"col":11,"endLine":4,"endCol":12,"start":56,"end":57}
+            },
+            {
+              "type": "Number",
+              "value": 4,
+              "raw": "4",
+              "imaginary": false,
+              "loc": {"line":4,"col":13,"endLine":4,"endCol":14,"start":58,"end":59}
+            },
+            {
+              "type": "Number",
+              "value": 5,
+              "raw": "5",
+              "imaginary": false,
+              "loc": {"line":4,"col":15,"endLine":4,"endCol":16,"start":60,"end":61}
+            }
+          ],
+          "cell": true,
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "Ident",
+                  "name": "t",
+                  "loc": {"line":5,"col":9,"endLine":5,"endCol":10,"start":71,"end":72}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "String",
+                "value": "medio",
+                "quote": "'",
+                "loc": {"line":5,"col":13,"endLine":5,"endCol":20,"start":75,"end":82}
+              },
+              "display": false,
+              "loc": {"line":5,"col":9,"endLine":5,"endCol":21,"start":71,"end":83}
+            }
+          ],
+          "loc": {"line":4,"col":5,"endLine":5,"endCol":21,"start":50,"end":83}
+        },
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "Number",
+              "value": 6,
+              "raw": "6",
+              "imaginary": false,
+              "loc": {"line":6,"col":10,"endLine":6,"endCol":11,"start":93,"end":94}
+            }
+          ],
+          "cell": false,
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "Ident",
+                  "name": "t",
+                  "loc": {"line":7,"col":9,"endLine":7,"endCol":10,"start":103,"end":104}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "String",
+                "value": "alto",
+                "quote": "'",
+                "loc": {"line":7,"col":13,"endLine":7,"endCol":19,"start":107,"end":113}
+              },
+              "display": false,
+              "loc": {"line":7,"col":9,"endLine":7,"endCol":20,"start":103,"end":114}
+            }
+          ],
+          "loc": {"line":6,"col":5,"endLine":7,"endCol":20,"start":88,"end":114}
+        }
+      ],
+      "otherwise": {
+        "type": "Otherwise",
+        "body": [
+          {
+            "type": "Assign",
+            "targets": [
+              {
+                "type": "Ident",
+                "name": "t",
+                "loc": {"line":9,"col":9,"endLine":9,"endCol":10,"start":137,"end":138}
+              }
+            ],
+            "bracket": false,
+            "value": {
+              "type": "String",
+              "value": "?",
+              "quote": "'",
+              "loc": {"line":9,"col":13,"endLine":9,"endCol":16,"start":141,"end":144}
+            },
+            "display": false,
+            "loc": {"line":9,"col":9,"endLine":9,"endCol":17,"start":137,"end":145}
+          }
+        ],
+        "loc": {"line":8,"col":5,"endLine":9,"endCol":17,"start":119,"end":145}
+      },
+      "loc": {"line":1,"col":1,"endLine":10,"endCol":4,"start":0,"end":149}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":11,"endCol":1,"start":0,"end":150}
+}

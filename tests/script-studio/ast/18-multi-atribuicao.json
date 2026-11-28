@@ -1,0 +1,207 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "q",
+          "loc": {"line":1,"col":2,"endLine":1,"endCol":3,"start":1,"end":2}
+        },
+        {
+          "type": "Ident",
+          "name": "r",
+          "loc": {"line":1,"col":5,"endLine":1,"endCol":6,"start":4,"end":5}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "deflate",
+          "loc": {"line":1,"col":10,"endLine":1,"endCol":17,"start":9,"end":16}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "p",
+            "loc": {"line":1,"col":18,"endLine":1,"endCol":19,"start":17,"end":18}
+          },
+          {
+            "type": "Ident",
+            "name": "d",
+            "loc": {"line":1,"col":21,"endLine":1,"endCol":22,"start":20,"end":21}
+          }
+        ],
+        "loc": {"line":1,"col":10,"endLine":1,"endCol":23,"start":9,"end":22}
+      },
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":24,"start":0,"end":23}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":2,"col":2,"endLine":2,"endCol":3,"start":25,"end":26}
+        },
+        {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":28,"end":29}
+        },
+        {
+          "type": "Ident",
+          "name": "c",
+          "loc": {"line":2,"col":8,"endLine":2,"endCol":9,"start":31,"end":32}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "size",
+          "loc": {"line":2,"col":13,"endLine":2,"endCol":17,"start":36,"end":40}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "X",
+            "loc": {"line":2,"col":18,"endLine":2,"endCol":19,"start":41,"end":42}
+          }
+        ],
+        "loc": {"line":2,"col":13,"endLine":2,"endCol":20,"start":36,"end":43}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":21,"start":24,"end":44}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m",
+          "loc": {"line":3,"col":2,"endLine":3,"endCol":3,"start":46,"end":47}
+        },
+        {
+          "type": "Ident",
+          "name": "i",
+          "loc": {"line":3,"col":5,"endLine":3,"endCol":6,"start":49,"end":50}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "max",
+          "loc": {"line":3,"col":10,"endLine":3,"endCol":13,"start":54,"end":57}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "v",
+            "loc": {"line":3,"col":14,"endLine":3,"endCol":15,"start":58,"end":59}
+          }
+        ],
+        "loc": {"line":3,"col":10,"endLine":3,"endCol":16,"start":54,"end":60}
+      },
+      "display": true,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":16,"start":45,"end":60}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "CallOrIndex",
+          "callee": {
+            "type": "Ident",
+            "name": "x",
+            "loc": {"line":4,"col":2,"endLine":4,"endCol":3,"start":62,"end":63}
+          },
+          "args": [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":4,"col":4,"endLine":4,"endCol":5,"start":64,"end":65}
+            }
+          ],
+          "loc": {"line":4,"col":2,"endLine":4,"endCol":6,"start":62,"end":66}
+        },
+        {
+          "type": "Field",
+          "object": {
+            "type": "Ident",
+            "name": "y",
+            "loc": {"line":4,"col":8,"endLine":4,"endCol":9,"start":68,"end":69}
+          },
+          "name": "z",
+          "loc": {"line":4,"col":8,"endLine":4,"endCol":11,"start":68,"end":71}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "f",
+          "loc": {"line":4,"col":15,"endLine":4,"endCol":16,"start":75,"end":76}
+        },
+        "args": [
+          {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":4,"col":17,"endLine":4,"endCol":18,"start":77,"end":78}
+          }
+        ],
+        "loc": {"line":4,"col":15,"endLine":4,"endCol":19,"start":75,"end":79}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":20,"start":61,"end":80}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":5,"col":2,"endLine":5,"endCol":3,"start":82,"end":83}
+        },
+        {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":5,"col":4,"endLine":5,"endCol":5,"start":84,"end":85}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "size",
+          "loc": {"line":5,"col":9,"endLine":5,"endCol":13,"start":89,"end":93}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "X",
+            "loc": {"line":5,"col":14,"endLine":5,"endCol":15,"start":94,"end":95}
+          }
+        ],
+        "loc": {"line":5,"col":9,"endLine":5,"endCol":16,"start":89,"end":96}
+      },
+      "display": false,
+      "loc": {"line":5,"col":1,"endLine":5,"endCol":17,"start":81,"end":97}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":6,"endCol":1,"start":0,"end":98}
+}

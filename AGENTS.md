@@ -36,8 +36,11 @@
   tamanho, manutenção e confiabilidade de bibliotecas antes de incorporá-las.
 - Preserve PWA, módulos offline e cache sob demanda. Atualize VERSION ao mudar
   recursos publicados. Não precacheie todos os aplicativos.
-- Nunca use eval ou Function para executar código matemático do usuário.
-  O interpretador MATLAB/Octave é planejamento, não licença para executar JavaScript.
+- Nunca use eval ou Function para executar código do usuário. O Script Studio executa
+  somente JavaScript emitido pelo seu tradutor a partir de AST validada, carregado num
+  Worker por Blob URL, sob CSP sem unsafe-eval, conforme
+  [docs/SCRIPT-STUDIO.md](docs/SCRIPT-STUDIO.md) (seção 3). Nenhum outro aplicativo
+  executa JavaScript gerado.
 - Não envie arquivos pessoais automaticamente ao GitHub. Acesso a pastas é opcional;
   formatos de projeto e armazenamento devem seguir as decisões da arquitetura.
 

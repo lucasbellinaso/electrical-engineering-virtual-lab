@@ -1,0 +1,117 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Section",
+      "title": "INITIAL_SCRIPT",
+      "raw": "%% INITIAL_SCRIPT",
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":18,"start":0,"end":17}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":2,"col":1,"endLine":2,"endCol":2,"start":18,"end":19}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 1,
+        "raw": "1",
+        "imaginary": false,
+        "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":22,"end":23}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":7,"start":18,"end":24}
+    },
+    {
+      "type": "Section",
+      "title": "NETLIST",
+      "raw": "%% NETLIST",
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":11,"start":25,"end":35}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":4,"col":1,"endLine":4,"endCol":2,"start":36,"end":37}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 2,
+        "raw": "2",
+        "imaginary": false,
+        "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":40,"end":41}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":7,"start":36,"end":42}
+    },
+    {
+      "type": "Section",
+      "title": "Parte 2: análise",
+      "raw": "%% Parte 2: análise",
+      "loc": {"line":5,"col":1,"endLine":5,"endCol":20,"start":43,"end":62}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "c",
+          "loc": {"line":6,"col":1,"endLine":6,"endCol":2,"start":63,"end":64}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Binary",
+        "operator": "+",
+        "left": {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":6,"col":5,"endLine":6,"endCol":6,"start":67,"end":68}
+        },
+        "right": {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":6,"col":9,"endLine":6,"endCol":10,"start":71,"end":72}
+        },
+        "loc": {"line":6,"col":5,"endLine":6,"endCol":10,"start":67,"end":72}
+      },
+      "display": true,
+      "loc": {"line":6,"col":1,"endLine":6,"endCol":10,"start":63,"end":72}
+    },
+    {
+      "type": "Section",
+      "title": "",
+      "raw": "%%",
+      "loc": {"line":7,"col":1,"endLine":7,"endCol":3,"start":73,"end":75}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "d",
+          "loc": {"line":8,"col":1,"endLine":8,"endCol":2,"start":76,"end":77}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Ident",
+        "name": "c",
+        "loc": {"line":8,"col":5,"endLine":8,"endCol":6,"start":80,"end":81}
+      },
+      "display": false,
+      "loc": {"line":8,"col":1,"endLine":8,"endCol":7,"start":76,"end":82}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":9,"endCol":1,"start":0,"end":83}
+}

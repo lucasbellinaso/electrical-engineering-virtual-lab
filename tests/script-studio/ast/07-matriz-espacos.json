@@ -1,0 +1,610 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":1,"col":1,"endLine":1,"endCol":2,"start":0,"end":1}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 1,
+        "raw": "1",
+        "imaginary": false,
+        "loc": {"line":1,"col":5,"endLine":1,"endCol":6,"start":4,"end":5}
+      },
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":7,"start":0,"end":6}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":1,"col":8,"endLine":1,"endCol":9,"start":7,"end":8}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 2,
+        "raw": "2",
+        "imaginary": false,
+        "loc": {"line":1,"col":12,"endLine":1,"endCol":13,"start":11,"end":12}
+      },
+      "display": false,
+      "loc": {"line":1,"col":8,"endLine":1,"endCol":14,"start":7,"end":13}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m1",
+          "loc": {"line":2,"col":1,"endLine":2,"endCol":3,"start":14,"end":16}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":2,"col":7,"endLine":2,"endCol":8,"start":20,"end":21}
+            },
+            {
+              "type": "Unary",
+              "operator": "-",
+              "operand": {
+                "type": "Number",
+                "value": 2,
+                "raw": "2",
+                "imaginary": false,
+                "loc": {"line":2,"col":10,"endLine":2,"endCol":11,"start":23,"end":24}
+              },
+              "loc": {"line":2,"col":9,"endLine":2,"endCol":11,"start":22,"end":24}
+            }
+          ]
+        ],
+        "loc": {"line":2,"col":6,"endLine":2,"endCol":12,"start":19,"end":25}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":13,"start":14,"end":26}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m2",
+          "loc": {"line":3,"col":1,"endLine":3,"endCol":3,"start":27,"end":29}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Binary",
+              "operator": "-",
+              "left": {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":3,"col":7,"endLine":3,"endCol":8,"start":33,"end":34}
+              },
+              "right": {
+                "type": "Number",
+                "value": 2,
+                "raw": "2",
+                "imaginary": false,
+                "loc": {"line":3,"col":11,"endLine":3,"endCol":12,"start":37,"end":38}
+              },
+              "loc": {"line":3,"col":7,"endLine":3,"endCol":12,"start":33,"end":38}
+            }
+          ]
+        ],
+        "loc": {"line":3,"col":6,"endLine":3,"endCol":13,"start":32,"end":39}
+      },
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":14,"start":27,"end":40}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m3",
+          "loc": {"line":4,"col":1,"endLine":4,"endCol":3,"start":41,"end":43}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Ident",
+              "name": "a",
+              "loc": {"line":4,"col":7,"endLine":4,"endCol":8,"start":47,"end":48}
+            },
+            {
+              "type": "Unary",
+              "operator": "-",
+              "operand": {
+                "type": "Ident",
+                "name": "b",
+                "loc": {"line":4,"col":10,"endLine":4,"endCol":11,"start":50,"end":51}
+              },
+              "loc": {"line":4,"col":9,"endLine":4,"endCol":11,"start":49,"end":51}
+            }
+          ]
+        ],
+        "loc": {"line":4,"col":6,"endLine":4,"endCol":12,"start":46,"end":52}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":13,"start":41,"end":53}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m4",
+          "loc": {"line":5,"col":1,"endLine":5,"endCol":3,"start":54,"end":56}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Binary",
+              "operator": "-",
+              "left": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":5,"col":7,"endLine":5,"endCol":8,"start":60,"end":61}
+              },
+              "right": {
+                "type": "Ident",
+                "name": "b",
+                "loc": {"line":5,"col":11,"endLine":5,"endCol":12,"start":64,"end":65}
+              },
+              "loc": {"line":5,"col":7,"endLine":5,"endCol":12,"start":60,"end":65}
+            }
+          ]
+        ],
+        "loc": {"line":5,"col":6,"endLine":5,"endCol":13,"start":59,"end":66}
+      },
+      "display": false,
+      "loc": {"line":5,"col":1,"endLine":5,"endCol":14,"start":54,"end":67}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m5",
+          "loc": {"line":6,"col":1,"endLine":6,"endCol":3,"start":68,"end":70}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Binary",
+              "operator": "-",
+              "left": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":6,"col":7,"endLine":6,"endCol":8,"start":74,"end":75}
+              },
+              "right": {
+                "type": "Ident",
+                "name": "b",
+                "loc": {"line":6,"col":11,"endLine":6,"endCol":12,"start":78,"end":79}
+              },
+              "loc": {"line":6,"col":7,"endLine":6,"endCol":12,"start":74,"end":79}
+            },
+            {
+              "type": "Unary",
+              "operator": "-",
+              "operand": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":6,"col":15,"endLine":6,"endCol":16,"start":82,"end":83}
+              },
+              "loc": {"line":6,"col":14,"endLine":6,"endCol":16,"start":81,"end":83}
+            }
+          ]
+        ],
+        "loc": {"line":6,"col":6,"endLine":6,"endCol":17,"start":73,"end":84}
+      },
+      "display": false,
+      "loc": {"line":6,"col":1,"endLine":6,"endCol":18,"start":68,"end":85}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m6",
+          "loc": {"line":7,"col":1,"endLine":7,"endCol":3,"start":86,"end":88}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":7,"col":7,"endLine":7,"endCol":8,"start":92,"end":93}
+            },
+            {
+              "type": "Unary",
+              "operator": "+",
+              "operand": {
+                "type": "Number",
+                "value": 2,
+                "raw": "2",
+                "imaginary": false,
+                "loc": {"line":7,"col":10,"endLine":7,"endCol":11,"start":95,"end":96}
+              },
+              "loc": {"line":7,"col":9,"endLine":7,"endCol":11,"start":94,"end":96}
+            }
+          ]
+        ],
+        "loc": {"line":7,"col":6,"endLine":7,"endCol":12,"start":91,"end":97}
+      },
+      "display": false,
+      "loc": {"line":7,"col":1,"endLine":7,"endCol":13,"start":86,"end":98}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m7",
+          "loc": {"line":8,"col":1,"endLine":8,"endCol":3,"start":99,"end":101}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Ident",
+              "name": "f",
+              "loc": {"line":8,"col":7,"endLine":8,"endCol":8,"start":105,"end":106}
+            },
+            {
+              "type": "Paren",
+              "expression": {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":8,"col":10,"endLine":8,"endCol":11,"start":108,"end":109}
+              },
+              "loc": {"line":8,"col":9,"endLine":8,"endCol":12,"start":107,"end":110}
+            }
+          ]
+        ],
+        "loc": {"line":8,"col":6,"endLine":8,"endCol":13,"start":104,"end":111}
+      },
+      "display": false,
+      "loc": {"line":8,"col":1,"endLine":8,"endCol":14,"start":99,"end":112}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m8",
+          "loc": {"line":9,"col":1,"endLine":9,"endCol":3,"start":113,"end":115}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "CallOrIndex",
+              "callee": {
+                "type": "Ident",
+                "name": "f",
+                "loc": {"line":9,"col":7,"endLine":9,"endCol":8,"start":119,"end":120}
+              },
+              "args": [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":9,"col":9,"endLine":9,"endCol":10,"start":121,"end":122}
+                }
+              ],
+              "loc": {"line":9,"col":7,"endLine":9,"endCol":11,"start":119,"end":123}
+            }
+          ]
+        ],
+        "loc": {"line":9,"col":6,"endLine":9,"endCol":12,"start":118,"end":124}
+      },
+      "display": false,
+      "loc": {"line":9,"col":1,"endLine":9,"endCol":13,"start":113,"end":125}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m9",
+          "loc": {"line":10,"col":1,"endLine":10,"endCol":3,"start":126,"end":128}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Postfix",
+              "operator": "'",
+              "operand": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":10,"col":7,"endLine":10,"endCol":8,"start":132,"end":133}
+              },
+              "loc": {"line":10,"col":7,"endLine":10,"endCol":9,"start":132,"end":134}
+            },
+            {
+              "type": "Postfix",
+              "operator": "'",
+              "operand": {
+                "type": "Ident",
+                "name": "b",
+                "loc": {"line":10,"col":10,"endLine":10,"endCol":11,"start":135,"end":136}
+              },
+              "loc": {"line":10,"col":10,"endLine":10,"endCol":12,"start":135,"end":137}
+            }
+          ]
+        ],
+        "loc": {"line":10,"col":6,"endLine":10,"endCol":13,"start":131,"end":138}
+      },
+      "display": false,
+      "loc": {"line":10,"col":1,"endLine":10,"endCol":14,"start":126,"end":139}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m10",
+          "loc": {"line":11,"col":1,"endLine":11,"endCol":4,"start":140,"end":143}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Ident",
+              "name": "a",
+              "loc": {"line":11,"col":8,"endLine":11,"endCol":9,"start":147,"end":148}
+            },
+            {
+              "type": "String",
+              "value": " b",
+              "quote": "'",
+              "loc": {"line":11,"col":10,"endLine":11,"endCol":14,"start":149,"end":153}
+            }
+          ]
+        ],
+        "loc": {"line":11,"col":7,"endLine":11,"endCol":15,"start":146,"end":154}
+      },
+      "display": false,
+      "loc": {"line":11,"col":1,"endLine":11,"endCol":16,"start":140,"end":155}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m11",
+          "loc": {"line":12,"col":1,"endLine":12,"endCol":4,"start":156,"end":159}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":12,"col":8,"endLine":12,"endCol":9,"start":163,"end":164}
+            },
+            {
+              "type": "Number",
+              "value": 2,
+              "raw": "2",
+              "imaginary": false,
+              "loc": {"line":12,"col":11,"endLine":12,"endCol":12,"start":166,"end":167}
+            },
+            {
+              "type": "Number",
+              "value": 3,
+              "raw": "3",
+              "imaginary": false,
+              "loc": {"line":12,"col":14,"endLine":12,"endCol":15,"start":169,"end":170}
+            }
+          ]
+        ],
+        "loc": {"line":12,"col":7,"endLine":12,"endCol":16,"start":162,"end":171}
+      },
+      "display": false,
+      "loc": {"line":12,"col":1,"endLine":12,"endCol":17,"start":156,"end":172}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m12",
+          "loc": {"line":13,"col":1,"endLine":13,"endCol":4,"start":173,"end":176}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "CallOrIndex",
+              "callee": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":13,"col":8,"endLine":13,"endCol":9,"start":180,"end":181}
+              },
+              "args": [
+                {
+                  "type": "Number",
+                  "value": 1,
+                  "raw": "1",
+                  "imaginary": false,
+                  "loc": {"line":13,"col":10,"endLine":13,"endCol":11,"start":182,"end":183}
+                }
+              ],
+              "loc": {"line":13,"col":8,"endLine":13,"endCol":12,"start":180,"end":184}
+            },
+            {
+              "type": "Unary",
+              "operator": "-",
+              "operand": {
+                "type": "CallOrIndex",
+                "callee": {
+                  "type": "Ident",
+                  "name": "a",
+                  "loc": {"line":13,"col":14,"endLine":13,"endCol":15,"start":186,"end":187}
+                },
+                "args": [
+                  {
+                    "type": "Number",
+                    "value": 2,
+                    "raw": "2",
+                    "imaginary": false,
+                    "loc": {"line":13,"col":16,"endLine":13,"endCol":17,"start":188,"end":189}
+                  }
+                ],
+                "loc": {"line":13,"col":14,"endLine":13,"endCol":18,"start":186,"end":190}
+              },
+              "loc": {"line":13,"col":13,"endLine":13,"endCol":18,"start":185,"end":190}
+            }
+          ]
+        ],
+        "loc": {"line":13,"col":7,"endLine":13,"endCol":19,"start":179,"end":191}
+      },
+      "display": false,
+      "loc": {"line":13,"col":1,"endLine":13,"endCol":20,"start":173,"end":192}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m13",
+          "loc": {"line":14,"col":1,"endLine":14,"endCol":4,"start":193,"end":196}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Unary",
+              "operator": "~",
+              "operand": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":14,"col":9,"endLine":14,"endCol":10,"start":201,"end":202}
+              },
+              "loc": {"line":14,"col":8,"endLine":14,"endCol":10,"start":200,"end":202}
+            },
+            {
+              "type": "Ident",
+              "name": "b",
+              "loc": {"line":14,"col":11,"endLine":14,"endCol":12,"start":203,"end":204}
+            }
+          ]
+        ],
+        "loc": {"line":14,"col":7,"endLine":14,"endCol":13,"start":199,"end":205}
+      },
+      "display": false,
+      "loc": {"line":14,"col":1,"endLine":14,"endCol":14,"start":193,"end":206}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "m14",
+          "loc": {"line":15,"col":1,"endLine":15,"endCol":4,"start":207,"end":210}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Binary",
+              "operator": "~=",
+              "left": {
+                "type": "Ident",
+                "name": "a",
+                "loc": {"line":15,"col":8,"endLine":15,"endCol":9,"start":214,"end":215}
+              },
+              "right": {
+                "type": "Ident",
+                "name": "b",
+                "loc": {"line":15,"col":13,"endLine":15,"endCol":14,"start":219,"end":220}
+              },
+              "loc": {"line":15,"col":8,"endLine":15,"endCol":14,"start":214,"end":220}
+            }
+          ]
+        ],
+        "loc": {"line":15,"col":7,"endLine":15,"endCol":15,"start":213,"end":221}
+      },
+      "display": false,
+      "loc": {"line":15,"col":1,"endLine":15,"endCol":16,"start":207,"end":222}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":16,"endCol":1,"start":0,"end":223}
+}

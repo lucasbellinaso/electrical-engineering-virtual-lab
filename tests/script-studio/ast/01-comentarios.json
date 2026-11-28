@@ -1,0 +1,75 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "x",
+          "loc": {"line":2,"col":1,"endLine":2,"endCol":2,"start":30,"end":31}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 1,
+        "raw": "1",
+        "imaginary": false,
+        "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":34,"end":35}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":7,"start":30,"end":36}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "y",
+          "loc": {"line":3,"col":1,"endLine":3,"endCol":2,"start":67,"end":68}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 2,
+        "raw": "2",
+        "imaginary": false,
+        "loc": {"line":3,"col":5,"endLine":3,"endCol":6,"start":71,"end":72}
+      },
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":7,"start":67,"end":73}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "z",
+          "loc": {"line":5,"col":1,"endLine":5,"endCol":2,"start":157,"end":158}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Binary",
+        "operator": "+",
+        "left": {
+          "type": "Ident",
+          "name": "x",
+          "loc": {"line":5,"col":5,"endLine":5,"endCol":6,"start":161,"end":162}
+        },
+        "right": {
+          "type": "Ident",
+          "name": "y",
+          "loc": {"line":5,"col":9,"endLine":5,"endCol":10,"start":165,"end":166}
+        },
+        "loc": {"line":5,"col":5,"endLine":5,"endCol":10,"start":161,"end":166}
+      },
+      "display": true,
+      "loc": {"line":5,"col":1,"endLine":5,"endCol":10,"start":157,"end":166}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":6,"endCol":1,"start":0,"end":177}
+}

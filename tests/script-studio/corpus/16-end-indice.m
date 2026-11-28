@@ -1,0 +1,9 @@
+a = A(end);
+b = A(end, end - 1);
+c = A(end/2);
+d = A(1:end-1);
+e = A(end, :);
+A(end+1) = 5;
+B(end+1, :) = [1 2 3];
+f = A(B(end));
+g = A([1 end]);

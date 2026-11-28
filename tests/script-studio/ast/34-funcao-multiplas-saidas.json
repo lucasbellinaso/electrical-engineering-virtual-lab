@@ -1,0 +1,213 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "s",
+          "loc": {"line":1,"col":2,"endLine":1,"endCol":3,"start":1,"end":2}
+        },
+        {
+          "type": "Ident",
+          "name": "p",
+          "loc": {"line":1,"col":5,"endLine":1,"endCol":6,"start":4,"end":5}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "somaprod",
+          "loc": {"line":1,"col":10,"endLine":1,"endCol":18,"start":9,"end":17}
+        },
+        "args": [
+          {
+            "type": "Number",
+            "value": 2,
+            "raw": "2",
+            "imaginary": false,
+            "loc": {"line":1,"col":19,"endLine":1,"endCol":20,"start":18,"end":19}
+          },
+          {
+            "type": "Number",
+            "value": 3,
+            "raw": "3",
+            "imaginary": false,
+            "loc": {"line":1,"col":22,"endLine":1,"endCol":23,"start":21,"end":22}
+          }
+        ],
+        "loc": {"line":1,"col":10,"endLine":1,"endCol":24,"start":9,"end":23}
+      },
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":25,"start":0,"end":24}
+    }
+  ],
+  "functions": [
+    {
+      "type": "Function",
+      "name": "somaprod",
+      "outputs": [
+        {
+          "type": "Param",
+          "name": "s",
+          "ignored": false,
+          "loc": {"line":3,"col":11,"endLine":3,"endCol":12,"start":36,"end":37}
+        },
+        {
+          "type": "Param",
+          "name": "p",
+          "ignored": false,
+          "loc": {"line":3,"col":14,"endLine":3,"endCol":15,"start":39,"end":40}
+        }
+      ],
+      "params": [
+        {
+          "type": "Param",
+          "name": "a",
+          "ignored": false,
+          "loc": {"line":3,"col":28,"endLine":3,"endCol":29,"start":53,"end":54}
+        },
+        {
+          "type": "Param",
+          "name": "b",
+          "ignored": false,
+          "loc": {"line":3,"col":31,"endLine":3,"endCol":32,"start":56,"end":57}
+        }
+      ],
+      "argumentBlocks": [],
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "s",
+              "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":63,"end":64}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "+",
+            "left": {
+              "type": "Ident",
+              "name": "a",
+              "loc": {"line":4,"col":9,"endLine":4,"endCol":10,"start":67,"end":68}
+            },
+            "right": {
+              "type": "Ident",
+              "name": "b",
+              "loc": {"line":4,"col":13,"endLine":4,"endCol":14,"start":71,"end":72}
+            },
+            "loc": {"line":4,"col":9,"endLine":4,"endCol":14,"start":67,"end":72}
+          },
+          "display": false,
+          "loc": {"line":4,"col":5,"endLine":4,"endCol":15,"start":63,"end":73}
+        },
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "p",
+              "loc": {"line":5,"col":5,"endLine":5,"endCol":6,"start":78,"end":79}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "*",
+            "left": {
+              "type": "Ident",
+              "name": "a",
+              "loc": {"line":5,"col":9,"endLine":5,"endCol":10,"start":82,"end":83}
+            },
+            "right": {
+              "type": "Ident",
+              "name": "b",
+              "loc": {"line":5,"col":13,"endLine":5,"endCol":14,"start":86,"end":87}
+            },
+            "loc": {"line":5,"col":9,"endLine":5,"endCol":14,"start":82,"end":87}
+          },
+          "display": false,
+          "loc": {"line":5,"col":5,"endLine":5,"endCol":15,"start":78,"end":88}
+        }
+      ],
+      "loc": {"line":3,"col":1,"endLine":6,"endCol":4,"start":26,"end":92}
+    },
+    {
+      "type": "Function",
+      "name": "semsaida",
+      "outputs": [],
+      "params": [
+        {
+          "type": "Param",
+          "name": "x",
+          "ignored": false,
+          "loc": {"line":8,"col":19,"endLine":8,"endCol":20,"start":112,"end":113}
+        }
+      ],
+      "argumentBlocks": [],
+      "body": [
+        {
+          "type": "ExprStmt",
+          "expression": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "disp",
+              "loc": {"line":9,"col":5,"endLine":9,"endCol":9,"start":119,"end":123}
+            },
+            "args": [
+              {
+                "type": "Ident",
+                "name": "x",
+                "loc": {"line":9,"col":10,"endLine":9,"endCol":11,"start":124,"end":125}
+              }
+            ],
+            "loc": {"line":9,"col":5,"endLine":9,"endCol":12,"start":119,"end":126}
+          },
+          "display": false,
+          "loc": {"line":9,"col":5,"endLine":9,"endCol":13,"start":119,"end":127}
+        }
+      ],
+      "loc": {"line":8,"col":1,"endLine":10,"endCol":4,"start":94,"end":131}
+    },
+    {
+      "type": "Function",
+      "name": "nada",
+      "outputs": [],
+      "params": [],
+      "argumentBlocks": [],
+      "body": [
+        {
+          "type": "ExprStmt",
+          "expression": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "disp",
+              "loc": {"line":13,"col":5,"endLine":13,"endCol":9,"start":151,"end":155}
+            },
+            "args": [
+              {
+                "type": "String",
+                "value": "oi",
+                "quote": "'",
+                "loc": {"line":13,"col":10,"endLine":13,"endCol":14,"start":156,"end":160}
+              }
+            ],
+            "loc": {"line":13,"col":5,"endLine":13,"endCol":15,"start":151,"end":161}
+          },
+          "display": false,
+          "loc": {"line":13,"col":5,"endLine":13,"endCol":16,"start":151,"end":162}
+        }
+      ],
+      "loc": {"line":12,"col":1,"endLine":14,"endCol":4,"start":133,"end":166}
+    }
+  ],
+  "loc": {"line":1,"col":1,"endLine":15,"endCol":1,"start":0,"end":167}
+}
