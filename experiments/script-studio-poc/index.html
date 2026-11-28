@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EEVL Script Studio · fase 0 · prova de conceito de execução</title>
+<link rel="stylesheet" href="poc.css">
+</head>
+<body>
+<h1>EEVL Script Studio · fase 0 · prova de conceito de execução</h1>
+<p>Decide como o JavaScript emitido pelo futuro tradutor é carregado e executado: Worker de módulo, Blob URL e CSP sem <code>unsafe-eval</code>. O código "gerado" é escrito à mão (<code>samples.js</code>). Página experimental: não faz parte do catálogo nem do modo offline.</p>
+<p class="warn">Abra por HTTP (<code>npm start</code> e <code>http://localhost:8000/experiments/script-studio-poc/</code>) ou pelo GitHub Pages. Workers de módulo não funcionam em <code>file://</code>.</p>
+<p>Navegador: <span class="ua" id="ua"></span></p>
+
+<div class="toolbar">
+  <button id="run-all">Executar todos</button>
+  <button data-test="1">1 Worker + core</button>
+  <button data-test="2">2 Blob URL + CSP</button>
+  <button data-test="3">3 Diag.: eval, Worker por URL</button>
+  <button data-test="4">4 Capacidades</button>
+  <button data-test="5">5 Depuração</button>
+  <button data-test="6">6 Stop</button>
+  <button data-test="7">7 Back-edges</button>
+  <button data-test="8">8 Medição</button>
+  <button data-test="3b">3b Diag.: eval, Worker via Blob</button>
+  <button data-test="3c">3c Runtime via Blob bootstrap</button>
+</div>
+
+<div class="toolbar">
+  <span>Depuração manual (uma instrução a cada 400 ms):</span>
+  <button id="dbg-start">Iniciar</button>
+  <button id="dbg-pause" disabled>Pause</button>
+  <button id="dbg-step" disabled>Step</button>
+  <button id="dbg-continue" disabled>Continue</button>
+</div>
+
+<table>
+  <thead><tr><th>#</th><th>Teste</th><th>Resultado</th><th>Detalhe</th></tr></thead>
+  <tbody id="results"></tbody>
+</table>
+
+<div class="toolbar">
+  <button id="copy">Copiar resultados (JSON)</button>
+  <span id="copy-status"></span>
+</div>
+
+<h2>Violações de CSP observadas</h2>
+<pre class="log" id="csp-log"></pre>
+<h2>Log</h2>
+<pre class="log" id="log"></pre>
+
+<script type="module" src="page.js"></script>
+</body>
+</html>
