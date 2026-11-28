@@ -48,7 +48,9 @@ harmonizada com [docs/LANGUAGE.md](docs/LANGUAGE.md).
 9. **Linguagem:** validar sintaxe proposta, parser/AST e representação intermediária
    tipada; sem `eval` ou `new Function`. A execução segue a proposta em
    [docs/SCRIPT-STUDIO.md](docs/SCRIPT-STUDIO.md): tradutor a partir de AST validada,
-   JavaScript carregado num Worker por Blob URL, sob CSP. Nada foi implementado ainda.
+   JavaScript carregado num Worker por Blob URL, sob CSP. Já existem o lexer, o parser,
+   a AST e o formatador de indentação (fase 1), as funções do core da seção 7.1 e a
+   prova de conceito da fase 0; o tradutor, o runtime e a interface ainda não existem.
 10. **Motor e editor:** somente após contratos e consumidores comprovados; não prometer
     DAE universal a partir de solvers específicos.
 11. **IA:** documentação, skills, APIs e validação determinística primeiro. Integrações

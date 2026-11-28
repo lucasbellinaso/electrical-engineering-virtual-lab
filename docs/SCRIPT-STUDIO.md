@@ -758,7 +758,7 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 | --- | --- | --- |
 | Edge (computador) | Sim | **Confirmado na fase 0** (Edge 158, Windows) |
 | Chrome (computador) | Sim | Mesmo motor do Edge; testar quando possível |
-| Firefox (computador) | Sim | A confirmar na fase 0 |
+| Firefox (computador) | Sim | Confirmado na fase 0 (Firefox 161, Windows) |
 | Safari (Mac) | Sim | A confirmar na fase 0 |
 | Opera, Brave (computador) | Sim | Baseados no Chromium; testar quando possível |
 | Chrome (Android) | Sim, com a interface de tela estreita | A testar |
@@ -820,7 +820,7 @@ Há duas mudanças em relação à seção 15 da especificação. A prova de con
 
 **Em aberto** (cada item traz uma sugestão, mas a decisão é do autor):
 
-1. **Blob URLs na CSP do site:** confirmado no Edge que `script-src 'self' blob:` e `worker-src 'self' blob:`, com o Worker criado por Blob, funcionam e bloqueiam `eval` (seção 3). Falta testar Firefox e Safari antes de fechar a questão. Alternativas, se algum falhar: permitir `new Function` só na página do Studio, ou *closure compilation* nos dois modos.
+1. **Blob URLs na CSP do site:** confirmado no Edge e no Firefox que `script-src 'self' blob:` e `worker-src 'self' blob:`, com o Worker criado por Blob, funcionam e bloqueiam `eval` (seção 3). Sugestão: adotar já essa arquitetura e confirmar o Safari quando houver um aparelho da Apple. Alternativas, se o Safari falhar: permitir `new Function` só na página do Studio, ou *closure compilation* só nesse navegador.
 2. **Workspace no modo rápido:** começar vazio ou herdar o workspace atual? Sugestão: começar vazio, para execuções reprodutíveis.
 3. **Texto:** `"..."` deve ser um tipo `string` distinto, como no MATLAB moderno, ou o mesmo `char` de `'...'`? Sugestão: o mesmo tipo na v1.
 4. **Complexo voltando a real:** confirmar que não há conversão automática (consequência do requisito 2). Sugestão: confirmar.
