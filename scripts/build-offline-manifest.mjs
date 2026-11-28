@@ -47,5 +47,5 @@ async function build(entry){
 }
 const simulators={};for(const entry of catalogue.filter(e=>e.status==='available'))simulators[entry.id]={path:entry.path,files:await build(entry)};
 const output=JSON.stringify({version:1,simulators},null,2)+'\n',target=resolve(root,'data/offline-manifest.json');
-if(process.argv.includes('--check')){const old=await readFile(target,'utf8').catch(()=>null);if(old!==output){console.error('Offline manifest is outdated. Run npm run offline:manifest.');process.exitCode=1;}}
+if(process.argv.includes('--check')){const old=await readFile(target,'utf8').catch(()=>null);if(old?.replace(/\r\n/g,'\n')!==output){console.error('Offline manifest is outdated. Run npm run offline:manifest.');process.exitCode=1;}}
 else{await writeFile(target,output,'utf8');console.log(`Offline manifest: ${Object.keys(simulators).length} simulators.`);}

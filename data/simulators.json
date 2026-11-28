@@ -1088,7 +1088,7 @@
       "pt-BR": "Monte somas de senoides, observe os espectros de amplitude e fase e remova ruído por limiar com a transformada inversa.",
       "es": "Construya sumas de senoides, observe los espectros de amplitud y fase y elimine ruido por umbral con la transformada inversa."
     },
-    "category": "numerical-methods",
+    "category": "signal-processing",
     "keywords": {
       "en": [
         "Fourier",
