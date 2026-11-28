@@ -46,7 +46,9 @@ harmonizada com [docs/LANGUAGE.md](docs/LANGUAGE.md).
    GLB/glTF, referenciais, quatérnions e sincronização. CesiumJS apenas quando houver
    uso georreferenciado concreto.
 9. **Linguagem:** validar sintaxe proposta, parser/AST e representação intermediária
-   tipada; sem `eval` ou `new Function`. Nenhum interpretador foi implementado.
+   tipada; sem `eval` ou `new Function`. A execução segue a proposta em
+   [docs/SCRIPT-STUDIO.md](docs/SCRIPT-STUDIO.md): tradutor a partir de AST validada,
+   JavaScript carregado num Worker por Blob URL, sob CSP. Nada foi implementado ainda.
 10. **Motor e editor:** somente após contratos e consumidores comprovados; não prometer
     DAE universal a partir de solvers específicos.
 11. **IA:** documentação, skills, APIs e validação determinística primeiro. Integrações
