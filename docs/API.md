@@ -268,12 +268,16 @@ O leitor rejeita versões e aplicativos incompatíveis, JSON inválido, arquivos
 de 2 MB e dados rejeitados pelo validador do aplicativo. Ele não executa código.
 `saveProject` usa o seletor de arquivo quando disponível e, nos demais navegadores,
 inicia um download; não pode confirmar que o usuário preservou o arquivo baixado.
-O aplicativo de busca de mínimo é o primeiro consumidor. Abertura, gravação e aviso
+Os aplicativos de busca de mínimo e de curvas fotovoltaicas são consumidores. Abertura, gravação e aviso
 de alterações estão disponíveis nele. `assets/js/project-sessions.js` fornece
 `createSessionStore(indexedDB, name?)` com métodos assíncronos `read`, `write` e
 `remove`; cada snapshot é JSON validado pelo aplicativo. No piloto, alterações válidas
 são armazenadas localmente após 400 ms e podem ser recuperadas ou descartadas ao abrir;
 a cópia recuperada continua não salva. Campos inválidos preservam a última cópia válida.
+No aplicativo fotovoltaico, o JSON guarda modelo, módulo selecionado ou personalizado,
+dados de catálogo, condições de operação e arranjo. Parâmetros derivados e curvas são
+recalculados ao abrir. `assets/js/project-controls.js` fornece os controles reutilizáveis
+para aplicativos que implementem captura, validação e restauração dos próprios dados.
 A recuperação depende do IndexedDB e pode ser apagada pelo navegador; não substitui
 exportação. Há uma única cópia por aplicativo e instalação: abas simultâneas podem
 sobrescrevê-la. Recentes, pasta, permissões persistentes e ZIP ainda não foram

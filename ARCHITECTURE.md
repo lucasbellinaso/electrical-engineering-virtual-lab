@@ -136,13 +136,13 @@ A memória explícita tem finalidade didática. Sintaxe e exemplo PI em
 
 ### Projetos e armazenamento
 
-O piloto de busca de mínimo abre e salva configurações JSON por `assets/js/project-files.js`,
+Os aplicativos de busca de mínimo e curvas fotovoltaicas abrem e salvam configurações JSON por `assets/js/project-files.js`,
 valida aplicativo e versão e avisa sobre alterações não salvas. O navegador pode oferecer
 File System Access API ou abertura/download convencional. Cada aplicativo valida seus dados;
 não se enviam arquivos ao GitHub. Cópias locais dos parâmetros válidos são mantidas no
 IndexedDB para recuperação explícita, não substituindo arquivos. Documentação e limites em [docs/API.md](docs/API.md).
 
-Ainda faltam novo projeto, pasta opcional, recentes, permissões persistentes
+O aplicativo fotovoltaico também oferece Novo; ainda faltam pasta opcional, recentes, permissões persistentes
 e expansão a outros aplicativos. Sem extensões específicas por tipo; usar
 JSON, CSV, ZIP, SVG e GLB/glTF conforme o conteúdo. Um projeto poderá guardar planta/parâmetros, estados iniciais,
 controladores/memória/código, períodos, referências, perturbações, configuração de

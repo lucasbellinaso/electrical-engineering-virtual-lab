@@ -3,6 +3,8 @@ import {language} from '../../../assets/js/i18n.js';
 import katex from '../../../assets/vendor/katex/katex.mjs';
 import {defaults,validate,fitModule,simulate,simulateIEC,compareCatalog,referenceConditions,iecParameters,iecConstants} from './model.js';
 import {modulePresets,presetFields} from './presets.js';
+import {validateProject} from './project.js';
+import {createProjectControls} from '../../../assets/js/project-controls.js';
 const $=id=>document.getElementById(id), form=$('parameters'), svgNS='http://www.w3.org/2000/svg';
 const plotArea={left:55,top:12,width:565,height:265};
 let dictionary={}, fit=null, signature='', result=null, bounds=null, inspectIndex=null, currentParameters=null, valid=false;
@@ -123,5 +125,21 @@ $('modulePreset').addEventListener('change',event=>{
 for(const key of ['irradiance','temperature']){const input=$(key),range=$(key+'Range');range.addEventListener('input',()=>{input.value=range.value;update(false);});input.addEventListener('input',()=>{range.value=input.value;update(false);});}
 form.addEventListener('input',e=>{if(e.target.id==='modulePreset')return;if(presetFields.includes(e.target.id)){$('modulePreset').value='custom';updatePresetInfo();}if(!['irradiance','temperature','irradianceRange','temperatureRange'].includes(e.target.id))update(true);});
 $('reset').addEventListener('click',()=>{$('modulePreset').value='example';updatePresetInfo();for(const [key,value] of Object.entries(defaults))$(key).value=value;$('irradianceRange').value=defaults.irradiance;$('temperatureRange').value=defaults.temperature;form.querySelector('[value="desoto"]').checked=true;fit=null;update(true);});
-document.addEventListener('languagechange',()=>{if(dictionary.en)translate();});
-try{const response=await fetch(new URL('./locales.json',import.meta.url));if(!response.ok)throw new Error('locales');dictionary=await response.json();await initialize();translate();update();}catch(error){console.error(error);$('error').textContent='Unable to load.';}
+let projects=null;
+document.addEventListener('languagechange',()=>{if(dictionary.en){translate();projects?.retranslate();}});
+function projectState(){return {model:form.elements.model.value,preset:$('modulePreset').value,parameters:read()};}
+function projectSnapshot(){return JSON.stringify([form.elements.model.value,$('modulePreset').value,...Object.keys(defaults).map(key=>$(key).value)]);}
+function restoreProject(data){
+ for(const [key,value] of Object.entries(data.parameters))$(key).value=value;
+ for(const key of ['irradiance','temperature'])$(key+'Range').value=data.parameters[key];
+ form.querySelector(`input[name="model"][value="${data.model}"]`).checked=true;
+ $('modulePreset').value=data.preset;updatePresetInfo();fit=null;signature='';inspectIndex=null;update(true);
+}
+try{
+ const response=await fetch(new URL('./locales.json',import.meta.url));if(!response.ok)throw new Error('locales');dictionary=await response.json();await initialize();
+ projects=createProjectControls({container:form.parentElement,application:'photovoltaic-curves',filename:'photovoltaic-curves.json',read:projectState,restore:restoreProject,validate:validateProject,snapshot:projectSnapshot,reset:()=>$('reset').click(),translate:tr});
+ for(const input of [...form.querySelectorAll('input,select'),$('irradiance'),$('temperature'),$('irradianceRange'),$('temperatureRange')]){
+  input.addEventListener('input',projects.changed);input.addEventListener('change',projects.changed);
+ }
+ $('reset').addEventListener('click',projects.changed);translate();update();
+}catch(error){console.error(error);$('error').textContent='Unable to load.';}
