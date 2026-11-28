@@ -543,3 +543,24 @@ test('desempenho: ~10.000 linhas', () => {
   console.log(`# parse de ${src.split('\n').length - 1} linhas: mediana ${times[2].toFixed(1)} ms (min ${times[0].toFixed(1)}, max ${times[4].toFixed(1)})`);
   assert.ok(times[2] < 1000, `parse lento: ${times[2]} ms`);
 });
+
+// ---- constante π (SCRIPT-STUDIO.md seção 8) -------------------------------------------------
+test('π é constante: lido em expressões, nunca redefinido', () => {
+  assert.equal(sx(ex('2*π*f')), '(* (* 2 π) f)');
+  ok('s.π = 1; y = s.π; h = @π; pi = 3; y = pi');
+  const err = (src) => parse(src).errors.map((e) => `${e.code}@${e.loc.line}:${e.loc.col}-${e.loc.endCol}`);
+  assert.deepEqual(err('π = 3'), ['constantAssignment@1:1-2']);
+  assert.deepEqual(err('ϖ = 3'), ['constantAssignment@1:1-2']);
+  assert.deepEqual(err('π(2) = 1'), ['constantAssignment@1:1-2']);
+  assert.deepEqual(err('[a, π] = size(x)'), ['constantAssignment@1:5-6']);
+  assert.deepEqual(err('for π = 1:3\nend'), ['constantAssignment@1:5-6']);
+  assert.deepEqual(err('real π = 3'), ['constantAssignment@1:6-7']);
+  assert.deepEqual(err('f = @(π) π + 1'), ['constantAssignment@1:7-8']);
+  assert.deepEqual(err('function y = g(π)\n  y = 1;\nend'), ['constantAssignment@1:16-17']);
+  assert.deepEqual(err('function π = g(x)\nend'), ['constantAssignment@1:10-11']);
+  assert.deepEqual(err('function [a, π] = g(x)\nend'), ['constantAssignment@1:14-15']);
+  assert.deepEqual(err('function π(x)\nend'), ['constantAssignment@1:10-11']);
+  const r = parse('π = 3');
+  assert.equal(r.errors[0].params.name, 'π');
+  assert.match(r.errors[0].message, /constante/);
+});

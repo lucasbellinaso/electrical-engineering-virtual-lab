@@ -3,7 +3,7 @@
 // O parser NÃO decide se `f(x)` é chamada ou indexação (CallOrIndex), nem resolve nomes,
 // nem checa tipos ou número de dimensões: isso é da análise semântica.
 
-import { tokenize, FUTURE_RESERVED, UNSUPPORTED_V1, DECL_TYPES } from './lexer.js';
+import { tokenize, FUTURE_RESERVED, UNSUPPORTED_V1, DECL_TYPES, CONSTANT_NAMES } from './lexer.js';
 import { makeError } from './errors.js';
 
 class ParseError extends Error {
@@ -64,6 +64,23 @@ class Parser {
   }
 
   pushError(code, params, s, e) { this.errors.push(makeError(code, params, this.locate(s, e))); }
+
+  // Nome que recebe valor (variável, parâmetro, saída, função, laço): constantes como π não podem.
+  // Erro sem interromper a análise; aceita token ou nó Ident.
+  checkBinding(t) {
+    const name = t.type === 'Ident' ? t.name : t.value;
+    if (!CONSTANT_NAMES.has(name)) return;
+    const s = t.type === 'Ident' ? t.loc.start : t.start;
+    const e = t.type === 'Ident' ? t.loc.end : t.end;
+    this.pushError('constantAssignment', { name }, s, e);
+  }
+
+  // Raiz de um alvo de atribuição: x em x, x(2), x.a(3).b.
+  checkTarget(e) {
+    let n = e;
+    while (n && (n.type === 'CallOrIndex' || n.type === 'Field')) n = n.type === 'Field' ? n.object : n.callee;
+    if (n && n.type === 'Ident') this.checkBinding(n);
+  }
 
   unexpected(tok, expected) {
     if (tok.type === 'kw') {
@@ -237,6 +254,7 @@ class Parser {
     const paren = this.isOp('(') && this.peek(1).type === 'ident' && this.isOp('=', 2);
     if (paren) this.next();
     const v = this.expectIdent();
+    this.checkBinding(v);
     const variable = this.mk('Ident', { name: v.value }, v.start, v.end);
     this.expectOp('=');
     const iterable = this.parseExpression();
@@ -312,6 +330,7 @@ class Parser {
       return this.mk('Param', { name: '~', ignored: true }, t.start, t.end);
     }
     const id = this.expectIdent();
+    this.checkBinding(id);
     return this.mk('Param', { name: id.value, ignored: false }, id.start, id.end);
   }
 
@@ -336,10 +355,12 @@ class Parser {
         const id = this.expectIdent();
         if (this.isOp('=')) {
           this.next();
+          this.checkBinding(id);
           outputs = [this.mk('Param', { name: id.value, ignored: false }, id.start, id.end)];
           nameTok = this.expectIdent();
         } else nameTok = id;
       }
+      this.checkBinding(nameTok);
       const params = [];
       if (this.isOp('(')) {
         this.next();
@@ -430,6 +451,7 @@ class Parser {
       const t = this.peek();
       if (t.type !== 'ident') this.failAt('declExpectedName', { type: typeTok.value, found: this.desc(t) }, t);
       this.next();
+      this.checkBinding(t);
       let init = null;
       if (this.isOp('=')) { this.next(); init = this.parseExpression(); anyInit = true; }
       declarators.push(this.mk('Declarator', { name: t.value, init }, t.start));
@@ -476,6 +498,7 @@ class Parser {
         }
         const e = this.parsePostfixPrimary();
         if (!isLValue(e)) this.failAt('invalidAssignTarget', {}, e.loc.start, e.loc.end);
+        this.checkTarget(e);
         targets.push(e);
       }
       this.expectOp('=');
@@ -486,6 +509,7 @@ class Parser {
     const expr = this.parseExpression();
     if (this.isOp('=')) {
       if (!isLValue(expr)) this.failAt('invalidAssignTarget', {}, expr.loc.start, expr.loc.end);
+      this.checkTarget(expr);
       this.next();
       const value = this.parseExpression();
       const display = this.endStatement();

@@ -35,8 +35,28 @@ const VALUE_END_OPS = new Set([')', ']', '}', "'", ".'"]);
 const TWO_OPS = new Set(['==', '~=', '<=', '>=', '&&', '||', '.*', './', '.\\', '.^']);
 const ONE_OPS = new Set(['+', '-', '*', '/', '\\', '^', '<', '>', '&', '|', '~', '(', ')', '[', ']', '{', '}', ',', ';', ':', '=', '@', '.']);
 
+// ---- LETRAS GREGAS EM IDENTIFICADORES (docs/SCRIPT-STUDIO.md, seção 8) -------------
+// Divergência deliberada do MATLAB/Octave, que só aceitam ASCII. Vale só o alfabeto grego básico,
+// sem acentos, para não abrir a porta a outros alfabetos com letras iguais às latinas.
+//  - Maiúsculas iguais a letras latinas e o ómicron são erro (requisito 8: uma única leitura).
+//  - Variantes tipográficas são sinônimos da forma comum (µ → μ, ϕ → φ, ϑ → θ, ϵ → ε, ς → σ ...).
+// O token guarda o nome canônico em `value`; o texto original continua em source[start, end).
+export const GREEK_LOOKALIKES = Object.freeze({
+  'Α': 'A', 'Β': 'B', 'Ε': 'E', 'Ζ': 'Z', 'Η': 'H', 'Ι': 'I', 'Κ': 'K', 'Μ': 'M',
+  'Ν': 'N', 'Ο': 'O', 'Ρ': 'P', 'Τ': 'T', 'Υ': 'Y', 'Χ': 'X', 'ο': 'o',
+});
+export const GREEK_VARIANTS = Object.freeze({
+  'µ': 'μ', // U+00B5 sinal de micro (AltGr+M no teclado ABNT2) → U+03BC mu
+  'ϕ': 'φ', 'ϑ': 'θ', 'ϵ': 'ε', 'ς': 'σ', 'ϖ': 'π', 'ϰ': 'κ', 'ϱ': 'ρ',
+});
+// Constantes que não podem ser redefinidas (π = pi). `pi` continua redefinível como no MATLAB.
+export const CONSTANT_NAMES = new Set(['π']);
+const isGreekLetter = (c) => (c >= 'α' && c <= 'ω') || (c >= 'Α' && c <= 'Ω' && c !== '\u03A2');
+const isGreekChar = (c) => c !== undefined && (isGreekLetter(c) || c in GREEK_VARIANTS);
+// -----------------------------------------------------------------------------------
+
 const isDigit = (c) => c >= '0' && c <= '9';
-const isIdentStart = (c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '_';
+const isIdentStart = (c) => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '_' || isGreekChar(c);
 const isIdentChar = (c) => isIdentStart(c) || isDigit(c);
 
 export function createLocator(source) {
@@ -188,6 +208,20 @@ export function tokenize(source, options = {}) {
     push('str', value, start, j, { quote });
   }
 
+  // Nome canônico de source[a, b): variantes gregas viram a forma comum; letras gregas iguais às
+  // latinas dão erro e são trocadas pela latina (recuperação), para o parser seguir adiante.
+  function canonicalWord(a, b) {
+    let word = '';
+    for (let k = a; k < b; k++) {
+      const c = source[k];
+      if (c in GREEK_LOOKALIKES) {
+        err('greekLookalike', { char: c, latin: GREEK_LOOKALIKES[c] }, k, k + 1);
+        word += GREEK_LOOKALIKES[c];
+      } else word += GREEK_VARIANTS[c] ?? c;
+    }
+    return word;
+  }
+
   // REGRA OCTAVE: devolve true se tratou o caractere (e avançou `i`).
   function octaveStep(c) {
     if (c === '#') {
@@ -258,7 +292,7 @@ export function tokenize(source, options = {}) {
     if (isIdentStart(c)) {
       let j = i + 1;
       while (j < n && isIdentChar(source[j])) j++;
-      const word = source.slice(i, j);
+      const word = canonicalWord(i, j);
       const l = last();
       const afterDot = l && l.type === 'op' && l.value === '.' && !l.virtual && l.end === i;
       if (afterDot) push('ident', word, i, j);
