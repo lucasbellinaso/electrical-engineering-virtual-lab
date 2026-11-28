@@ -21,6 +21,8 @@
  * finito, tamanho inconsistente ou divisor nulo.
  */
 
+import { qr } from './matrix.js';
+
 const TWO_PI = 2 * Math.PI;
 
 /* ------------------------- validação ------------------------- */
@@ -378,4 +380,121 @@ export function deconv(b, a) {
   }
   const rem = r.slice(nq);
   return { q, r: rem.length ? rem : [0] };
+}
+
+/* ------------------------- polyfit (mínimos quadrados) ------------------------- */
+
+/**
+ * Ajuste polinomial por mínimos quadrados, como `[p,S,mu] = polyfit(x,y,n)` do MATLAB.
+ *
+ * Resolve min ‖V·p − y‖₂ com V = Vandermonde (colunas xⁿ … x⁰) por QR de Householder
+ * (sem equações normais, portanto sem elevar o condicionamento ao quadrado).
+ * Coeficientes em ordem decrescente, como em polyval.
+ *
+ * Opções (4º argumento, objeto): `{ normalize: true }` centraliza e escala x como o
+ * MATLAB: usa x̂ = (x − μ₁)/μ₂ com μ = [média(x), desvio(x) (N−1)]; os coeficientes
+ * retornados valem na variável x̂ (avalie com polyval(p, (x − mu[0]) / mu[1])).
+ *
+ * Retorno `{ p, S, mu }`:
+ *  - p: n+1 coeficientes.
+ *  - S.R: fator triangular superior (n+1)×(n+1) da QR de V. O sinal das linhas pode
+ *    diferir do MATLAB (convenção de Householder); R'R = V'V vale igualmente.
+ *  - S.df: graus de liberdade do resíduo, max(0, N − (n+1)).
+ *  - S.normr: norma 2 do resíduo y − V·p.
+ *  - S.rcond: 1/cond₁(R), com R⁻¹ calculada explicitamente.
+ *  - S.illConditioned: true quando rcond < eps; é o aviso "mal condicionado" do
+ *    MATLAB (neste caso, tente `normalize: true`). Não lança erro.
+ *  - mu: [média, desvio] com normalize; null caso contrário.
+ *
+ * Erros: TypeError (tipos); RangeError se x e y diferem em tamanho, n não é inteiro ≥ 0,
+ * n ≥ número de valores distintos de x (solução não única), ou, com normalize, x
+ * tem desvio nulo.
+ *
+ * @param {number[]} x abscissas
+ * @param {number[]} y ordenadas
+ * @param {number} n grau
+ * @param {{normalize?: boolean}} [options]
+ * @returns {{p: number[], S: {R: number[][], df: number, normr: number, rcond: number, illConditioned: boolean}, mu: (number[]|null)}}
+ */
+export function polyfit(x, y, n, options) {
+  assertPoly(x, 'x');
+  assertPoly(y, 'y');
+  if (x.length !== y.length) throw new RangeError('polyfit: x e y devem ter o mesmo tamanho');
+  assertNumber(n, 'n');
+  if (!Number.isInteger(n) || n < 0) throw new RangeError('polyfit: n deve ser inteiro ≥ 0');
+  let normalize = false;
+  if (options !== undefined && options !== null) {
+    if (typeof options !== 'object' || Array.isArray(options)) throw new TypeError('options deve ser um objeto');
+    if (options.normalize !== undefined && typeof options.normalize !== 'boolean') throw new TypeError('options.normalize deve ser booleano');
+    normalize = options.normalize === true;
+  }
+  const m = x.length, k = n + 1;
+  const distinct = new Set(x).size;
+  if (n >= distinct) {
+    throw new RangeError(`polyfit: grau ${n} exige pelo menos ${k} valores distintos de x (há ${distinct}); solução não única`);
+  }
+  let xs = x, mu = null;
+  if (normalize) {
+    let mean = 0;
+    for (let i = 0; i < m; i++) mean += x[i];
+    mean /= m;
+    let ss = 0;
+    for (let i = 0; i < m; i++) ss += (x[i] - mean) * (x[i] - mean);
+    const sd = Math.sqrt(ss / (m - 1));
+    if (!(sd > 0)) throw new RangeError('polyfit: normalize exige x com desvio padrão não nulo');
+    mu = [mean, sd];
+    xs = x.map((v) => (v - mean) / sd);
+  }
+  // A (m×k) Vandermonde, colunas de potência decrescente; b = cópia de y.
+  const A = new Array(m);
+  for (let i = 0; i < m; i++) {
+    const row = new Array(k);
+    row[k - 1] = 1;
+    for (let j = k - 2; j >= 0; j--) row[j] = row[j + 1] * xs[i];
+    A[i] = row;
+  }
+  // QR econômica de A (Householder, matrix.js): A = Q·R, Q m×k, R k×k.
+  const { Q, R } = qr(A, { econ: true });
+  for (let i = 0; i < k; i++) {
+    if (R[i][i] === 0) throw new RangeError('polyfit: matriz de Vandermonde de posto deficiente; solução não única');
+  }
+  // Substituição regressiva R p = Qᵀy.
+  const qty = new Array(k);
+  for (let j = 0; j < k; j++) {
+    let s = 0;
+    for (let i = 0; i < m; i++) s += Q[i][j] * y[i];
+    qty[j] = s;
+  }
+  const p = new Array(k);
+  for (let i = k - 1; i >= 0; i--) {
+    let s = qty[i];
+    for (let j = i + 1; j < k; j++) s -= R[i][j] * p[j];
+    p[i] = s / R[i][i];
+  }
+  // Norma do resíduo y − A·p.
+  let normr = 0;
+  for (let i = 0; i < m; i++) {
+    let s = y[i];
+    for (let j = 0; j < k; j++) s -= A[i][j] * p[j];
+    normr = Math.hypot(normr, s);
+  }
+  // rcond = 1/(‖R‖₁·‖R⁻¹‖₁), R⁻¹ por substituição regressiva coluna a coluna.
+  let normR = 0, normInv = 0;
+  for (let j = 0; j < k; j++) {
+    let s = 0;
+    for (let i = 0; i <= j; i++) s += Math.abs(R[i][j]);
+    normR = Math.max(normR, s);
+    const col = new Array(k).fill(0);
+    for (let i = j; i >= 0; i--) {
+      let t = i === j ? 1 : 0;
+      for (let l = i + 1; l <= j; l++) t -= R[i][l] * col[l];
+      col[i] = t / R[i][i];
+    }
+    let cs = 0;
+    for (let i = 0; i <= j; i++) cs += Math.abs(col[i]);
+    normInv = Math.max(normInv, cs);
+  }
+  const rcond = 1 / (normR * normInv);
+  const S = { R, df: Math.max(0, m - k), normr, rcond, illConditioned: !(rcond >= Number.EPSILON) };
+  return { p, S, mu };
 }

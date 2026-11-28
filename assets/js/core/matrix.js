@@ -501,3 +501,307 @@ export function pinv(A,tol) {
   }
   return out;
 }
+
+/* ------------------------- fatorações: QR, LU, Cholesky; cond e mldivide ------------------------- */
+// Funções acrescentadas depois das portadas do SISO; não alteram a aritmética de nenhuma delas.
+// Todas validam a entrada com assertMatrix (TypeError/RangeError) e não modificam os argumentos.
+
+/** Aplica o refletor H = I - beta·v·vᵀ (v ocupa as linhas k.. de M) às colunas j0..j1-1 de M, no lugar. */
+function aplicaRefletor(M, v, beta, k, j0, j1) {
+  for (let j = j0; j < j1; j++) {
+    let s = 0;
+    for (let i = 0; i < v.length; i++) s += v[i] * M[k + i][j];
+    s *= beta;
+    if (s === 0) continue;
+    for (let i = 0; i < v.length; i++) M[k + i][j] -= s * v[i];
+  }
+}
+
+/**
+ * Núcleo de QR por Householder (A já validada). Devolve R completa (m x n, com zeros abaixo da diagonal),
+ * os refletores e a permutação de colunas (A[:, perm] = Q·R; identidade se !pivot).
+ */
+function qrNucleo(A, m, n, pivot) {
+  const R = A.map(row => row.slice());
+  const perm = Array.from({ length: n }, (_, j) => j);
+  const refletores = [];
+  const kmax = Math.min(m, n);
+  for (let k = 0; k < kmax; k++) {
+    if (pivot) {
+      // Coluna restante de maior norma euclidiana (empate: a primeira). Recalculada a cada passo: O(m·n²) no total.
+      let melhor = k, nmax = -1;
+      for (let j = k; j < n; j++) {
+        let s = 0;
+        for (let i = k; i < m; i++) s = Math.hypot(s, R[i][j]);
+        if (s > nmax) { nmax = s; melhor = j; }
+      }
+      if (melhor !== k) {
+        for (let i = 0; i < m; i++) { const t = R[i][k]; R[i][k] = R[i][melhor]; R[i][melhor] = t; }
+        const t = perm[k]; perm[k] = perm[melhor]; perm[melhor] = t;
+      }
+    }
+    // Refletor de x = R[k:, k]. Se a cauda de x é nula (inclui o último elemento quando m-k = 1), H = I (como o LAPACK).
+    let cauda = 0;
+    for (let i = k + 1; i < m; i++) cauda = Math.hypot(cauda, R[i][k]);
+    if (cauda === 0) { refletores.push(null); continue; }
+    const nx = Math.hypot(R[k][k], cauda);
+    const alfa = R[k][k] >= 0 ? -nx : nx;          // sinal oposto a x0: evita cancelamento
+    const v = new Array(m - k);
+    v[0] = R[k][k] - alfa;
+    for (let i = 1; i < m - k; i++) v[i] = R[k + i][k];
+    let vv = 0;
+    for (let i = 0; i < v.length; i++) vv += v[i] * v[i];
+    const beta = 2 / vv;
+    aplicaRefletor(R, v, beta, k, k + 1, n);
+    R[k][k] = alfa;
+    for (let i = k + 1; i < m; i++) R[i][k] = 0;
+    refletores.push({ v, beta });
+  }
+  return { R, refletores, perm };
+}
+
+/** Matriz de permutação P (n x n) com P[i][perm[i]] = 1, isto é, (P·X)[i] = X[perm[i]] (usada por lu). */
+function matrizPermutacao(perm) {
+  const n = perm.length, P = kzeros(n, n);
+  for (let i = 0; i < n; i++) P[i][perm[i]] = 1;
+  return P;
+}
+
+/**
+ * Fatoração QR por refletores de Householder: A = Q·R (ou A·P = Q·R com pivotamento de colunas).
+ *
+ * Algoritmo: para cada coluna k < min(m,n) escolhe-se o refletor H = I − β·v·vᵀ que anula R[k+1:, k], com
+ * α = −sinal(x₀)·‖x‖₂ (sem cancelamento); se a cauda da coluna já é nula, H = I (como o LAPACK, de modo que
+ * o último elemento diagonal de uma matriz larga/quadrada mantém o seu sinal). Q = H₀·H₁·…·H_{k−1} é formada
+ * aplicando os refletores à identidade em ordem inversa. Custo O(m·n·min(m,n)); estável por construção
+ * (‖A − Q·R‖ e ‖QᵀQ − I‖ da ordem de max(m,n)·ε).
+ * Convenções: sem unicidade de sinais: as diagonais de R podem ser negativas (como no MATLAB).
+ * Pivotamento (opts.pivot): a cada passo troca-se a coluna restante de maior norma, como [Q,R,P] = qr(A) do
+ * MATLAB; garante |R₀₀| ≥ |R₁₁| ≥ … e é a base da estimativa de posto de mldivide.
+ *
+ * @param {number[][]} A m x n (matriz vazia [] = 0x0)
+ * @param {{econ?:boolean, pivot?:boolean}} [opts] econ: forma econômica (Q m x k, R k x n, k = min(m,n));
+ *   padrão Q m x m e R m x n. pivot: pivotamento de colunas, devolve também P e perm.
+ * @returns {{Q:number[][], R:number[][], P?:number[][], perm?:number[]}} R triangular superior. Com pivot:
+ *   perm (base 0) tal que A[:, perm] = Q·R, e P (n x n) com A·P = Q·R, isto é, P[perm[j]][j] = 1.
+ * @throws {TypeError|RangeError} A inválida ou opts inválido
+ */
+export function qr(A, opts) {
+  const { r: m, c: n } = assertMatrix(A, 'A');
+  if (opts !== undefined && (opts === null || typeof opts !== 'object')) throw new TypeError('opts deve ser um objeto { econ, pivot }');
+  const { econ = false, pivot = false } = opts || {};
+  if (typeof econ !== 'boolean') throw new TypeError('opts.econ deve ser booleano');
+  if (typeof pivot !== 'boolean') throw new TypeError('opts.pivot deve ser booleano');
+  const k = Math.min(m, n);
+  const { R, refletores, perm } = qrNucleo(A, m, n, pivot);
+  const qc = econ ? k : m;                         // colunas de Q
+  const Q = kzeros(m, qc);
+  for (let i = 0; i < qc; i++) Q[i][i] = 1;
+  for (let j = refletores.length - 1; j >= 0; j--) {
+    const h = refletores[j];
+    if (h) aplicaRefletor(Q, h.v, h.beta, j, 0, qc);
+  }
+  const out = { Q, R: econ ? R.slice(0, k) : R };
+  if (pivot) {
+    // P com A·P = Q·R: coluna j de A·P é a coluna perm[j] de A, logo P[perm[j]][j] = 1.
+    const P = kzeros(n, n);
+    for (let j = 0; j < n; j++) P[perm[j]][j] = 1;
+    out.P = P; out.perm = perm;
+  }
+  return out;
+}
+
+/**
+ * Fatoração LU com pivotamento parcial (por linhas): P·A = L·U. Aceita A retangular m x n (k = min(m,n)).
+ *
+ * Algoritmo: eliminação de Gauss (Doolittle) escolhendo, em cada coluna, a linha de maior módulo; multiplicadores
+ * armazenados em L (diagonal unitária). Matriz singular NÃO é erro: com a coluna restante toda nula não há
+ * eliminação e U fica com pivô exatamente nulo (como no MATLAB); o chamador decide o que fazer.
+ *
+ * @param {number[][]} A m x n (matriz vazia [] = 0x0)
+ * @returns {{L:number[][], U:number[][], P:number[][], perm:number[]}} L m x k triangular inferior com diagonal
+ *   unitária, U k x n triangular superior, P m x m de permutação e perm (base 0) o mesmo em vetor:
+ *   (P·A)[i] = A[perm[i]], P[i][perm[i]] = 1.
+ * @throws {TypeError|RangeError} A inválida
+ */
+export function lu(A) {
+  const { r: m, c: n } = assertMatrix(A, 'A');
+  const M = A.map(row => row.slice());
+  const perm = Array.from({ length: m }, (_, i) => i);
+  const k = Math.min(m, n);
+  for (let c = 0; c < k; c++) {
+    let piv = c, mx = Math.abs(M[c][c]);
+    for (let i = c + 1; i < m; i++) if (Math.abs(M[i][c]) > mx) { mx = Math.abs(M[i][c]); piv = i; }
+    if (mx === 0) continue;
+    if (piv !== c) { [M[c], M[piv]] = [M[piv], M[c]]; [perm[c], perm[piv]] = [perm[piv], perm[c]]; }
+    for (let i = c + 1; i < m; i++) {
+      const f = M[i][c] / M[c][c];
+      M[i][c] = f;
+      if (f === 0) continue;
+      for (let j = c + 1; j < n; j++) M[i][j] -= f * M[c][j];
+    }
+  }
+  const L = kzeros(m, k), U = kzeros(k, n);
+  for (let i = 0; i < m; i++) for (let j = 0; j < k; j++) L[i][j] = i === j ? 1 : (i > j ? M[i][j] : 0);
+  for (let i = 0; i < k; i++) for (let j = i; j < n; j++) U[i][j] = M[i][j];
+  return { L, U, P: matrizPermutacao(perm), perm };
+}
+
+/** Núcleo de Cholesky: devolve {R, p} (p = 0 se completou; senão p = índice base 1 do primeiro pivô não positivo). */
+function cholNucleo(A, n) {
+  const R = kzeros(n, n);
+  for (let j = 0; j < n; j++) {
+    let s = A[j][j];
+    for (let k = 0; k < j; k++) s -= R[k][j] * R[k][j];
+    if (!(s > 0)) return { R: R.slice(0, j).map(row => row.slice(0, j)), p: j + 1 };
+    const d = Math.sqrt(s);
+    R[j][j] = d;
+    for (let l = j + 1; l < n; l++) {
+      let t = A[j][l];
+      for (let k = 0; k < j; k++) t -= R[k][j] * R[k][l];
+      R[j][l] = t / d;
+    }
+  }
+  return { R, p: 0 };
+}
+
+/** Exige A quadrada e simétrica: |aᵢⱼ − aⱼᵢ| ≤ 1e-12·máx|aᵢⱼ| (RangeError caso contrário). */
+function assertSimetrica(A, nome) {
+  const n = assertSquare(A, nome);
+  let escala = 0;
+  for (const row of A) for (const v of row) escala = Math.max(escala, Math.abs(v));
+  const lim = 1e-12 * escala;
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+    if (Math.abs(A[i][j] - A[j][i]) > lim) throw new RangeError(`${nome} deve ser simétrica (${nome}[${i}][${j}] ≠ ${nome}[${j}][${i}])`);
+  }
+  return n;
+}
+
+/**
+ * Fatoração de Cholesky A = Rᵀ·R, R triangular superior com diagonal positiva, para A simétrica definida positiva.
+ *
+ * Algoritmo: por colunas, Rⱼⱼ = √(aⱼⱼ − Σₖ<ⱼ Rₖⱼ²) e Rⱼₗ = (aⱼₗ − Σₖ<ⱼ RₖⱼRₖₗ)/Rⱼⱼ. Só o triângulo superior de A
+ * é lido (como no MATLAB), mas A deve ser simétrica: |aᵢⱼ − aⱼᵢ| ≤ 1e-12·máx|aᵢⱼ|, senão RangeError.
+ * Definida positiva = todos os radicandos > 0 (sem tolerância); matriz semidefinida/singular também falha.
+ *
+ * @param {number[][]} A n x n simétrica ([] = 0x0 devolve [])
+ * @returns {number[][]} R
+ * @throws {Error} 'Matriz não definida positiva' com code = 'NOT_POSITIVE_DEFINITE' e p (base 1, como o MATLAB)
+ * @throws {TypeError|RangeError} A inválida, não quadrada ou não simétrica
+ */
+export function chol(A) {
+  const n = assertSimetrica(A, 'A');
+  const { R, p } = cholNucleo(A, n);
+  if (p !== 0) {
+    const e = new Error('Matriz não definida positiva');
+    e.code = 'NOT_POSITIVE_DEFINITE';
+    e.p = p;
+    throw e;
+  }
+  return R;
+}
+
+/**
+ * Variante de chol que não lança por perda de definição positiva: [R, p] = chol(A) do MATLAB.
+ * @param {number[][]} A n x n simétrica
+ * @returns {{R:number[][], p:number}} p = 0 e R n x n se A é definida positiva; senão p é o índice (base 1) do
+ *   primeiro pivô não positivo e R é o fator (p−1) x (p−1) da submatriz principal, que satisfaz RᵀR = A[0:p−1, 0:p−1].
+ * @throws {TypeError|RangeError} A inválida, não quadrada ou não simétrica
+ */
+export function cholp(A) {
+  const n = assertSimetrica(A, 'A');
+  return cholNucleo(A, n);
+}
+
+/**
+ * Número de condição de A na norma p, κₚ(A) = ‖A‖ₚ·‖A⁻¹‖ₚ.
+ * p = 2 (padrão): razão σ_max/σ_min via svdvals (aceita retangular; Infinity se σ_min = 0, isto é, posto
+ * deficiente); cond([]) = 0 como no MATLAB. p = 1, Infinity ou 'fro': exige A quadrada e usa ‖A‖ₚ·‖inv(A)‖ₚ;
+ * se inv lança SINGULAR_MATRIX (pivô exatamente nulo) devolve Infinity. Não use o valor como teste de
+ * singularidade exato: matrizes singulares em ponto flutuante dão valores enormes, não necessariamente Infinity.
+ * @param {number[][]} A @param {2|1|number|'fro'} [p=2] 2, 1, Infinity ou 'fro'
+ * @returns {number} ≥ 1 (ou 0 para a matriz vazia)
+ * @throws {TypeError|RangeError} A inválida, p não suportado ou A não quadrada com p ≠ 2
+ */
+export function cond(A, p = 2) {
+  const { r, c } = assertMatrix(A, 'A');
+  if (!(p === 2 || p === 1 || p === Infinity || p === 'fro')) throw new RangeError("p deve ser 2, 1, Infinity ou 'fro'");
+  if (r === 0 || c === 0) return 0;
+  if (p === 2) {
+    const s = svdvals(A);
+    const smax = s[0], smin = s[s.length - 1];
+    if (smin === 0) return Infinity;
+    return smax / smin;
+  }
+  if (r !== c) throw new RangeError(`cond: p = ${p} exige matriz quadrada (recebido ${r}x${c})`);
+  const nrm = p === 1 ? norm1 : p === Infinity ? normInf : (X) => Math.sqrt(X.reduce((a, row) => row.reduce((b, v) => b + v * v, a), 0));
+  let Ai;
+  try { Ai = inv(A); } catch (e) { if (e.code === 'SINGULAR_MATRIX') return Infinity; throw e; }
+  return nrm(A) * nrm(Ai);
+}
+
+/**
+ * Mínimos quadrados por QR com pivotamento de colunas: minimiza ‖A·X − B‖₂ coluna a coluna, devolvendo a solução
+ * básica (no máximo `rank` componentes não nulas por coluna), como o operador \ do MATLAB para A retangular
+ * ou de posto deficiente. NÃO é a solução de norma mínima (essa é pinv(A)·B).
+ *
+ * Algoritmo: A·P = Q·R (qr com pivot); posto estimado r = #{ |Rᵢᵢ| > tol }, tol = max(m,n)·ε·|R₀₀| (opts.tol
+ * substitui por um valor absoluto ≥ 0); resolve-se R₁₁·y = (QᵀB)[0:r] por substituição regressiva e
+ * X[perm[0:r]] = y, demais componentes 0. Custo O(m·n·min(m,n)).
+ *
+ * @param {number[][]} A m x n @param {number[][]} B m x q
+ * @param {{tol?:number}} [opts]
+ * @returns {{X:number[][], rank:number, rankDeficient:boolean, perm:number[]}} X n x q; rankDeficient = rank < min(m,n)
+ * @throws {TypeError|RangeError} entradas inválidas ou B com número de linhas ≠ m
+ */
+export function lstsq(A, B, opts) {
+  const { r: m, c: n } = assertMatrix(A, 'A');
+  const mb = assertMatrix(B, 'B');
+  if (mb.r !== m) throw new RangeError(`lstsq: B deve ter ${m} linhas (recebido ${mb.r})`);
+  if (opts !== undefined && (opts === null || typeof opts !== 'object')) throw new TypeError('opts deve ser um objeto { tol }');
+  if (opts && opts.tol !== undefined) { checkFinite(opts.tol, 'opts.tol'); if (opts.tol < 0) throw new RangeError('opts.tol deve ser não negativo'); }
+  const q = mb.c;
+  const k = Math.min(m, n);
+  const { Q, R, perm } = qr(A, { econ: true, pivot: true });
+  const tol = opts && opts.tol !== undefined ? opts.tol : Math.max(m, n) * Number.EPSILON * (k > 0 ? Math.abs(R[0][0]) : 0);
+  let rk = 0;
+  while (rk < k && Math.abs(R[rk][rk]) > tol) rk++;
+  const X = kzeros(n, q);
+  for (let col = 0; col < q; col++) {
+    const y = new Array(rk);
+    for (let i = 0; i < rk; i++) { let s = 0; for (let l = 0; l < m; l++) s += Q[l][i] * B[l][col]; y[i] = s; }
+    for (let i = rk - 1; i >= 0; i--) {
+      let s = y[i];
+      for (let j = i + 1; j < rk; j++) s -= R[i][j] * y[j];
+      y[i] = s / R[i][i];
+    }
+    for (let i = 0; i < rk; i++) X[perm[i]][col] = y[i];
+  }
+  return { X, rank: rk, rankDeficient: rk < k, perm };
+}
+
+/**
+ * Operador \ do MATLAB: X = A \ B, com B de várias colunas permitido.
+ * Quadrada (m = n): msolve(A, B), isto é, eliminação de Gauss com pivotamento parcial; singularidade lança
+ * 'Matriz singular' (code 'SINGULAR_MATRIX') como msolve (o MATLAB só avisa e devolve Inf; aqui o erro é mantido).
+ * Retangular (m ≠ n): lstsq, mínimos quadrados por QR com pivotamento de colunas e solução básica em posto deficiente.
+ * @param {number[][]} A m x n @param {number[][]} B m x q
+ * @param {{details?:boolean, tol?:number}} [opts] details: devolve {X, rank, rankDeficient, method}
+ *   em vez de só X; method = 'gauss' (quadrada) ou 'qr-pivot' (retangular); tol só vale no caso retangular.
+ * @returns {number[][]|{X:number[][], rank:number|null, rankDeficient:boolean|null, method:string}} X n x q.
+ *   No caso quadrado rank e rankDeficient são null (não estimados: A é não singular ou lança erro).
+ * @throws {Error} SINGULAR_MATRIX (quadrada) @throws {TypeError|RangeError} entradas inválidas
+ */
+export function mldivide(A, B, opts) {
+  const { r: m, c: n } = assertMatrix(A, 'A');
+  const mb = assertMatrix(B, 'B');
+  if (mb.r !== m) throw new RangeError(`mldivide: B deve ter ${m} linhas (recebido ${mb.r})`);
+  if (opts !== undefined && (opts === null || typeof opts !== 'object')) throw new TypeError('opts deve ser um objeto { details, tol }');
+  const details = !!(opts && opts.details);
+  if (m === n) {
+    const X = msolve(A, B);
+    return details ? { X, rank: null, rankDeficient: null, method: 'gauss' } : X;
+  }
+  const res = lstsq(A, B, opts && opts.tol !== undefined ? { tol: opts.tol } : undefined);
+  return details ? { X: res.X, rank: res.rank, rankDeficient: res.rankDeficient, method: 'qr-pivot' } : res.X;
+}
