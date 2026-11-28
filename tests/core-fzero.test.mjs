@@ -84,6 +84,17 @@ test('TolX, MaxIter e MaxFunEvals', () => {
   assert.equal(lim2.exitflag, 0); assert.ok(lim2.output.funcCount <= 4);
 });
 
+test('MaxFunEvals esgotado na busca de intervalo não avalia f além do limite', () => {
+  let n = 0;
+  const g = (x) => { n++; return x * x + 1; };   // sem raiz real: a busca nunca acha mudança de sinal
+  const r = fzero(g, 1, {MaxFunEvals: 5});
+  assert.equal(r.exitflag, 0);
+  assert.equal(r.x, 1);
+  assert.equal(r.fval, 2);
+  assert.equal(n, 5);
+  assert.equal(r.output.funcCount, n);
+});
+
 test('contagem de avaliações coerente com a função chamada', () => {
   let n = 0;
   const r = fzero((x) => { n++; return Math.cos(x) - x; }, [0, 1]);

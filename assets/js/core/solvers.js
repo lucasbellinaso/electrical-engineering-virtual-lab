@@ -358,6 +358,7 @@ export function fzero(f, x0, opts = {}) {
   if (typeof x0 === 'number') {
     if (!Number.isFinite(x0)) throw new RangeError('x0 deve ser finito');
     fa = F(x0);
+    const fx0 = fa;
     if (!Number.isFinite(fa)) throw new RangeError(`f(x0) = ${fa} não é finita`);
     if (fa === 0) {
       return { x: x0, fval: 0, exitflag: 1, output: { iterations: 0, funcCount, interval: [x0, x0], message: 'f(x0) = 0' } };
@@ -379,7 +380,7 @@ export function fzero(f, x0, opts = {}) {
     }
     if (!achou) {
       if (funcCount >= maxEvals) {
-        return { x: x0, fval: F(x0), exitflag: 0, output: { iterations: 0, funcCount, interval: [a, b], message: 'MaxFunEvals atingido na busca de intervalo' } };
+        return { x: x0, fval: fx0, exitflag: 0, output: { iterations: 0, funcCount, interval: [a, b], message: 'MaxFunEvals atingido na busca de intervalo' } };
       }
       throw new RangeError(`fzero: não foi possível achar um intervalo com mudança de sinal em torno de x0 = ${x0}`);
     }
