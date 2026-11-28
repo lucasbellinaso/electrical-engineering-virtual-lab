@@ -940,6 +940,7 @@
         "assets/js/core/solvers.js",
         "assets/js/i18n.js",
         "assets/js/offline.js",
+        "assets/js/project-files.js",
         "assets/vendor/katex/fonts/KaTeX_AMS-Regular.ttf",
         "assets/vendor/katex/fonts/KaTeX_AMS-Regular.woff",
         "assets/vendor/katex/fonts/KaTeX_AMS-Regular.woff2",

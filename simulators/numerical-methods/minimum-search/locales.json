@@ -1,5 +1,14 @@
 {
   "pt-BR": {
+    "projectOpen": "Abrir JSON",
+    "projectSave": "Salvar",
+    "projectSaveAs": "Salvar como",
+    "projectUnsaved": "Alterações não salvas.",
+    "projectSaved": "Configuração salva.",
+    "projectDownloaded": "Download da configuração iniciado.",
+    "projectOpened": "Configuração aberta.",
+    "projectError": "Não foi possível abrir ou salvar a configuração.",
+    "projectDiscard": "Descartar as alterações não salvas?",
     "title": "Busca de mínimos",
     "intro": "Explore como o BFGS encontra um mínimo a partir de um ponto inicial.",
     "parameters": "Configuração",
@@ -43,6 +52,15 @@
     "doublewell": "Dois vales"
   },
   "en": {
+    "projectOpen": "Open JSON",
+    "projectSave": "Save",
+    "projectSaveAs": "Save as",
+    "projectUnsaved": "Unsaved changes.",
+    "projectSaved": "Configuration saved.",
+    "projectDownloaded": "Configuration download started.",
+    "projectOpened": "Configuration opened.",
+    "projectError": "Could not open or save the configuration.",
+    "projectDiscard": "Discard unsaved changes?",
     "title": "Finding minima",
     "intro": "Explore how BFGS finds a minimum from an initial point.",
     "parameters": "Settings",
@@ -86,6 +104,15 @@
     "doublewell": "Double well"
   },
   "es": {
+    "projectOpen": "Abrir JSON",
+    "projectSave": "Guardar",
+    "projectSaveAs": "Guardar como",
+    "projectUnsaved": "Cambios sin guardar.",
+    "projectSaved": "Configuración guardada.",
+    "projectDownloaded": "Descarga de la configuración iniciada.",
+    "projectOpened": "Configuración abierta.",
+    "projectError": "No se pudo abrir o guardar la configuración.",
+    "projectDiscard": "¿Descartar los cambios sin guardar?",
     "title": "Búsqueda de mínimos",
     "intro": "Explora cómo BFGS encuentra un mínimo desde un punto inicial.",
     "parameters": "Configuración",
