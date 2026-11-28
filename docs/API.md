@@ -269,8 +269,15 @@ de 2 MB e dados rejeitados pelo validador do aplicativo. Ele não executa códig
 `saveProject` usa o seletor de arquivo quando disponível e, nos demais navegadores,
 inicia um download; não pode confirmar que o usuário preservou o arquivo baixado.
 O aplicativo de busca de mínimo é o primeiro consumidor. Abertura, gravação e aviso
-de alterações estão disponíveis nele; IndexedDB, recentes, recuperação automática,
-pastas e ZIP ainda não foram implementados. Nenhum arquivo é enviado ao GitHub.
+de alterações estão disponíveis nele. `assets/js/project-sessions.js` fornece
+`createSessionStore(indexedDB, name?)` com métodos assíncronos `read`, `write` e
+`remove`; cada snapshot é JSON validado pelo aplicativo. No piloto, alterações válidas
+são armazenadas localmente após 400 ms e podem ser recuperadas ou descartadas ao abrir;
+a cópia recuperada continua não salva. Campos inválidos preservam a última cópia válida.
+A recuperação depende do IndexedDB e pode ser apagada pelo navegador; não substitui
+exportação. Há uma única cópia por aplicativo e instalação: abas simultâneas podem
+sobrescrevê-la. Recentes, pasta, permissões persistentes e ZIP ainda não foram
+implementados. Nenhum arquivo é enviado ao GitHub.
 
 SISO, Buck, DAB, amp-ops e Buck PID não exportam módulos numéricos públicos. Funções
 com nomes conhecidos no HTML não são imports de uma API geral. Inventário, assinatura

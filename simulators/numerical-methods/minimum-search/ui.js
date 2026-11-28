@@ -3,6 +3,7 @@ import {language} from '../../../assets/js/i18n.js';
 import katex from '../../../assets/vendor/katex/katex.mjs';
 import {functions,solve,gradientArrow} from './model.js';
 import {encodeProject,decodeProject,saveProject} from '../../../assets/js/project-files.js';
+import {createSessionStore} from '../../../assets/js/project-sessions.js';
 const $=id=>document.getElementById(id), plot=$('plot');
 let dictionary={},result=null,index=0,view='2d',timer=null;
 let projectHandle=null,projectSaved=null;
@@ -31,27 +32,40 @@ function draw(spec,steps){const [lo,hi]=spec.range,n=81,axis=Array.from({length:
  }
  const selected=path[path.length-1]; if(spec.dimension===2&&view==='3d') traces.push({type:'scatter3d',mode:'markers',x:[selected[0]],y:[selected[1]],z:[z[z.length-1]],marker:{size:8,color:'#c2410c'},hoverinfo:'skip'}); else traces.push({mode:'markers',x:[selected[0]],y:[spec.dimension===1?z[z.length-1]:selected[1]],marker:{size:14,color:'#c2410c',line:{color:'#ffffff',width:2}},hoverinfo:'skip'});
  Plotly.react(plot,traces,layout,{responsive:true,displaylogo:false}).then(()=>{plot.removeAllListeners('plotly_click');if(view==='2d')plot.on('plotly_click',event=>{const pt=event.points?.[0];if(!pt||!Number.isFinite(pt.x))return;$('x0').value=pt.x;if(spec.dimension===2&&Number.isFinite(pt.y))$('y0').value=pt.y;projectChanged();run();});});}
-$('function').addEventListener('change',e=>choose(e.target.value));$('run').addEventListener('click',run);$('view2d').addEventListener('click',()=>{view='2d';render();});$('view3d').addEventListener('click',()=>{view='3d';render();});$('reset').addEventListener('click',()=>{stop();index=0;render();});$('next').addEventListener('click',()=>{stop();index=Math.min(index+1,result.history.length-1);render();});$('play').addEventListener('click',()=>{if(timer){stop();return;}if(index>=result.history.length-1)index=0;timer=setInterval(()=>{if(index>=result.history.length-1){stop();return;}index++;render();},700);$('play').textContent=tr('pause');});document.addEventListener('languagechange',()=>{if(dictionary.en)translate();});
+$('function').addEventListener('change',e=>{choose(e.target.value);projectChanged();});$('run').addEventListener('click',run);$('view2d').addEventListener('click',()=>{view='2d';render();});$('view3d').addEventListener('click',()=>{view='3d';render();});$('reset').addEventListener('click',()=>{stop();index=0;render();});$('next').addEventListener('click',()=>{stop();index=Math.min(index+1,result.history.length-1);render();});$('play').addEventListener('click',()=>{if(timer){stop();return;}if(index>=result.history.length-1)index=0;timer=setInterval(()=>{if(index>=result.history.length-1){stop();return;}index++;render();},700);$('play').textContent=tr('pause');});document.addEventListener('languagechange',()=>{if(dictionary.en)translate();});
+const recovery=document.createElement('div');recovery.hidden=true;recovery.innerHTML='<p data-m="projectRecovery"></p><div class="actions"><button class="button" type="button" id="project-restore" data-m="projectRestore"></button><button class="button" type="button" id="project-dismiss" data-m="projectDismiss"></button></div>';$('project-status').after(recovery);
+const storageStatus=document.createElement('p');storageStatus.setAttribute('role','status');recovery.after(storageStatus);
+let store=null,recoveryData=null,recoveryPending=true,storageFailed=false,sessionTimer=null,sessionQueue=Promise.resolve();
+const sessionKey='minimum-search';
 const projectFields=['function','x0','y0','tol','maxIter','maxEval'];
 const projectData=()=>Object.fromEntries(projectFields.map(id=>[id,id==='function'?$(id).value:Number($(id).value)]));
 const validProject=data=>Object.keys(data).length===projectFields.length&&projectFields.every(id=>Object.hasOwn(data,id))&&Object.hasOwn(functions,data.function)&&['x0','y0','tol','maxIter','maxEval'].every(id=>typeof data[id]==='number'&&Number.isFinite(data[id]))&&data.tol>=1e-14&&data.tol<=1&&Number.isInteger(data.maxIter)&&data.maxIter>=1&&data.maxIter<=1000&&Number.isInteger(data.maxEval)&&data.maxEval>=1&&data.maxEval<=10000;
 const projectSnapshot=()=>JSON.stringify(projectFields.map(id=>$(id).value));
 const projectDirty=()=>projectSaved!==null&&projectSnapshot()!==projectSaved;
-function projectChanged(){$('project-status').textContent=projectDirty()?tr('projectUnsaved'):'';}
+function queueSession(action){sessionQueue=sessionQueue.then(action).catch(()=>{storageFailed=true;storageStatus.textContent=tr('projectStorageError');});return sessionQueue;}
+function scheduleSession(){
+ clearTimeout(sessionTimer);if(recoveryPending||!store||storageFailed)return;
+ sessionTimer=setTimeout(()=>{
+  if(!projectDirty()){queueSession(()=>store.remove(sessionKey));return;}
+  if(projectFields.some(id=>!$(id).checkValidity()||$(id).value.trim()==='')||!validProject(projectData()))return;
+  const text=encodeProject(sessionKey,projectData());queueSession(()=>store.write(sessionKey,text));
+ },400);
+}
+function projectChanged(){$('project-status').textContent=projectDirty()?tr('projectUnsaved'):'';scheduleSession();}
 for(const id of projectFields)$(id).addEventListener('input',projectChanged);
 window.addEventListener('beforeunload',event=>{if(projectDirty()){event.preventDefault();event.returnValue='';}});
 async function saveConfiguration(saveAs){
  try{if(projectFields.some(id=>!$(id).checkValidity()||$(id).value.trim()==='')||!validProject(projectData()))throw Error('invalid');
   const snapshot=projectSnapshot(),text=encodeProject('minimum-search',projectData());
   const handle=await saveProject(text,'minimum-search.json',saveAs?null:projectHandle);
-  projectHandle=handle;projectSaved=snapshot;$('project-status').textContent=projectDirty()?tr('projectUnsaved'):tr(handle?'projectSaved':'projectDownloaded');
+  projectHandle=handle;projectSaved=snapshot;$('project-status').textContent=projectDirty()?tr('projectUnsaved'):tr(handle?'projectSaved':'projectDownloaded');scheduleSession();
  }catch(error){if(error.name!=='AbortError')$('project-status').textContent=tr('projectError');}
 }
 $('project-save').addEventListener('click',()=>saveConfiguration(false));
 $('project-save-as').addEventListener('click',()=>saveConfiguration(true));
 async function openConfiguration(file,handle=null){if(!file)return;try{
  if(file.size>2_000_000)throw Error('size');const data=decodeProject(await file.text(),'minimum-search',validProject);
- $('function').value=data.function;choose(data.function);for(const id of projectFields)$(id).value=data[id];run();projectHandle=handle;projectSaved=projectSnapshot();$('project-status').textContent=tr('projectOpened');
+ $('function').value=data.function;choose(data.function);for(const id of projectFields)$(id).value=data[id];run();projectHandle=handle;projectSaved=projectSnapshot();$('project-status').textContent=tr('projectOpened');scheduleSession();
  }catch{$('project-status').textContent=tr('projectError');}}
 $('project-open').addEventListener('click',async()=>{
  if(projectDirty()&&!confirm(tr('projectDiscard')))return;
@@ -59,4 +73,20 @@ $('project-open').addEventListener('click',async()=>{
  else{$('project-file').value='';$('project-file').click();}
 });
 $('project-file').addEventListener('change',event=>openConfiguration(event.target.files?.[0]));
-try{const response=await fetch(new URL('./locales.json',import.meta.url));if(!response.ok)throw Error('locales');dictionary=await response.json();await initialize();$('function').value='rosenbrock';translate();choose('rosenbrock');projectSaved=projectSnapshot();}catch(error){console.error(error);$('error').textContent='Unable to load / N\u00e3o foi poss\u00edvel carregar.';}
+$('project-restore').addEventListener('click',()=>{
+ if(projectDirty()&&!confirm(tr('projectDiscard')))return;
+ const data=recoveryData;$('function').value=data.function;choose(data.function);for(const id of projectFields)$(id).value=data[id];run();projectHandle=null;
+ // A recovered snapshot is still unsaved, even if it matches the initial defaults.
+ projectSaved='recovered';recovery.hidden=true;recoveryPending=false;$('project-status').textContent=tr('projectRecovered');
+});
+$('project-dismiss').addEventListener('click',()=>{recovery.hidden=true;recoveryPending=false;recoveryData=null;queueSession(()=>store.remove(sessionKey)).then(scheduleSession);});
+async function initializeRecovery(){
+ try{store=createSessionStore(window.indexedDB,'eevl-project-sessions:'+new URL('../../../',import.meta.url).pathname);const text=await store.read(sessionKey);
+  if(text!==undefined){
+   try{recoveryData=decodeProject(text,sessionKey,validProject);}catch{recovery.querySelector('p').dataset.m='projectRecoveryInvalid';recovery.querySelector('p').textContent=tr('projectRecoveryInvalid');$('project-restore').disabled=true;}
+   recovery.hidden=false;return;
+  }
+  recoveryPending=false;scheduleSession();
+ }catch(error){recoveryPending=false;storageFailed=true;storageStatus.textContent=tr('projectStorageError');console.warn('Session recovery:',error);}
+}
+try{const response=await fetch(new URL('./locales.json',import.meta.url));if(!response.ok)throw Error('locales');dictionary=await response.json();await initialize();$('function').value='rosenbrock';translate();choose('rosenbrock');projectSaved=projectSnapshot();initializeRecovery();}catch(error){console.error(error);$('error').textContent='Unable to load / N\u00e3o foi poss\u00edvel carregar.';}
