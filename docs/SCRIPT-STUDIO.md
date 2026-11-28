@@ -1,6 +1,6 @@
 # EEVL Script Studio — Proposta de execução, segurança e contrato semântico
 
-**Estado: proposta aprovada parcialmente (28/11/2026).** Nada aqui está implementado, exceto o parser e o formatador da fase 1 (em desenvolvimento, gramática em [SCRIPT-GRAMMAR.md](SCRIPT-GRAMMAR.md)), as funções do core da seção 7.1 já documentadas em [API.md](API.md) e a prova de conceito da fase 0 (`experiments/script-studio-poc/`). Decisões tomadas e questões em aberto estão na seção 12. Versão viva: documento no Claude Docs; esta cópia é a referência para agentes.
+**Estado: proposta aprovada parcialmente (28/11/2026).** Nada aqui está implementado, exceto o parser e o formatador da fase 1 (em desenvolvimento, gramática em [SCRIPT-GRAMMAR.md](SCRIPT-GRAMMAR.md)), as funções do core da seção 7.1 já documentadas em [API.md](API.md) e a prova de conceito da fase 0 (`experiments/script-studio-poc/`). Decisões tomadas e questões em aberto estão na seção 12 (todas as questões da primeira rodada foram decididas em 28/11/2026). Versão viva: documento no Claude Docs; esta cópia é a referência para agentes.
 
 ## 1. Resumo das decisões propostas
 
@@ -8,8 +8,8 @@ Esta proposta resolve os problemas identificados na revisão da especificação 
 
 **Terminologia usada em todo o documento:**
 
-- **Modo de depuração** (botão *Run Script*): executa instrução por instrução, com exibição implícita, linha atual e depuração.
-- **Modo rápido** (botão *Compile & Run*, nome a confirmar): executa o script inteiro como uma única função JavaScript, sem visualizações implícitas.
+- **Modo de depuração** (botão *Run*): executa instrução por instrução, com exibição implícita, linha atual e depuração.
+- **Modo rápido** (botão *Fast Run*): executa o script inteiro como uma única função JavaScript, sem visualizações implícitas.
 - **Tradutor**: o componente único (parser → AST → gerador de JavaScript) que atende aos dois modos. Não há interpretador de AST separado.
 - **Runtime**: as rotinas JavaScript do Script Studio (valores, operadores, indexação, variantes de funções) usadas pelo código gerado.
 - **Core**: a biblioteca matemática existente em `assets/js/core/`.
@@ -92,12 +92,13 @@ Verificação rápida de `assets/js/core/` (21 módulos, cerca de 5.600 linhas) 
 ## 4. Worker, cancelamento, watchdog e limites
 
 - **Ciclo de vida.** O modo rápido usa um Worker novo por execução, que pode ser pré-aquecido. O modo de depuração usa um Worker de sessão, que mantém o workspace entre execuções (seção 5). Stop = `worker.terminate()`, que sempre funciona. O que já foi enviado à UI permanece; o resto se perde, e isso deve ser documentado.
-- **Watchdog.** Fica na thread principal: tempo máximo configurável, com padrão a decidir. O runtime manda um batimento junto com cada lote de saída. Se a execução ficar muito tempo sem batimento, a UI mostra "executando há X s" com o botão Stop; o encerramento automático só acontece ao atingir o limite.
+- **Watchdog.** Fica na thread principal. **Sem tempo máximo por padrão** (decisão da questão 6): o script roda num Worker, então a interface nunca trava e o Stop sempre funciona, inclusive num `while true`. Depois de 10 s de execução, a barra de status mostra "executando há X s" com o Stop em destaque. O runtime manda um batimento junto com cada lote de saída; se ficar muito tempo sem batimento, a UI avisa que o script pode estar preso num laço. Um tempo máximo pode ser ligado nas configurações (útil em testes automáticos); só então há encerramento automático.
 - **Protocolo Worker → UI.** Mensagens `out` (console), `ws` (workspace), `line` (linha atual), `plot`, `error` e `done` (estatísticas), com número de sequência para garantir a ordem. O envio acontece em lotes, no máximo a cada \~50 ms ou quando o buffer passa de N itens.
-- **Transferência de dados.** Valores publicados no workspace são snapshots. Matrizes grandes vão como `ArrayBuffer` transferível quando possível. Acima de um teto (por exemplo 10⁶ elementos), a UI recebe só um resumo (dimensões, mínimo, máximo, primeiros elementos), e o restante é pedido sob demanda enquanto o Worker de sessão vive.
-- **Limites que dá para impor de verdade:**
-  - tamanho máximo por matriz e memória estimada, com contador no runtime em `zeros`, `ones`, `rand`, concatenação e crescimento por indexação;
-  - volume de console (número de linhas e bytes), truncado com aviso;
+- **Transferência de dados.** Valores publicados no workspace são snapshots. Matrizes grandes vão como `ArrayBuffer` transferível quando possível. Acima de 10⁶ elementos, a UI recebe só um resumo (dimensões, mínimo, máximo, primeiros elementos), e o restante é pedido sob demanda enquanto o Worker de sessão vive.
+- **Limites que dá para impor de verdade** (valores padrão decididos na questão 6, ajustáveis nas configurações):
+  - tamanho máximo por matriz: 10⁷ elementos (80 MB de `double`); memória estimada total: 500 MB. Contador no runtime em `zeros`, `ones`, `rand`, concatenação e crescimento por indexação; ao passar, erro com a linha e o tamanho pedido (por exemplo, `zeros(1e5)` pediria 80 GB). No celular, valores menores, calibrados com os benchmarks da seção 10;
+  - console: guarda as últimas 10.000 linhas, com o aviso "saída anterior truncada";
+  - envio completo ao workspace: até 10⁶ elementos por variável (item anterior);
   - número de figuras.
 
   O navegador não deixa limitar a memória total de um Worker. Isso deve ser documentado.
@@ -107,7 +108,7 @@ Verificação rápida de `assets/js/core/` (21 módulos, cerca de 5.600 linhas) 
 
 Não há interpretador de AST separado. O mesmo tradutor (parser → AST → gerador de JavaScript) atende aos dois modos, variando só a forma do código gerado. Como as contas são feitas pelas mesmas rotinas do runtime, o requisito de resultados idênticos fica muito mais fácil de cumprir.
 
-|  | Modo de depuração (Run Script) | Modo rápido (Compile & Run) |
+|  | Modo de depuração (Run) | Modo rápido (Fast Run) |
 | --- | --- | --- |
 | Forma do código | gerador (`function*`) com `yield` antes de cada instrução | uma função comum do script inteiro, sem instrumentação |
 | Variáveis | objeto `env`, fácil de inspecionar e publicar | variáveis locais do JavaScript |
@@ -570,9 +571,9 @@ Decisões a fechar antes do parser. Elas definem o que os testes verificam.
 | Intervalos | Número de elementos calculado antes; `a:b` com `b<a` é vazio | Seção 6 |
 | Tipos numéricos | `double` real (padrão), complexo, lógico; `int` = `double` de valor inteiro | `int8`...`uint64` e `single` depois |
 | Real por padrão | O tipo do resultado depende só dos tipos dos argumentos; `sqrt`, `log`, `^` etc. de real são reais; `complexsqrt`, `complexlog`, `complexpower` para complexo; `roots`, `eig`, `pole`, `zero` sempre complexas | Seção 6.1 |
-| Erro de domínio | `sqrt(-4)` com argumento real dá erro com sugestão, não `NaN` | A confirmar (questão 10) |
-| Complexo → real | Não há conversão automática; exibição omite `+0i` | A confirmar (questão 4) |
-| Texto | `char`; `'...'` e `"..."` produzem o mesmo tipo | Tipo `string` fora da v1 (questão 3). Transposta ou aspas, como no MATLAB: `'` depois de um valor é transposta, mesmo com espaço antes (`a '`); dentro de `[...]`, espaço antes de `'` abre texto (`[a 'b']` tem dois elementos) |
+| Erro de domínio | `sqrt(-4)` com argumento real dá erro com a sugestão `complexsqrt(-4)`, não `NaN` | Decidido (questão 10) |
+| Complexo → real | Não há conversão automática; só funções explícitas mudam o tipo (`real`, `abs`, `angle`, `imag`, `complex` etc.); exibição omite `+0i` | Decidido (questão 4) |
+| Texto | `char`; `'...'` e `"..."` produzem o mesmo tipo | Decidido (questão 3); tipo `string` fora da v1. Transposta ou aspas, como no MATLAB: `'` depois de um valor é transposta, mesmo com espaço antes (`a '`); dentro de `[...]`, espaço antes de `'` abre texto (`[a 'b']` tem dois elementos) |
 | Declarações | `int`, `real`, `complex`, `bool`, `char`, `sys` no início da instrução, antes do primeiro uso; inicialização opcional, declaradores separados por vírgula; modificador `varsize` | Seção 6.1 |
 | Tamanho | Variável declarada: fixo na inicialização (ou na primeira atribuição); `varsize` ou `= []` para tamanho variável. Não declarada: livre | Seção 6.1 |
 | Semântica de valor | Atribuição e passagem não copiam; cópia só na primeira escrita em array compartilhado | Seção 6.3 |
@@ -591,7 +592,8 @@ Decisões a fechar antes do parser. Elas definem o que os testes verificam.
 | Controle de fluxo | `if`/`elseif`/`else`, `for`, `while`, `switch`, `break`, `continue`, `return` | `try`/`catch` na v2 |
 | Precedência | Igual ao MATLAB: `-2^2 = -4`; `^`, `.^`, `'` e `.'` no mesmo nível, associativos à esquerda (`a^b'` é `(a^b)'`, `2^3^2` é `(2^3)^2`) |  |
 | `ans` | Criado por expressão sem atribuição, nos dois modos | Exibido só no modo de depuração |
-| Formatação | `format short` como padrão e `format long` opcional; uma única função de formatação compartilhada | **Pendente:** especificar com exemplos antes da fase 2 (questão 11) |
+| Formatação | `format short` como padrão; `format long`, `format shortEng` e `format longEng` opcionais; uma única função de formatação compartilhada | Seção 9.1, aprovada (questão 11) |
+| Arquivos | Scripts em `.evls` e modelos em `.evlm` (de *Engineering Virtual Laboratory*); `.m` também é aberto e executado | Decidido (questão 7). A extensão própria deixa claro que a linguagem não é o MATLAB; salvar como `.m` é exportação |
 | Erros | Mensagens no estilo MATLAB, com linha e coluna | Erros do core (`TypeError`, `RangeError`, `SINGULAR_MATRIX`) convertidos para esse formato |
 
 ## 9. Workspace, print/disp e ans
@@ -604,11 +606,11 @@ As regras abaixo mantêm o que a especificação define e preenchem as lacunas:
 4. **`print`/`disp` dentro de função.** Exibe, mas nunca publica. Isso resolve os conflitos de nome entre escopos que a especificação deixou em aberto. Variáveis locais só aparecem no depurador.
 5. **Snapshot.** O valor publicado é uma cópia do momento da publicação. Publicações repetidas da mesma variável dentro de um lote são agrupadas, e só a última vai à UI. O console recebe todas as linhas, respeitando o limite de volume.
 6. **Formato de múltiplos argumentos.** Em `print("Resultado:", a)`, os argumentos são separados por espaço, escalares ficam na mesma linha e matrizes começam numa linha nova. Aceitar vários argumentos em `disp` é uma extensão em relação ao MATLAB, e a documentação deve dizer isso.
-7. **Persistência.** O modo de depuração mantém o workspace entre execuções (Worker de sessão). Proposta: cada execução no modo rápido começa do zero e mostra só o que publicou, o que garante execuções reprodutíveis (questão 2).
+7. **Persistência.** O modo de depuração mantém o workspace entre execuções (Worker de sessão). Cada execução no modo rápido começa do zero e mostra só o que publicou, o que garante execuções reprodutíveis (decidido na questão 2).
 8. **Comandos de ambiente.** `clear` (memória interna e workspace visível), `clc`, `who`/`whos` e `format`, todos chamados como função.
 9. **Documentação.** Explicar que o mesmo script mostra workspaces diferentes nos dois modos, com o exemplo da seção 2 da especificação, para que isso não pareça defeito. Avisar também que `print` tem significado diferente no MATLAB e no Octave, onde exporta figuras.
 
-### 9.1 Formatação da saída (proposta, a aprovar)
+### 9.1 Formatação da saída (aprovada)
 
 Regras da exibição implícita e de `print`/`disp`, baseadas no `format short` e no `format compact` do MATLAB recente. Uma única função de formatação atende console, workspace e testes.
 
@@ -618,10 +620,11 @@ Regras da exibição implícita e de `print`/`disp`, baseadas no `format short` 
 2. **Inteiros:** se todos os valores exibidos são inteiros, não há casas decimais (`x = 5`, `[1 2 3]`). Vale também para variáveis `int`.
 3. **Não inteiros, `format short`:** 4 casas decimais em notação fixa quando `0,001 ≤ |x| < 1000`; fora disso, notação científica com 4 casas (`1.2346e+04`, `1.0000e-04`).
 4. **`format long`:** 15 casas decimais (`3.141592653589793`), com as mesmas faixas.
-5. **Matrizes com ordens de grandeza diferentes:** fator de escala comum numa linha acima (`1.0e+03 *`), como no MATLAB. Colunas alinhadas à direita.
-6. **Matrizes largas:** quebradas em blocos de colunas pela largura do console (padrão 80 caracteres), com o cabeçalho `Columns 1 through 8`.
-7. **Especiais:** `Inf`, `-Inf`, `NaN`; `-0` aparece como `0`.
-8. **Separador decimal:** sempre ponto, independentemente do idioma da interface, para que a saída possa ser copiada de volta para o código.
+5. **`format shortEng` e `format longEng`** (notação de engenharia, como no MATLAB): expoente sempre múltiplo de 3 e mantissa em `1 ≤ |m| < 1000`, com 4 casas decimais (`shortEng`) ou 15 (`longEng`), para qualquer valor não inteiro. Inteiros seguem a regra 2. Em matrizes não há fator de escala comum: cada elemento leva o próprio expoente, com as colunas alinhadas.
+6. **Matrizes com ordens de grandeza diferentes:** fator de escala comum numa linha acima (`1.0e+03 *`), como no MATLAB. Colunas alinhadas à direita.
+7. **Matrizes largas:** quebradas em blocos de colunas pela largura do console (padrão 80 caracteres), com o cabeçalho `Columns 1 through 8`.
+8. **Especiais:** `Inf`, `-Inf`, `NaN`; `-0` aparece como `0`.
+9. **Separador decimal:** sempre ponto, independentemente do idioma da interface, para que a saída possa ser copiada de volta para o código.
 
 **Exemplos (`format short`):**
 
@@ -646,6 +649,19 @@ Regras da exibição implícita e de `print`/`disp`, baseadas no `format short` 
 
 Na tabela, `/` indica quebra de linha.
 
+**Exemplos (`format shortEng`):**
+
+| Comando | Saída |
+| --- | --- |
+| `x = pi` | `x = 3.1416e+00` |
+| `y = 12345.678` | `y = 12.3457e+03` |
+| `C = 4.7e-4` | `C = 470.0000e-06` |
+| `L = 2.2e-9` | `L = 2.2000e-09` |
+| `v = [1500 0.022]` | `v =` / `     1.5000e+03   22.0000e-03 ` |
+| `n = 5000` | `n = 5000` (inteiro, regra 2) |
+
+O número de dígitos do expoente e o alinhamento exato serão conferidos com o MATLAB e o Octave nos testes de referência (seção 10). Uma variante com prefixos SI (`12.35k`, `470µ`) fica para depois da v1: ela não pode ser colada de volta no código.
+
 **Sistemas (`sys`)**, como no MATLAB:
 
 ```text
@@ -660,24 +676,24 @@ Continuous-time transfer function.
 
 Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.01 seconds`).
 
-**Pontos a confirmar:**
+**Decisões complementares:**
 
-- Cabeçalho de tipo para lógicos: o MATLAB recente mostra `b = logical 1`; a proposta acima omite.
-- Textos fixos da saída (`Columns 1 through 8`, `empty double row vector`, `Continuous-time transfer function`): manter em inglês, como no MATLAB, ou traduzir conforme o idioma da interface? Sugestão: traduzir os textos e manter números e nomes inalterados.
+- Lógicos são exibidos sem o cabeçalho `logical` (`b = 1`); o tipo aparece no workspace.
+- Textos fixos da saída (`Columns 1 through 8`, `empty double row vector`, `Continuous-time transfer function`) são traduzidos conforme o idioma da interface; números e nomes ficam inalterados.
 
 ### 9.2 Interface do Script Studio (proposta)
 
-**Princípio: todo botão equivale a um comando.** Cada ação de botão executa o comando correspondente na Command Window, que fica visível no histórico (por exemplo, `format long` ou `clear x y`), como no MATLAB. O usuário aprende a sintaxe usando a interface. No sentido inverso, um comando no código atualiza o estado dos botões. Durante uma execução, os botões que alteram o workspace ficam desabilitados.
+**Princípio: todo botão equivale a um comando.** Cada ação de botão executa o comando correspondente na Command Window, que fica visível no histórico (por exemplo, `format("long")` ou `clear("x", "y")`, na forma de função, já que a sintaxe de comando não é suportada), como no MATLAB. O usuário aprende a sintaxe usando a interface. No sentido inverso, um comando no código atualiza o estado dos botões. Durante uma execução, os botões que alteram o workspace ficam desabilitados.
 
 **Partes da janela:**
 
 | Parte | Conteúdo | Etapa |
 | --- | --- | --- |
-| Editor de script | Abas, numeração de linhas, realce de sintaxe, linha em execução, erros marcados na linha; barra própria com o botão de letras gregas | v1 |
+| Editor de script | CodeMirror 6 (questão 5); abas, numeração de linhas, realce de sintaxe, linha em execução, erros marcados na linha; barra própria com o botão de letras gregas | v1 |
 | Command Window | Console de saída e linha de comando (`>>`) com histórico (seta para cima); barra de ferramentas própria | v1 |
 | Workspace | Variáveis publicadas: nome, valor resumido, tamanho, tipo; barra de ferramentas própria | v1 |
 | Figuras | Gráficos em abas, exportação de imagem pela interface | v1 |
-| Barra principal | Run Script, Compile & Run, Stop, Run Section; Pause, Step e Continue com a depuração | v1 |
+| Barra principal | Run, Fast Run, Stop, Run Section; Pause, Step e Continue com a depuração | v1 |
 | Barra de status | Modo, tempo de execução, linha e coluna do cursor, estado | v1 |
 | Arquivos | Scripts do projeto, reaproveitando a infraestrutura de arquivos e sessões do EEVL | logo depois |
 | Visualizador de variável | Matriz como tabela (duplo clique no workspace), carregada sob demanda | logo depois |
@@ -699,7 +715,7 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 
 **Barra da Command Window** (acima da linha de comando):
 
-- **Seletor `short` | `long`:** equivale a `format short` / `format long`. É uma preferência da sessão, nos dois modos, e persiste entre execuções. Um `format` no código muda o seletor. Vale para as saídas novas; o console já impresso não muda, mas o workspace é redesenhado com o novo formato (por isso a interface guarda os valores, não o texto formatado).
+- **Lista suspensa de formato** com `short`, `long`, `shortEng` e `longEng`: equivale a `format("short")`, `format("long")`, `format("shortEng")` e `format("longEng")`. É uma preferência da sessão, nos dois modos, e persiste entre execuções. Um `format` no código muda o seletor. Vale para as saídas novas; o console já impresso não muda, mas o workspace é redesenhado com o novo formato (por isso a interface guarda os valores, não o texto formatado).
 - **Limpar:** equivale a `clc` (só o console).
 - **Copiar saída:** copia o texto do console.
 - A linha de comando executa no modo de depuração, sobre o workspace do Worker de sessão, como um Run Selection de uma linha. O modo rápido só imprime na Command Window.
@@ -707,7 +723,7 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 **Barra do Workspace:**
 
 - **Limpar tudo:** equivale a `clear`. Pede confirmação, porque não pode ser desfeito.
-- **Limpar selecionadas:** equivale a `clear x y` para as variáveis marcadas.
+- **Limpar selecionadas:** equivale a `clear("x", "y")` para as variáveis marcadas.
 - **Buscar/filtrar** por nome.
 - **Colunas opcionais:** mínimo, máximo, classe, real ou complexo.
 - **Exportar variável** (CSV) e **salvar/carregar workspace** (equivalentes a `save` e `load`, em formato a definir): logo depois da v1.
@@ -721,7 +737,7 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 | Painel esquerdo, recolhível | Arquivos (pasta do computador), Ajuda, Busca | Fechado por padrão; aberto por uma faixa estreita de ícones ou por atalho de teclado |
 | Sob demanda | Depuração (pilha, variáveis locais), JavaScript gerado | Aparece ao parar num breakpoint ou quando pedido |
 
-**Mockup — computador.** Editor com a linha em execução destacada; Command Window com o seletor `short`/`long` e os botões acima da linha de comando; painel direito com a aba Workspace ativa e um ponto laranja na aba Figuras indicando figura nova; painel esquerdo recolhido (só os ícones de Arquivos, Ajuda e Busca); divisórias arrastáveis entre os painéis; barra de status embaixo. Os nomes dos botões são provisórios (questão 8).
+**Mockup — computador.** Editor com a linha em execução destacada; Command Window com a lista suspensa de formato e os botões acima da linha de comando; painel direito com a aba Workspace ativa e um ponto laranja na aba Figuras indicando figura nova; painel esquerdo recolhido (só os ícones de Arquivos, Ajuda e Busca); divisórias arrastáveis entre os painéis; barra de status embaixo. Os botões de execução são *Run* e *Fast Run* (questão 8); o mockup pode mostrar os nomes antigos.
 
 ![Mockup do Script Studio no computador](images/script-studio-mockup-computador.png)
 
@@ -829,18 +845,20 @@ Há duas mudanças em relação à seção 15 da especificação. A prova de con
 
 ## 12. Questões em aberto
 
-**Decisões já tomadas pelo autor:** arquitetura de um tradutor com dois modos (seção 5); princípios como requisitos (1.1); declarações `int`, `real`, `complex`, `bool`, `char` com inicialização separada por vírgula; tamanho fixo nas variáveis declaradas com o modificador `varsize`; real por padrão com `complexsqrt`, `complexlog`, `complexpower`; tipo `sys` e, na v1, só tipos definidos em JavaScript; tabela do contrato semântico (seção 8) aprovada, com 2-D na v1 e preparação para N-D (seção 7).
+**Decisões já tomadas pelo autor:** arquitetura de um tradutor com dois modos (seção 5); princípios como requisitos (1.1); declarações `int`, `real`, `complex`, `bool`, `char` com inicialização separada por vírgula; tamanho fixo nas variáveis declaradas com o modificador `varsize`; real por padrão com `complexsqrt`, `complexlog`, `complexpower`; tipo `sys` e, na v1, só tipos definidos em JavaScript; tabela do contrato semântico (seção 8) aprovada, com 2-D na v1 e preparação para N-D (seção 7); letras gregas em nomes e `π` constante (seção 8).
 
-**Em aberto** (cada item traz uma sugestão, mas a decisão é do autor):
+**Decididas em 28/11/2026** (primeira rodada de questões):
 
-1. **Blob URLs na CSP do site:** confirmado no Edge e no Firefox que `script-src 'self' blob:` e `worker-src 'self' blob:`, com o Worker criado por Blob, funcionam e bloqueiam `eval` (seção 3). Sugestão: adotar já essa arquitetura e confirmar o Safari quando houver um aparelho da Apple. Alternativas, se o Safari falhar: permitir `new Function` só na página do Studio, ou *closure compilation* só nesse navegador.
-2. **Workspace no modo rápido:** começar vazio ou herdar o workspace atual? Sugestão: começar vazio, para execuções reprodutíveis.
-3. **Texto:** `"..."` deve ser um tipo `string` distinto, como no MATLAB moderno, ou o mesmo `char` de `'...'`? Sugestão: o mesmo tipo na v1.
-4. **Complexo voltando a real:** confirmar que não há conversão automática (consequência do requisito 2). Sugestão: confirmar.
-5. **Editor:** CodeMirror 6, Monaco ou um editor próprio? O Monaco é pesado para o GitHub Pages e para o service worker. Sugestão: CodeMirror 6.
-6. **Limites padrão:** tempo máximo, tamanho máximo de matriz, linhas do console e teto para envio completo ao workspace.
-7. **Extensão de arquivo:** `.m`, reconhecida por editores, ou uma extensão própria, que deixa claro que a linguagem não é o MATLAB?
-8. **Nomes dos botões:** manter *Run Script* e *Compile & Run*, ou usar nomes que reflitam os modos (por exemplo *Run* e *Fast Run*)?
-9. **Declaração violada:** erro sempre (sugerido) ou conversão automática quando possível, como o MATLAB faz no bloco `arguments`?
-10. **Erro de domínio:** confirmar que `sqrt(-4)` com argumento real dá erro (sugerido), e não `NaN`.
-11. **Formatação da saída:** especificar com exemplos como `format short` exibe escalares, matrizes (fator de escala comum), complexos, vazios, `Inf`, `NaN` e sistemas. Necessário antes da fase 2.
+1. **Blob URLs na CSP do site:** adotada a arquitetura da seção 3 (Worker criado por Blob, CSP sem `unsafe-eval`), confirmada no Edge e no Firefox. O Safari será confirmado quando houver um aparelho da Apple; se falhar, permitir `new Function` só na página do Studio, ou *closure compilation* só nesse navegador.
+2. **Workspace no modo rápido:** cada execução começa vazia, para ser reprodutível (seção 9, item 7).
+3. **Texto:** `"..."` e `'...'` produzem o mesmo `char` na v1; tipo `string` depois.
+4. **Complexo voltando a real:** sem conversão automática. Só funções explícitas mudam o tipo (`real`, `abs`, `angle`, `imag`, `complex` etc.).
+5. **Editor:** CodeMirror 6.
+6. **Limites padrão** (seção 4): sem tempo máximo por padrão (o Stop sempre funciona; aviso após 10 s; limite opcional nas configurações); 10⁷ elementos por matriz e 500 MB estimados no total; 10.000 linhas de console; envio completo ao workspace até 10⁶ elementos. Valores menores no celular.
+7. **Extensão de arquivo:** `.evls` para scripts e `.evlm` para modelos (*Engineering Virtual Laboratory*); `.m` também é aberto e executado.
+8. **Nomes dos botões:** *Run* (modo de depuração) e *Fast Run* (modo rápido).
+9. **Declaração violada:** sempre erro, com a linha (seção 6.1). Variáveis sem declaração continuam com tipo inferido automaticamente, mostrado no workspace.
+10. **Erro de domínio:** `sqrt(-4)` com argumento real dá erro com a sugestão `complexsqrt(-4)`.
+11. **Formatação da saída:** seção 9.1 aprovada, com os formatos de engenharia `shortEng` e `longEng`; a escolha do formato na Command Window é uma lista suspensa.
+
+**Em aberto:** nenhuma questão pendente desta rodada. Novas questões entram aqui numeradas a partir de 12.
