@@ -1,7 +1,7 @@
 # Arquitetura do EEVL
 
 Referência normativa de princípios, decisões e contratos. Estado inspecionado em
-26/11/2026, base `2167d2f`; evolução proposta em [ROADMAP.md](ROADMAP.md).
+27/11/2026; evolução proposta em [ROADMAP.md](ROADMAP.md).
 
 ## Propósito e limites
 
@@ -31,8 +31,7 @@ validação; não integram os requisitos de execução dos aplicativos.
 | PWA | manifesto, cache versionado, shell pela rede com fallback offline e labs sob demanda |
 | Validação | verificações de integridade, testes analíticos específicos e preservação por hash |
 
-Há treze entradas disponíveis no catálogo desta base: seis legados e sete aplicativos originais, todos
-declarados em EN/PT-BR/ES; nos legados a tradução é parcial e o original segue em português. O espanhol das descrições, sozinho, **não** muda
+Há 17 entradas disponíveis no catálogo desta base; nos legados a tradução é parcial e o original segue em português. O espanhol das descrições, sozinho, **não** muda
 essa classificação; vale o campo `languages` de cada entrada.
 O template RC fica fora do catálogo. A lista atualizável de arquivos e metadados é
 [data/simulators.json](data/simulators.json), não este inventário datado.
@@ -42,8 +41,8 @@ Elétricos de Potência, usa modelo puro por fase RMS e é o primeiro consumidor
 do núcleo matemático nos aplicativos. O núcleo também é armazenado sob demanda
 para manter o laboratório disponível offline depois da primeira visita.
 
-Não existem ainda interpretador MATLAB/Octave compartilhado, gerenciador genérico de
-projetos, motor genérico de blocos, identificação ou otimização. A análise nodal atual
+O núcleo já oferece otimização local e ajuste de curvas. Não existem ainda interpretador MATLAB/Octave compartilhado, gerenciador completo de
+projetos ou motor genérico de blocos. A análise nodal atual
 não equivale a um editor simbólico/multifísico completo.
 
 ## Organização dos aplicativos
@@ -69,8 +68,8 @@ já estão separados da UI nos aplicativos originais. Consulte as interfaces rea
 [docs/API.md](docs/API.md) antes de implementar matemática semelhante.
 
 `assets/js/core/` já contém os módulos listados em “Estado implementado”; podem vir
-simulation, identification, optimization, signal-processing, symbolic, interpreter
-e project. **Estes últimos não são módulos existentes**; não criar arquivos vazios.
+simulation, identification, symbolic e interpreter; `optimize.js` e `signal.js` já existem.
+Não criar arquivos vazios.
 Extrair quando houver necessidade real e contrato testável. Dependências de UI não
 podem contaminar o modelo puro. Gráficos e 3D também devem ter interfaces próprias.
 
@@ -135,12 +134,16 @@ explícita. Monitorar memória/variáveis internas e registrar ordem no resultad
 A memória explícita tem finalidade didática. Sintaxe e exemplo PI em
 [docs/LANGUAGE.md](docs/LANGUAGE.md); nada desse runtime foi implementado nesta tarefa.
 
-### Projetos e armazenamento futuros
+### Projetos e armazenamento
 
-Gerenciador compartilhado: novo, abrir, salvar/salvar como, duplicar, renomear, excluir,
-importar/exportar, recentes, autosave e aviso de alterações não salvas. JSON versionado;
-extensões **propostas**, ainda não definitivas: `.eevl` projeto, `.eevlc` controlador,
-`.eevlp` planta. Um projeto poderá guardar planta/parâmetros, estados iniciais,
+O piloto de busca de mínimo abre e salva configurações JSON por `assets/js/project-files.js`,
+valida aplicativo e versão e avisa sobre alterações não salvas. O navegador pode oferecer
+File System Access API ou abertura/download convencional. Cada aplicativo valida seus dados;
+não se enviam arquivos ao GitHub. Documentação e limites em [docs/API.md](docs/API.md).
+
+Ainda faltam novo projeto, pasta opcional, recentes, autosave e recuperação, permissões
+persistentes e expansão a outros aplicativos. Sem extensões específicas por tipo; usar
+JSON, CSV, ZIP, SVG e GLB/glTF conforme o conteúdo. Um projeto poderá guardar planta/parâmetros, estados iniciais,
 controladores/memória/código, períodos, referências, perturbações, configuração de
 simulação/gráficos e resultados opcionais. CSV e SVG/PNG quando pertinentes.
 
@@ -148,7 +151,24 @@ File System Access API será opcional: escolher pasta por gesto do usuário, gua
 handles em IndexedDB (não cookies), restaurar referências e verificar permissões;
 solicitar autorização novamente quando necessário. Sem suporte, usar IndexedDB e
 importação/exportação convencional. O aplicativo deve funcionar sem pasta obrigatória.
-Nunca enviar arquivos pessoais automaticamente ao GitHub. Nenhum gerenciador foi criado.
+Nunca enviar arquivos pessoais automaticamente ao GitHub. O gerenciador completo ainda não existe.
+
+## Contratos, diagramas e visualização futuros
+
+O contrato de modelo deve separar matemática da interface e identificar entradas,
+saídas, portas físicas acausais, parâmetros, estados, unidades, dimensões, referenciais,
+períodos, equações, eventos e versão. Será validado com consumidores reais antes de
+qualquer motor universal. Workers existentes são específicos; um futuro gerenciador
+poderá oferecer fila, progresso, cancelamento, pool e transferência de buffers, sem
+presumir paralelismo em cálculos sequenciais. Tempo virtual é distinto de tempo real.
+
+Diagramas futuros terão layout interno de componentes e conexões, layout externo
+do símbolo e portas públicas, e posição/rotação/escala/espelhamento por instância.
+Blocos poderão ser gerados pelas portas declaradas ou usar SVG customizado. Geometria
+não altera matemática; sinais direcionais e conexões físicas devem ser distintos.
+Uma eventual visualização 3D de GLB/glTF, orientação e trajetórias será independente
+do modelo e da linguagem; CesiumJS é opção para aplicações georreferenciadas, não
+dependência atual. IA será opcional e não recebe credenciais no repositório.
 
 ## SISO: referência e reutilização
 
@@ -171,7 +191,7 @@ a adequação dos aplicativos existentes é progressiva e deve ser verificada.
 
 Preservar manifesto, ícones, escopo relativo, instalação opcional e atualização.
 O shell usa rede primeiro com cache offline; módulos, bibliotecas e simuladores são
-armazenados apenas quando visitados. Traduções oficiais fazem parte do shell.
+armazenados quando visitados ou preparados explicitamente. Traduções oficiais fazem parte do shell.
 O navegador pode remover dados; offline não é garantia de armazenamento permanente.
 
 Cada gráfico deve declarar unidades, escalas, eixos, referências, normalizações e

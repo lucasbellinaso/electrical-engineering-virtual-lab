@@ -13,6 +13,34 @@ isso não suporta scripts, matrizes genéricas, controle de fluxo, funções ou 
 Outros modelos recebem objetos JavaScript numéricos, não código MATLAB/Octave.
 Não há runtime genérico programável de controladores.
 
+## Organização conceitual de um arquivo
+
+A proposta ainda não executável usa três seções opcionais: `%% INITIAL_SCRIPT`
+para importações, parâmetros, funções, estados e comportamento próprio;
+`%% NETLIST` para instâncias e conexões; e `%% ANALYSIS_SCRIPT` para configurar
+e iniciar simulações, testes, análises e gráficos. Não há `SIMULATION_SCRIPT`.
+Modelos reutilizáveis e projetos principais usam o mesmo formato, ainda sem extensão
+definida. Ao importar um modelo, seu `ANALYSIS_SCRIPT` não é executado automaticamente.
+
+A netlist proposta usa argumentos nomeados, cuja classificação como entrada, saída,
+porta física ou parâmetro depende da interface declarada, e permite instanciar funções
+matemáticas puras diretamente como blocos:
+
+```matlab
+B1 = Subtract(a=ref, b=theta, y=error);
+B2 = PID(e=error, u=torque, Kp=10, Ki=2);
+B3 = Pendulum(torque=torque, theta=theta, omega=omega);
+R1 = Resistor(p=n1, n=n2, R=10);
+C1 = Capacitor(p=n2, n=gnd, C=100e-6);
+```
+
+O comportamento durante a simulação pertence a componentes instanciados: equações,
+estados, tarefas periódicas, eventos, fontes e proteções. O motor futuro gerencia o
+tempo virtual e a execução; não se pressupõe paralelismo em algoritmos sequenciais.
+O escopo inicial previsto é de parâmetros concentrados, sem solvers gerais de PDE.
+Nenhuma sintaxe ou contrato desta seção está implementado; a PR #27 é outra proposta
+preliminar e precisa ser harmonizada antes de sua integração.
+
 ## Subconjunto pretendido
 
 Priorizar nomenclatura e comportamento MATLAB/GNU Octave com diferenças documentadas,
@@ -45,7 +73,8 @@ Dimensões, forma de vetor coluna/linha, igualdade, tolerâncias e promoção re
 precisam de testes explícitos. Objetos TF/SS/ZPK virão por contratos tipados posteriores,
 sem expor objetos do DOM ou protótipos JavaScript ao programa.
 
-Exemplo **proposto** de programa (LQR não está implementado na infraestrutura atual):
+Exemplo **proposto** de programa (a função LQR existe na biblioteca JavaScript, mas
+não existe interpretador para executar este programa):
 
 ```matlab
 A = [0, 1; -10, -2]; % Planta

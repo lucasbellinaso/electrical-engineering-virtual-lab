@@ -219,7 +219,7 @@ TypeError/RangeError. `det` e `cdet` não têm a opção (devolvem 0 só para pi
 
 `median`, `quantile(v,q)` e `percentile(v,p)` usam interpolação linear/type 7 do NumPy. `histogram(v,bins=10,range?)` devolve `{counts,edges}`, ignora amostras fora do intervalo e inclui a borda direita na última classe; pesos e normalização por densidade não fazem parte desta API. `simpson(y)` ou `simpson(x,y)` integra amostras; para número par de pontos aplica a correção Cartwright do SciPy. `quad(f,a,b,options?)` usa Simpson adaptativo em intervalo finito e devolve `{value,error,evaluations,converged}`; `options` aceita `epsAbs`, `epsRel` e `maxDepth`. Não é um porte do QUADPACK nem aceita limites infinitos.
 
-`special.js` opera sobre escalares reais: `erf`, `erfc`, `qfunc`, `ndtr`, `ndtri` e `normalInterval(a,b)`. `erfc` usa aproximação racional de Cody; `ndtri(0)` e `ndtri(1)` devolvem infinidades. `signal.js` fornece `fft`/`ifft` (resultado complexo em objetos `{re,im}`; radix-2 e DFT direta para comprimentos não potência de 2) e `filter`/`lfilter` em forma direta II transposta, devolvendo `{y,zf}`. `random.js` fornece sequência Mulberry32 reproduzível e amostras normais Box–Muller; a sequência não tem igualdade bit a bit com o gerador NumPy.
+`special.js` opera sobre escalares reais: `erf`, `erfc`, `qfunc`, `ndtr`, `ndtri` e `normalInterval(a,b)`. `erfc` usa aproximação racional de Cody; `ndtri(0)` e `ndtri(1)` devolvem infinidades. `signal.js` fornece `fft`/`ifft` (resultado complexo em objetos `{re,im}`; radix-2 e Bluestein para outros comprimentos) e `filter`/`lfilter` em forma direta II transposta, devolvendo `{y,zf}`. `random.js` fornece sequência Mulberry32 reproduzível e amostras normais Box–Muller; a sequência não tem igualdade bit a bit com o gerador NumPy.
 
 **Referências numéricas.** As extensões `special`, `matrix`, `numeric` e `signal` são comparadas com
 `tests/fixtures/core-extensions-python.json`, gerado por `scripts/reference/gen_core_extensions.py`
@@ -258,6 +258,19 @@ tests/core-*.test.mjs. Comparações analíticas e de regressão não validam o 
 cientificamente (classificação continua experimental).
 
 ## Legados encapsulados
+
+### Arquivos de configuração (piloto)
+
+`assets/js/project-files.js` exporta `encodeProject(application, data)`,
+`decodeProject(text, application, validate)` e `saveProject(text, filename, handle?)`.
+O JSON contém `application`, `kind: "configuration"`, `schemaVersion: 1` e `data`.
+O leitor rejeita versões e aplicativos incompatíveis, JSON inválido, arquivos acima
+de 2 MB e dados rejeitados pelo validador do aplicativo. Ele não executa código.
+`saveProject` usa o seletor de arquivo quando disponível e, nos demais navegadores,
+inicia um download; não pode confirmar que o usuário preservou o arquivo baixado.
+O aplicativo de busca de mínimo é o primeiro consumidor. Abertura, gravação e aviso
+de alterações estão disponíveis nele; IndexedDB, recentes, recuperação automática,
+pastas e ZIP ainda não foram implementados. Nenhum arquivo é enviado ao GitHub.
 
 SISO, Buck, DAB, amp-ops e Buck PID não exportam módulos numéricos públicos. Funções
 com nomes conhecidos no HTML não são imports de uma API geral. Inventário, assinatura
