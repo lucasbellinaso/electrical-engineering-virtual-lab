@@ -3,3 +3,8 @@
 assets/vendor/** -text
 logoEEVL.svg -text
 *.png binary
+
+# Corpus do Script Studio: LF em todas as plataformas (os snapshots guardam posições em bytes).
+# O 53 testa CRLF de propósito e é guardado byte a byte.
+tests/script-studio/corpus/*.m text eol=lf
+tests/script-studio/corpus/53-crlf-simulado.m -text
