@@ -14,13 +14,13 @@ harmonizada com [docs/LANGUAGE.md](docs/LANGUAGE.md).
 | Aplicativos e PWA | 17 aplicativos; cache sob demanda e botão offline por aplicativo | Validar caminhos dinâmicos e limites de armazenamento por aplicativo |
 | Matemática | Matrizes, complexos, FFT/Bluestein, filtros, interpolação 1D/2D, quantização, solvers, otimização BFGS e ajuste de curvas; veja a API | Integração de ODE com eventos, sistemas híbridos e demais funções quando houver caso concreto |
 | Cálculo em segundo plano | Workers próprios em circuitos e magnetostática | Gerenciador comum, fila, cancelamento, progresso e limites |
-| Arquivos | Piloto JSON de configuração e recuperação local explícita por IndexedDB na busca de mínimo | Novo projeto, recentes, pasta opcional, permissões e múltiplos arquivos |
+| Arquivos | JSON e recuperação local por IndexedDB na busca de mínimo e no aplicativo fotovoltaico; Novo no fotovoltaico | Recentes, pasta opcional, permissões e múltiplos arquivos; adoção seletiva por aplicativo |
 | Interface | Idiomas, temas, KaTeX, gráficos e componentes pontualmente compartilhados | Extrair controles repetidos de maneira gradual |
 | Modelos e linguagem | Modelos puros em vários apps; parsers pontuais no SISO | Contrato comum, interpretador e motor genérico; proposta não executável |
 
 ## Ordem e divisão em pequenas PRs
 
-1. **Arquivos e projetos:** piloto JSON e recuperação explícita por IndexedDB no app de busca de mínimo; depois recentes e permissões; em seguida pasta opcional e
+1. **Arquivos e projetos:** JSON e recuperação explícita nos aplicativos de busca de mínimo e fotovoltaico; depois recentes e permissões; em seguida pasta opcional e
    múltiplos arquivos/ZIP, com migrações e testes. Evitar perda de dados e documentar
    que downloads não confirmam gravação. Não exigir pasta nem enviar dados ao GitHub.
 2. **Workers:** inventariar protocolos existentes; extrair primeiro fila e cancelamento

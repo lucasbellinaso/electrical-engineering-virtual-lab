@@ -1034,6 +1034,9 @@
         "assets/js/core/solvers.js",
         "assets/js/i18n.js",
         "assets/js/offline.js",
+        "assets/js/project-controls.js",
+        "assets/js/project-files.js",
+        "assets/js/project-sessions.js",
         "assets/vendor/katex/fonts/KaTeX_AMS-Regular.ttf",
         "assets/vendor/katex/fonts/KaTeX_AMS-Regular.woff",
         "assets/vendor/katex/fonts/KaTeX_AMS-Regular.woff2",
@@ -1109,6 +1112,7 @@
         "simulators/renewable-energy/photovoltaic/locales.json",
         "simulators/renewable-energy/photovoltaic/model.js",
         "simulators/renewable-energy/photovoltaic/presets.js",
+        "simulators/renewable-energy/photovoltaic/project.js",
         "simulators/renewable-energy/photovoltaic/style.css",
         "simulators/renewable-energy/photovoltaic/ui.js"
       ]
