@@ -1,0 +1,377 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "For",
+      "variable": {
+        "type": "Ident",
+        "name": "k",
+        "loc": {"line":1,"col":5,"endLine":1,"endCol":6,"start":4,"end":5}
+      },
+      "iterable": {
+        "type": "Range",
+        "start": {
+          "type": "Number",
+          "value": 1,
+          "raw": "1",
+          "imaginary": false,
+          "loc": {"line":1,"col":9,"endLine":1,"endCol":10,"start":8,"end":9}
+        },
+        "step": null,
+        "stop": {
+          "type": "Number",
+          "value": 10,
+          "raw": "10",
+          "imaginary": false,
+          "loc": {"line":1,"col":11,"endLine":1,"endCol":13,"start":10,"end":12}
+        },
+        "loc": {"line":1,"col":9,"endLine":1,"endCol":13,"start":8,"end":12}
+      },
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "s",
+              "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":17,"end":18}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "+",
+            "left": {
+              "type": "Ident",
+              "name": "s",
+              "loc": {"line":2,"col":9,"endLine":2,"endCol":10,"start":21,"end":22}
+            },
+            "right": {
+              "type": "Ident",
+              "name": "k",
+              "loc": {"line":2,"col":13,"endLine":2,"endCol":14,"start":25,"end":26}
+            },
+            "loc": {"line":2,"col":9,"endLine":2,"endCol":14,"start":21,"end":26}
+          },
+          "display": false,
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":15,"start":17,"end":27}
+        }
+      ],
+      "loc": {"line":1,"col":1,"endLine":3,"endCol":4,"start":0,"end":31}
+    },
+    {
+      "type": "For",
+      "variable": {
+        "type": "Ident",
+        "name": "k",
+        "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":36,"end":37}
+      },
+      "iterable": {
+        "type": "Range",
+        "start": {
+          "type": "Number",
+          "value": 1,
+          "raw": "1",
+          "imaginary": false,
+          "loc": {"line":4,"col":9,"endLine":4,"endCol":10,"start":40,"end":41}
+        },
+        "step": {
+          "type": "Number",
+          "value": 2,
+          "raw": "2",
+          "imaginary": false,
+          "loc": {"line":4,"col":11,"endLine":4,"endCol":12,"start":42,"end":43}
+        },
+        "stop": {
+          "type": "Number",
+          "value": 10,
+          "raw": "10",
+          "imaginary": false,
+          "loc": {"line":4,"col":13,"endLine":4,"endCol":15,"start":44,"end":46}
+        },
+        "loc": {"line":4,"col":9,"endLine":4,"endCol":15,"start":40,"end":46}
+      },
+      "body": [
+        {
+          "type": "ExprStmt",
+          "expression": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "disp",
+              "loc": {"line":4,"col":17,"endLine":4,"endCol":21,"start":48,"end":52}
+            },
+            "args": [
+              {
+                "type": "Ident",
+                "name": "k",
+                "loc": {"line":4,"col":22,"endLine":4,"endCol":23,"start":53,"end":54}
+              }
+            ],
+            "loc": {"line":4,"col":17,"endLine":4,"endCol":24,"start":48,"end":55}
+          },
+          "display": true,
+          "loc": {"line":4,"col":17,"endLine":4,"endCol":25,"start":48,"end":56}
+        }
+      ],
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":29,"start":32,"end":60}
+    },
+    {
+      "type": "For",
+      "variable": {
+        "type": "Ident",
+        "name": "k",
+        "loc": {"line":5,"col":6,"endLine":5,"endCol":7,"start":66,"end":67}
+      },
+      "iterable": {
+        "type": "Range",
+        "start": {
+          "type": "Number",
+          "value": 1,
+          "raw": "1",
+          "imaginary": false,
+          "loc": {"line":5,"col":10,"endLine":5,"endCol":11,"start":70,"end":71}
+        },
+        "step": null,
+        "stop": {
+          "type": "Number",
+          "value": 3,
+          "raw": "3",
+          "imaginary": false,
+          "loc": {"line":5,"col":12,"endLine":5,"endCol":13,"start":72,"end":73}
+        },
+        "loc": {"line":5,"col":10,"endLine":5,"endCol":13,"start":70,"end":73}
+      },
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "CallOrIndex",
+              "callee": {
+                "type": "Ident",
+                "name": "x",
+                "loc": {"line":6,"col":5,"endLine":6,"endCol":6,"start":79,"end":80}
+              },
+              "args": [
+                {
+                  "type": "Ident",
+                  "name": "k",
+                  "loc": {"line":6,"col":7,"endLine":6,"endCol":8,"start":81,"end":82}
+                }
+              ],
+              "loc": {"line":6,"col":5,"endLine":6,"endCol":9,"start":79,"end":83}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "^",
+            "left": {
+              "type": "Ident",
+              "name": "k",
+              "loc": {"line":6,"col":12,"endLine":6,"endCol":13,"start":86,"end":87}
+            },
+            "right": {
+              "type": "Number",
+              "value": 2,
+              "raw": "2",
+              "imaginary": false,
+              "loc": {"line":6,"col":14,"endLine":6,"endCol":15,"start":88,"end":89}
+            },
+            "loc": {"line":6,"col":12,"endLine":6,"endCol":15,"start":86,"end":89}
+          },
+          "display": false,
+          "loc": {"line":6,"col":5,"endLine":6,"endCol":16,"start":79,"end":90}
+        }
+      ],
+      "loc": {"line":5,"col":1,"endLine":7,"endCol":4,"start":61,"end":94}
+    },
+    {
+      "type": "For",
+      "variable": {
+        "type": "Ident",
+        "name": "v",
+        "loc": {"line":8,"col":5,"endLine":8,"endCol":6,"start":99,"end":100}
+      },
+      "iterable": {
+        "type": "Matrix",
+        "rows": [
+          [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":8,"col":10,"endLine":8,"endCol":11,"start":104,"end":105}
+            },
+            {
+              "type": "Number",
+              "value": 2,
+              "raw": "2",
+              "imaginary": false,
+              "loc": {"line":8,"col":12,"endLine":8,"endCol":13,"start":106,"end":107}
+            },
+            {
+              "type": "Number",
+              "value": 3,
+              "raw": "3",
+              "imaginary": false,
+              "loc": {"line":8,"col":14,"endLine":8,"endCol":15,"start":108,"end":109}
+            }
+          ],
+          [
+            {
+              "type": "Number",
+              "value": 4,
+              "raw": "4",
+              "imaginary": false,
+              "loc": {"line":8,"col":17,"endLine":8,"endCol":18,"start":111,"end":112}
+            },
+            {
+              "type": "Number",
+              "value": 5,
+              "raw": "5",
+              "imaginary": false,
+              "loc": {"line":8,"col":19,"endLine":8,"endCol":20,"start":113,"end":114}
+            },
+            {
+              "type": "Number",
+              "value": 6,
+              "raw": "6",
+              "imaginary": false,
+              "loc": {"line":8,"col":21,"endLine":8,"endCol":22,"start":115,"end":116}
+            }
+          ]
+        ],
+        "loc": {"line":8,"col":9,"endLine":8,"endCol":23,"start":103,"end":117}
+      },
+      "body": [
+        {
+          "type": "ExprStmt",
+          "expression": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "disp",
+              "loc": {"line":9,"col":5,"endLine":9,"endCol":9,"start":122,"end":126}
+            },
+            "args": [
+              {
+                "type": "Ident",
+                "name": "v",
+                "loc": {"line":9,"col":10,"endLine":9,"endCol":11,"start":127,"end":128}
+              }
+            ],
+            "loc": {"line":9,"col":5,"endLine":9,"endCol":12,"start":122,"end":129}
+          },
+          "display": false,
+          "loc": {"line":9,"col":5,"endLine":9,"endCol":13,"start":122,"end":130}
+        }
+      ],
+      "loc": {"line":8,"col":1,"endLine":10,"endCol":4,"start":95,"end":134}
+    },
+    {
+      "type": "For",
+      "variable": {
+        "type": "Ident",
+        "name": "i",
+        "loc": {"line":11,"col":5,"endLine":11,"endCol":6,"start":139,"end":140}
+      },
+      "iterable": {
+        "type": "Range",
+        "start": {
+          "type": "Number",
+          "value": 1,
+          "raw": "1",
+          "imaginary": false,
+          "loc": {"line":11,"col":9,"endLine":11,"endCol":10,"start":143,"end":144}
+        },
+        "step": null,
+        "stop": {
+          "type": "Ident",
+          "name": "n",
+          "loc": {"line":11,"col":11,"endLine":11,"endCol":12,"start":145,"end":146}
+        },
+        "loc": {"line":11,"col":9,"endLine":11,"endCol":12,"start":143,"end":146}
+      },
+      "body": [
+        {
+          "type": "For",
+          "variable": {
+            "type": "Ident",
+            "name": "j",
+            "loc": {"line":12,"col":9,"endLine":12,"endCol":10,"start":155,"end":156}
+          },
+          "iterable": {
+            "type": "Range",
+            "start": {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":12,"col":13,"endLine":12,"endCol":14,"start":159,"end":160}
+            },
+            "step": null,
+            "stop": {
+              "type": "Ident",
+              "name": "m",
+              "loc": {"line":12,"col":15,"endLine":12,"endCol":16,"start":161,"end":162}
+            },
+            "loc": {"line":12,"col":13,"endLine":12,"endCol":16,"start":159,"end":162}
+          },
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "CallOrIndex",
+                  "callee": {
+                    "type": "Ident",
+                    "name": "A",
+                    "loc": {"line":13,"col":9,"endLine":13,"endCol":10,"start":171,"end":172}
+                  },
+                  "args": [
+                    {
+                      "type": "Ident",
+                      "name": "i",
+                      "loc": {"line":13,"col":11,"endLine":13,"endCol":12,"start":173,"end":174}
+                    },
+                    {
+                      "type": "Ident",
+                      "name": "j",
+                      "loc": {"line":13,"col":14,"endLine":13,"endCol":15,"start":176,"end":177}
+                    }
+                  ],
+                  "loc": {"line":13,"col":9,"endLine":13,"endCol":16,"start":171,"end":178}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "Binary",
+                "operator": "+",
+                "left": {
+                  "type": "Ident",
+                  "name": "i",
+                  "loc": {"line":13,"col":19,"endLine":13,"endCol":20,"start":181,"end":182}
+                },
+                "right": {
+                  "type": "Ident",
+                  "name": "j",
+                  "loc": {"line":13,"col":23,"endLine":13,"endCol":24,"start":185,"end":186}
+                },
+                "loc": {"line":13,"col":19,"endLine":13,"endCol":24,"start":181,"end":186}
+              },
+              "display": false,
+              "loc": {"line":13,"col":9,"endLine":13,"endCol":25,"start":171,"end":187}
+            }
+          ],
+          "loc": {"line":12,"col":5,"endLine":14,"endCol":8,"start":151,"end":195}
+        }
+      ],
+      "loc": {"line":11,"col":1,"endLine":15,"endCol":4,"start":135,"end":199}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":16,"endCol":1,"start":0,"end":200}
+}

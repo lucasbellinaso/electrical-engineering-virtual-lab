@@ -1,0 +1,353 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "soma",
+          "init": {
+            "type": "Number",
+            "value": 0,
+            "raw": "0",
+            "imaginary": false,
+            "loc": {"line":1,"col":13,"endLine":1,"endCol":14,"start":12,"end":13}
+          },
+          "loc": {"line":1,"col":6,"endLine":1,"endCol":14,"start":5,"end":13}
+        }
+      ],
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":15,"start":0,"end":14}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "int",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "N",
+          "init": {
+            "type": "Number",
+            "value": 100,
+            "raw": "100",
+            "imaginary": false,
+            "loc": {"line":2,"col":9,"endLine":2,"endCol":12,"start":23,"end":26}
+          },
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":12,"start":19,"end":26}
+        }
+      ],
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":13,"start":15,"end":27}
+    },
+    {
+      "type": "Decl",
+      "varsize": true,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "hist",
+          "init": {
+            "type": "Matrix",
+            "rows": [],
+            "loc": {"line":3,"col":21,"endLine":3,"endCol":23,"start":48,"end":50}
+          },
+          "loc": {"line":3,"col":14,"endLine":3,"endCol":23,"start":41,"end":50}
+        }
+      ],
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":24,"start":28,"end":51}
+    },
+    {
+      "type": "For",
+      "variable": {
+        "type": "Ident",
+        "name": "k",
+        "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":56,"end":57}
+      },
+      "iterable": {
+        "type": "Range",
+        "start": {
+          "type": "Number",
+          "value": 1,
+          "raw": "1",
+          "imaginary": false,
+          "loc": {"line":4,"col":9,"endLine":4,"endCol":10,"start":60,"end":61}
+        },
+        "step": null,
+        "stop": {
+          "type": "Ident",
+          "name": "N",
+          "loc": {"line":4,"col":11,"endLine":4,"endCol":12,"start":62,"end":63}
+        },
+        "loc": {"line":4,"col":9,"endLine":4,"endCol":12,"start":60,"end":63}
+      },
+      "body": [
+        {
+          "type": "Assign",
+          "targets": [
+            {
+              "type": "Ident",
+              "name": "soma",
+              "loc": {"line":5,"col":5,"endLine":5,"endCol":9,"start":68,"end":72}
+            }
+          ],
+          "bracket": false,
+          "value": {
+            "type": "Binary",
+            "operator": "+",
+            "left": {
+              "type": "Ident",
+              "name": "soma",
+              "loc": {"line":5,"col":12,"endLine":5,"endCol":16,"start":75,"end":79}
+            },
+            "right": {
+              "type": "Binary",
+              "operator": "/",
+              "left": {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":5,"col":19,"endLine":5,"endCol":20,"start":82,"end":83}
+              },
+              "right": {
+                "type": "Binary",
+                "operator": "^",
+                "left": {
+                  "type": "Ident",
+                  "name": "k",
+                  "loc": {"line":5,"col":21,"endLine":5,"endCol":22,"start":84,"end":85}
+                },
+                "right": {
+                  "type": "Number",
+                  "value": 2,
+                  "raw": "2",
+                  "imaginary": false,
+                  "loc": {"line":5,"col":23,"endLine":5,"endCol":24,"start":86,"end":87}
+                },
+                "loc": {"line":5,"col":21,"endLine":5,"endCol":24,"start":84,"end":87}
+              },
+              "loc": {"line":5,"col":19,"endLine":5,"endCol":24,"start":82,"end":87}
+            },
+            "loc": {"line":5,"col":12,"endLine":5,"endCol":24,"start":75,"end":87}
+          },
+          "display": false,
+          "loc": {"line":5,"col":5,"endLine":5,"endCol":25,"start":68,"end":88}
+        },
+        {
+          "type": "If",
+          "condition": {
+            "type": "Binary",
+            "operator": "==",
+            "left": {
+              "type": "CallOrIndex",
+              "callee": {
+                "type": "Ident",
+                "name": "mod",
+                "loc": {"line":6,"col":8,"endLine":6,"endCol":11,"start":96,"end":99}
+              },
+              "args": [
+                {
+                  "type": "Ident",
+                  "name": "k",
+                  "loc": {"line":6,"col":12,"endLine":6,"endCol":13,"start":100,"end":101}
+                },
+                {
+                  "type": "Number",
+                  "value": 25,
+                  "raw": "25",
+                  "imaginary": false,
+                  "loc": {"line":6,"col":15,"endLine":6,"endCol":17,"start":103,"end":105}
+                }
+              ],
+              "loc": {"line":6,"col":8,"endLine":6,"endCol":18,"start":96,"end":106}
+            },
+            "right": {
+              "type": "Number",
+              "value": 0,
+              "raw": "0",
+              "imaginary": false,
+              "loc": {"line":6,"col":22,"endLine":6,"endCol":23,"start":110,"end":111}
+            },
+            "loc": {"line":6,"col":8,"endLine":6,"endCol":23,"start":96,"end":111}
+          },
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "CallOrIndex",
+                  "callee": {
+                    "type": "Ident",
+                    "name": "hist",
+                    "loc": {"line":7,"col":9,"endLine":7,"endCol":13,"start":120,"end":124}
+                  },
+                  "args": [
+                    {
+                      "type": "Binary",
+                      "operator": "+",
+                      "left": {
+                        "type": "End",
+                        "loc": {"line":7,"col":14,"endLine":7,"endCol":17,"start":125,"end":128}
+                      },
+                      "right": {
+                        "type": "Number",
+                        "value": 1,
+                        "raw": "1",
+                        "imaginary": false,
+                        "loc": {"line":7,"col":18,"endLine":7,"endCol":19,"start":129,"end":130}
+                      },
+                      "loc": {"line":7,"col":14,"endLine":7,"endCol":19,"start":125,"end":130}
+                    }
+                  ],
+                  "loc": {"line":7,"col":9,"endLine":7,"endCol":20,"start":120,"end":131}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "Ident",
+                "name": "soma",
+                "loc": {"line":7,"col":23,"endLine":7,"endCol":27,"start":134,"end":138}
+              },
+              "display": false,
+              "loc": {"line":7,"col":9,"endLine":7,"endCol":28,"start":120,"end":139}
+            },
+            {
+              "type": "ExprStmt",
+              "expression": {
+                "type": "CallOrIndex",
+                "callee": {
+                  "type": "Ident",
+                  "name": "fprintf",
+                  "loc": {"line":8,"col":9,"endLine":8,"endCol":16,"start":148,"end":155}
+                },
+                "args": [
+                  {
+                    "type": "String",
+                    "value": "k = %d, soma = %.6f\\n",
+                    "quote": "'",
+                    "loc": {"line":8,"col":17,"endLine":8,"endCol":40,"start":156,"end":179}
+                  },
+                  {
+                    "type": "Ident",
+                    "name": "k",
+                    "loc": {"line":8,"col":42,"endLine":8,"endCol":43,"start":181,"end":182}
+                  },
+                  {
+                    "type": "Ident",
+                    "name": "soma",
+                    "loc": {"line":8,"col":45,"endLine":8,"endCol":49,"start":184,"end":188}
+                  }
+                ],
+                "loc": {"line":8,"col":9,"endLine":8,"endCol":50,"start":148,"end":189}
+              },
+              "display": false,
+              "loc": {"line":8,"col":9,"endLine":8,"endCol":51,"start":148,"end":190}
+            }
+          ],
+          "elseifs": [],
+          "elseBody": null,
+          "loc": {"line":6,"col":5,"endLine":9,"endCol":8,"start":93,"end":198}
+        }
+      ],
+      "loc": {"line":4,"col":1,"endLine":10,"endCol":4,"start":52,"end":202}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "erro",
+          "loc": {"line":11,"col":1,"endLine":11,"endCol":5,"start":203,"end":207}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "abs",
+          "loc": {"line":11,"col":8,"endLine":11,"endCol":11,"start":210,"end":213}
+        },
+        "args": [
+          {
+            "type": "Binary",
+            "operator": "-",
+            "left": {
+              "type": "Ident",
+              "name": "soma",
+              "loc": {"line":11,"col":12,"endLine":11,"endCol":16,"start":214,"end":218}
+            },
+            "right": {
+              "type": "Binary",
+              "operator": "/",
+              "left": {
+                "type": "Binary",
+                "operator": "^",
+                "left": {
+                  "type": "Ident",
+                  "name": "pi",
+                  "loc": {"line":11,"col":19,"endLine":11,"endCol":21,"start":221,"end":223}
+                },
+                "right": {
+                  "type": "Number",
+                  "value": 2,
+                  "raw": "2",
+                  "imaginary": false,
+                  "loc": {"line":11,"col":22,"endLine":11,"endCol":23,"start":224,"end":225}
+                },
+                "loc": {"line":11,"col":19,"endLine":11,"endCol":23,"start":221,"end":225}
+              },
+              "right": {
+                "type": "Number",
+                "value": 6,
+                "raw": "6",
+                "imaginary": false,
+                "loc": {"line":11,"col":24,"endLine":11,"endCol":25,"start":226,"end":227}
+              },
+              "loc": {"line":11,"col":19,"endLine":11,"endCol":25,"start":221,"end":227}
+            },
+            "loc": {"line":11,"col":12,"endLine":11,"endCol":25,"start":214,"end":227}
+          }
+        ],
+        "loc": {"line":11,"col":8,"endLine":11,"endCol":26,"start":210,"end":228}
+      },
+      "display": false,
+      "loc": {"line":11,"col":1,"endLine":11,"endCol":27,"start":203,"end":229}
+    },
+    {
+      "type": "ExprStmt",
+      "expression": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "fprintf",
+          "loc": {"line":12,"col":1,"endLine":12,"endCol":8,"start":230,"end":237}
+        },
+        "args": [
+          {
+            "type": "String",
+            "value": "Erro final: %e\\n",
+            "quote": "\"",
+            "loc": {"line":12,"col":9,"endLine":12,"endCol":27,"start":238,"end":256}
+          },
+          {
+            "type": "Ident",
+            "name": "erro",
+            "loc": {"line":12,"col":29,"endLine":12,"endCol":33,"start":258,"end":262}
+          }
+        ],
+        "loc": {"line":12,"col":1,"endLine":12,"endCol":34,"start":230,"end":263}
+      },
+      "display": false,
+      "loc": {"line":12,"col":1,"endLine":12,"endCol":35,"start":230,"end":264}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":13,"endCol":1,"start":0,"end":265}
+}

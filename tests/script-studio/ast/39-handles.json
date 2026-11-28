@@ -1,0 +1,120 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "f",
+          "loc": {"line":1,"col":1,"endLine":1,"endCol":2,"start":0,"end":1}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "FuncHandle",
+        "name": "sin",
+        "loc": {"line":1,"col":5,"endLine":1,"endCol":9,"start":4,"end":8}
+      },
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":10,"start":0,"end":9}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "g",
+          "loc": {"line":2,"col":1,"endLine":2,"endCol":2,"start":10,"end":11}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "FuncHandle",
+        "name": "myfunc",
+        "loc": {"line":2,"col":5,"endLine":2,"endCol":12,"start":14,"end":21}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":13,"start":10,"end":22}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "y",
+          "loc": {"line":3,"col":1,"endLine":3,"endCol":2,"start":23,"end":24}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "f",
+          "loc": {"line":3,"col":5,"endLine":3,"endCol":6,"start":27,"end":28}
+        },
+        "args": [
+          {
+            "type": "Binary",
+            "operator": "/",
+            "left": {
+              "type": "Ident",
+              "name": "pi",
+              "loc": {"line":3,"col":7,"endLine":3,"endCol":9,"start":29,"end":31}
+            },
+            "right": {
+              "type": "Number",
+              "value": 2,
+              "raw": "2",
+              "imaginary": false,
+              "loc": {"line":3,"col":12,"endLine":3,"endCol":13,"start":34,"end":35}
+            },
+            "loc": {"line":3,"col":7,"endLine":3,"endCol":13,"start":29,"end":35}
+          }
+        ],
+        "loc": {"line":3,"col":5,"endLine":3,"endCol":14,"start":27,"end":36}
+      },
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":15,"start":23,"end":37}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "z",
+          "loc": {"line":4,"col":1,"endLine":4,"endCol":2,"start":38,"end":39}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "feval_demo",
+          "loc": {"line":4,"col":5,"endLine":4,"endCol":15,"start":42,"end":52}
+        },
+        "args": [
+          {
+            "type": "FuncHandle",
+            "name": "cos",
+            "loc": {"line":4,"col":16,"endLine":4,"endCol":20,"start":53,"end":57}
+          },
+          {
+            "type": "Number",
+            "value": 0,
+            "raw": "0",
+            "imaginary": false,
+            "loc": {"line":4,"col":22,"endLine":4,"endCol":23,"start":59,"end":60}
+          }
+        ],
+        "loc": {"line":4,"col":5,"endLine":4,"endCol":24,"start":42,"end":61}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":25,"start":38,"end":62}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":5,"endCol":1,"start":0,"end":63}
+}

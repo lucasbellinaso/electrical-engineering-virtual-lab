@@ -1,0 +1,186 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "x",
+          "init": {
+            "type": "Number",
+            "value": 0,
+            "raw": "0",
+            "imaginary": false,
+            "loc": {"line":1,"col":10,"endLine":1,"endCol":11,"start":9,"end":10}
+          },
+          "loc": {"line":1,"col":6,"endLine":1,"endCol":11,"start":5,"end":10}
+        },
+        {
+          "type": "Declarator",
+          "name": "y",
+          "init": {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":1,"col":17,"endLine":1,"endCol":18,"start":16,"end":17}
+          },
+          "loc": {"line":1,"col":13,"endLine":1,"endCol":18,"start":12,"end":17}
+        },
+        {
+          "type": "Declarator",
+          "name": "z",
+          "init": null,
+          "loc": {"line":1,"col":20,"endLine":1,"endCol":21,"start":19,"end":20}
+        }
+      ],
+      "display": true,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":21,"start":0,"end":20}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "int",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "n",
+          "init": {
+            "type": "Number",
+            "value": 1000,
+            "raw": "1000",
+            "imaginary": false,
+            "loc": {"line":2,"col":9,"endLine":2,"endCol":13,"start":29,"end":33}
+          },
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":13,"start":25,"end":33}
+        },
+        {
+          "type": "Declarator",
+          "name": "k",
+          "init": null,
+          "loc": {"line":2,"col":15,"endLine":2,"endCol":16,"start":35,"end":36}
+        }
+      ],
+      "display": true,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":16,"start":21,"end":36}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "a",
+          "init": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "zeros",
+              "loc": {"line":3,"col":10,"endLine":3,"endCol":15,"start":46,"end":51}
+            },
+            "args": [
+              {
+                "type": "Number",
+                "value": 3,
+                "raw": "3",
+                "imaginary": false,
+                "loc": {"line":3,"col":16,"endLine":3,"endCol":17,"start":52,"end":53}
+              },
+              {
+                "type": "Number",
+                "value": 3,
+                "raw": "3",
+                "imaginary": false,
+                "loc": {"line":3,"col":19,"endLine":3,"endCol":20,"start":55,"end":56}
+              }
+            ],
+            "loc": {"line":3,"col":10,"endLine":3,"endCol":21,"start":46,"end":57}
+          },
+          "loc": {"line":3,"col":6,"endLine":3,"endCol":21,"start":42,"end":57}
+        },
+        {
+          "type": "Declarator",
+          "name": "b",
+          "init": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "ones",
+              "loc": {"line":3,"col":27,"endLine":3,"endCol":31,"start":63,"end":67}
+            },
+            "args": [
+              {
+                "type": "Number",
+                "value": 2,
+                "raw": "2",
+                "imaginary": false,
+                "loc": {"line":3,"col":32,"endLine":3,"endCol":33,"start":68,"end":69}
+              }
+            ],
+            "loc": {"line":3,"col":27,"endLine":3,"endCol":34,"start":63,"end":70}
+          },
+          "loc": {"line":3,"col":23,"endLine":3,"endCol":34,"start":59,"end":70}
+        },
+        {
+          "type": "Declarator",
+          "name": "c",
+          "init": null,
+          "loc": {"line":3,"col":36,"endLine":3,"endCol":37,"start":72,"end":73}
+        }
+      ],
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":38,"start":37,"end":74}
+    },
+    {
+      "type": "Decl",
+      "varsize": false,
+      "typeName": "complex",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "w",
+          "init": {
+            "type": "Binary",
+            "operator": "+",
+            "left": {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":4,"col":13,"endLine":4,"endCol":14,"start":87,"end":88}
+            },
+            "right": {
+              "type": "Number",
+              "value": 2,
+              "raw": "2i",
+              "imaginary": true,
+              "loc": {"line":4,"col":17,"endLine":4,"endCol":19,"start":91,"end":93}
+            },
+            "loc": {"line":4,"col":13,"endLine":4,"endCol":19,"start":87,"end":93}
+          },
+          "loc": {"line":4,"col":9,"endLine":4,"endCol":19,"start":83,"end":93}
+        },
+        {
+          "type": "Declarator",
+          "name": "v",
+          "init": {
+            "type": "Number",
+            "value": 3,
+            "raw": "3",
+            "imaginary": false,
+            "loc": {"line":4,"col":25,"endLine":4,"endCol":26,"start":99,"end":100}
+          },
+          "loc": {"line":4,"col":21,"endLine":4,"endCol":26,"start":95,"end":100}
+        }
+      ],
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":27,"start":75,"end":101}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":5,"endCol":1,"start":0,"end":102}
+}

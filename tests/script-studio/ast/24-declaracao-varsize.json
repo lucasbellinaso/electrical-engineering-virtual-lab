@@ -1,0 +1,107 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Decl",
+      "varsize": true,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "y",
+          "init": {
+            "type": "CallOrIndex",
+            "callee": {
+              "type": "Ident",
+              "name": "zeros",
+              "loc": {"line":1,"col":18,"endLine":1,"endCol":23,"start":17,"end":22}
+            },
+            "args": [
+              {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":1,"col":24,"endLine":1,"endCol":25,"start":23,"end":24}
+              },
+              {
+                "type": "Number",
+                "value": 10,
+                "raw": "10",
+                "imaginary": false,
+                "loc": {"line":1,"col":27,"endLine":1,"endCol":29,"start":26,"end":28}
+              }
+            ],
+            "loc": {"line":1,"col":18,"endLine":1,"endCol":30,"start":17,"end":29}
+          },
+          "loc": {"line":1,"col":14,"endLine":1,"endCol":30,"start":13,"end":29}
+        }
+      ],
+      "display": true,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":30,"start":0,"end":29}
+    },
+    {
+      "type": "Decl",
+      "varsize": true,
+      "typeName": "real",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "v",
+          "init": {
+            "type": "Matrix",
+            "rows": [],
+            "loc": {"line":2,"col":18,"endLine":2,"endCol":20,"start":47,"end":49}
+          },
+          "loc": {"line":2,"col":14,"endLine":2,"endCol":20,"start":43,"end":49}
+        }
+      ],
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":21,"start":30,"end":50}
+    },
+    {
+      "type": "Decl",
+      "varsize": true,
+      "typeName": "int",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "cont",
+          "init": {
+            "type": "Number",
+            "value": 0,
+            "raw": "0",
+            "imaginary": false,
+            "loc": {"line":3,"col":20,"endLine":3,"endCol":21,"start":70,"end":71}
+          },
+          "loc": {"line":3,"col":13,"endLine":3,"endCol":21,"start":63,"end":71}
+        },
+        {
+          "type": "Declarator",
+          "name": "tot",
+          "init": null,
+          "loc": {"line":3,"col":23,"endLine":3,"endCol":26,"start":73,"end":76}
+        }
+      ],
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":27,"start":51,"end":77}
+    },
+    {
+      "type": "Decl",
+      "varsize": true,
+      "typeName": "complex",
+      "declarators": [
+        {
+          "type": "Declarator",
+          "name": "c",
+          "init": null,
+          "loc": {"line":4,"col":17,"endLine":4,"endCol":18,"start":94,"end":95}
+        }
+      ],
+      "display": true,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":18,"start":78,"end":95}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":5,"endCol":1,"start":0,"end":96}
+}

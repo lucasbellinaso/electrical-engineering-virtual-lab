@@ -1,0 +1,204 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Switch",
+      "subject": {
+        "type": "Ident",
+        "name": "opcao",
+        "loc": {"line":1,"col":8,"endLine":1,"endCol":13,"start":7,"end":12}
+      },
+      "cases": [
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "Number",
+              "value": 1,
+              "raw": "1",
+              "imaginary": false,
+              "loc": {"line":2,"col":10,"endLine":2,"endCol":11,"start":22,"end":23}
+            }
+          ],
+          "cell": false,
+          "body": [
+            {
+              "type": "ExprStmt",
+              "expression": {
+                "type": "CallOrIndex",
+                "callee": {
+                  "type": "Ident",
+                  "name": "disp",
+                  "loc": {"line":3,"col":9,"endLine":3,"endCol":13,"start":32,"end":36}
+                },
+                "args": [
+                  {
+                    "type": "String",
+                    "value": "um",
+                    "quote": "'",
+                    "loc": {"line":3,"col":14,"endLine":3,"endCol":18,"start":37,"end":41}
+                  }
+                ],
+                "loc": {"line":3,"col":9,"endLine":3,"endCol":19,"start":32,"end":42}
+              },
+              "display": false,
+              "loc": {"line":3,"col":9,"endLine":3,"endCol":20,"start":32,"end":43}
+            }
+          ],
+          "loc": {"line":2,"col":5,"endLine":3,"endCol":20,"start":17,"end":43}
+        },
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "Number",
+              "value": 2,
+              "raw": "2",
+              "imaginary": false,
+              "loc": {"line":4,"col":10,"endLine":4,"endCol":11,"start":53,"end":54}
+            }
+          ],
+          "cell": false,
+          "body": [
+            {
+              "type": "ExprStmt",
+              "expression": {
+                "type": "CallOrIndex",
+                "callee": {
+                  "type": "Ident",
+                  "name": "disp",
+                  "loc": {"line":5,"col":9,"endLine":5,"endCol":13,"start":63,"end":67}
+                },
+                "args": [
+                  {
+                    "type": "String",
+                    "value": "dois",
+                    "quote": "'",
+                    "loc": {"line":5,"col":14,"endLine":5,"endCol":20,"start":68,"end":74}
+                  }
+                ],
+                "loc": {"line":5,"col":9,"endLine":5,"endCol":21,"start":63,"end":75}
+              },
+              "display": false,
+              "loc": {"line":5,"col":9,"endLine":5,"endCol":22,"start":63,"end":76}
+            }
+          ],
+          "loc": {"line":4,"col":5,"endLine":5,"endCol":22,"start":48,"end":76}
+        }
+      ],
+      "otherwise": {
+        "type": "Otherwise",
+        "body": [
+          {
+            "type": "ExprStmt",
+            "expression": {
+              "type": "CallOrIndex",
+              "callee": {
+                "type": "Ident",
+                "name": "disp",
+                "loc": {"line":7,"col":9,"endLine":7,"endCol":13,"start":99,"end":103}
+              },
+              "args": [
+                {
+                  "type": "String",
+                  "value": "outro",
+                  "quote": "'",
+                  "loc": {"line":7,"col":14,"endLine":7,"endCol":21,"start":104,"end":111}
+                }
+              ],
+              "loc": {"line":7,"col":9,"endLine":7,"endCol":22,"start":99,"end":112}
+            },
+            "display": false,
+            "loc": {"line":7,"col":9,"endLine":7,"endCol":23,"start":99,"end":113}
+          }
+        ],
+        "loc": {"line":6,"col":5,"endLine":7,"endCol":23,"start":81,"end":113}
+      },
+      "loc": {"line":1,"col":1,"endLine":8,"endCol":4,"start":0,"end":117}
+    },
+    {
+      "type": "Switch",
+      "subject": {
+        "type": "Ident",
+        "name": "nome",
+        "loc": {"line":9,"col":8,"endLine":9,"endCol":12,"start":125,"end":129}
+      },
+      "cases": [
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "String",
+              "value": "a",
+              "quote": "'",
+              "loc": {"line":10,"col":10,"endLine":10,"endCol":13,"start":139,"end":142}
+            }
+          ],
+          "cell": false,
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "Ident",
+                  "name": "x",
+                  "loc": {"line":11,"col":9,"endLine":11,"endCol":10,"start":151,"end":152}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "Number",
+                "value": 1,
+                "raw": "1",
+                "imaginary": false,
+                "loc": {"line":11,"col":13,"endLine":11,"endCol":14,"start":155,"end":156}
+              },
+              "display": false,
+              "loc": {"line":11,"col":9,"endLine":11,"endCol":15,"start":151,"end":157}
+            }
+          ],
+          "loc": {"line":10,"col":5,"endLine":11,"endCol":15,"start":134,"end":157}
+        },
+        {
+          "type": "Case",
+          "values": [
+            {
+              "type": "String",
+              "value": "b",
+              "quote": "\"",
+              "loc": {"line":12,"col":10,"endLine":12,"endCol":13,"start":167,"end":170}
+            }
+          ],
+          "cell": false,
+          "body": [
+            {
+              "type": "Assign",
+              "targets": [
+                {
+                  "type": "Ident",
+                  "name": "x",
+                  "loc": {"line":13,"col":9,"endLine":13,"endCol":10,"start":179,"end":180}
+                }
+              ],
+              "bracket": false,
+              "value": {
+                "type": "Number",
+                "value": 2,
+                "raw": "2",
+                "imaginary": false,
+                "loc": {"line":13,"col":13,"endLine":13,"endCol":14,"start":183,"end":184}
+              },
+              "display": false,
+              "loc": {"line":13,"col":9,"endLine":13,"endCol":15,"start":179,"end":185}
+            }
+          ],
+          "loc": {"line":12,"col":5,"endLine":13,"endCol":15,"start":162,"end":185}
+        }
+      ],
+      "otherwise": null,
+      "loc": {"line":9,"col":1,"endLine":14,"endCol":4,"start":118,"end":189}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":15,"endCol":1,"start":0,"end":190}
+}

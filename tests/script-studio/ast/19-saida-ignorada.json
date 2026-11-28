@@ -1,0 +1,145 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ignore",
+          "loc": {"line":1,"col":2,"endLine":1,"endCol":3,"start":1,"end":2}
+        },
+        {
+          "type": "Ident",
+          "name": "i",
+          "loc": {"line":1,"col":5,"endLine":1,"endCol":6,"start":4,"end":5}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "max",
+          "loc": {"line":1,"col":10,"endLine":1,"endCol":13,"start":9,"end":12}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "v",
+            "loc": {"line":1,"col":14,"endLine":1,"endCol":15,"start":13,"end":14}
+          }
+        ],
+        "loc": {"line":1,"col":10,"endLine":1,"endCol":16,"start":9,"end":15}
+      },
+      "display": false,
+      "loc": {"line":1,"col":1,"endLine":1,"endCol":17,"start":0,"end":16}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":2,"col":2,"endLine":2,"endCol":3,"start":18,"end":19}
+        },
+        {
+          "type": "Ignore",
+          "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":21,"end":22}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "size",
+          "loc": {"line":2,"col":10,"endLine":2,"endCol":14,"start":26,"end":30}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "X",
+            "loc": {"line":2,"col":15,"endLine":2,"endCol":16,"start":31,"end":32}
+          }
+        ],
+        "loc": {"line":2,"col":10,"endLine":2,"endCol":17,"start":26,"end":33}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":18,"start":17,"end":34}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ignore",
+          "loc": {"line":3,"col":2,"endLine":3,"endCol":3,"start":36,"end":37}
+        },
+        {
+          "type": "Ignore",
+          "loc": {"line":3,"col":5,"endLine":3,"endCol":6,"start":39,"end":40}
+        },
+        {
+          "type": "Ident",
+          "name": "c",
+          "loc": {"line":3,"col":8,"endLine":3,"endCol":9,"start":42,"end":43}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "f",
+          "loc": {"line":3,"col":13,"endLine":3,"endCol":14,"start":47,"end":48}
+        },
+        "args": [
+          {
+            "type": "Number",
+            "value": 1,
+            "raw": "1",
+            "imaginary": false,
+            "loc": {"line":3,"col":15,"endLine":3,"endCol":16,"start":49,"end":50}
+          }
+        ],
+        "loc": {"line":3,"col":13,"endLine":3,"endCol":17,"start":47,"end":51}
+      },
+      "display": false,
+      "loc": {"line":3,"col":1,"endLine":3,"endCol":18,"start":35,"end":52}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ignore",
+          "loc": {"line":4,"col":2,"endLine":4,"endCol":3,"start":54,"end":55}
+        },
+        {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":57,"end":58}
+        }
+      ],
+      "bracket": true,
+      "value": {
+        "type": "CallOrIndex",
+        "callee": {
+          "type": "Ident",
+          "name": "sort",
+          "loc": {"line":4,"col":10,"endLine":4,"endCol":14,"start":62,"end":66}
+        },
+        "args": [
+          {
+            "type": "Ident",
+            "name": "v",
+            "loc": {"line":4,"col":15,"endLine":4,"endCol":16,"start":67,"end":68}
+          }
+        ],
+        "loc": {"line":4,"col":10,"endLine":4,"endCol":17,"start":62,"end":69}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":18,"start":53,"end":70}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":5,"endCol":1,"start":0,"end":71}
+}

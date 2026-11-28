@@ -1,0 +1,87 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "a",
+          "loc": {"line":2,"col":1,"endLine":2,"endCol":2,"start":2,"end":3}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 1,
+        "raw": "1",
+        "imaginary": false,
+        "loc": {"line":2,"col":5,"endLine":2,"endCol":6,"start":6,"end":7}
+      },
+      "display": false,
+      "loc": {"line":2,"col":1,"endLine":2,"endCol":7,"start":2,"end":8}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "b",
+          "loc": {"line":3,"col":3,"endLine":3,"endCol":4,"start":12,"end":13}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 2,
+        "raw": "2",
+        "imaginary": false,
+        "loc": {"line":3,"col":7,"endLine":3,"endCol":8,"start":16,"end":17}
+      },
+      "display": true,
+      "loc": {"line":3,"col":3,"endLine":3,"endCol":9,"start":12,"end":18}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "c",
+          "loc": {"line":4,"col":1,"endLine":4,"endCol":2,"start":19,"end":20}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 3,
+        "raw": "3",
+        "imaginary": false,
+        "loc": {"line":4,"col":5,"endLine":4,"endCol":6,"start":23,"end":24}
+      },
+      "display": false,
+      "loc": {"line":4,"col":1,"endLine":4,"endCol":7,"start":19,"end":25}
+    },
+    {
+      "type": "Assign",
+      "targets": [
+        {
+          "type": "Ident",
+          "name": "d",
+          "loc": {"line":6,"col":4,"endLine":6,"endCol":5,"start":30,"end":31}
+        }
+      ],
+      "bracket": false,
+      "value": {
+        "type": "Number",
+        "value": 4,
+        "raw": "4",
+        "imaginary": false,
+        "loc": {"line":6,"col":8,"endLine":6,"endCol":9,"start":34,"end":35}
+      },
+      "display": true,
+      "loc": {"line":6,"col":4,"endLine":6,"endCol":9,"start":30,"end":35}
+    }
+  ],
+  "functions": [],
+  "loc": {"line":1,"col":1,"endLine":7,"endCol":1,"start":0,"end":36}
+}
