@@ -23,6 +23,7 @@ export const MESSAGES_PT = {
   unterminatedBlockComment: () => "Comentário de bloco '%{' sem o '%}' correspondente.",
   unexpectedChar: (p) => `Caractere inesperado ${q(p.char)}.`,
   invalidNumber: (p) => `Número inválido ${q(p.text)}.`,
+  greekLookalike: (p) => `A letra grega ${q(p.char)} é igual à latina ${q(p.latin)}; use ${q(p.latin)}.`,
   // Sintaxe exclusiva do Octave
   octaveComment: () => "'#' não inicia comentário no Script Studio; use '%'.",
   octaveNot: () => "'!' não é suportado; use '~' para negação.",
@@ -51,6 +52,7 @@ export const MESSAGES_PT = {
   functionInBlock: () => "'function' só pode aparecer no nível do script (no fim do arquivo), não dentro de if, laço ou switch.",
   nestedFunction: () => 'Funções aninhadas não são suportadas; defina funções locais no fim do script.',
   statementAfterFunction: () => 'Depois da primeira função local só podem aparecer outras funções; mova este código para antes das funções.',
+  constantAssignment: (p) => `${q(p.name)} é uma constante${p.name === 'π' ? ' (igual a pi)' : ''} e não pode ser redefinida; escolha outro nome.`,
   declExpectedName: (p) => `Esperava o nome da variável na declaração '${p.type}', mas encontrou ${found(p.found)}.`,
 };
 

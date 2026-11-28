@@ -181,3 +181,35 @@ test('regra Octave: erros com recuperação, desligável por opção', () => {
   assert.deepEqual(code('a ~= b'), []);
   assert.deepEqual(code('a != b', { octave: false }), ['unexpectedChar']);
 });
+
+// ---- letras gregas (SCRIPT-STUDIO.md seção 8; SCRIPT-GRAMMAR.md regra 10) ----------------
+const codes = (src) => tokenize(src).errors.map((e) => `${e.code}@${e.loc.col}`);
+
+test('letras gregas: identificadores no início, no meio e misturados com ASCII', () => {
+  assert.equal(show('ω = 2*π*f'), 'ident:ω = num:2 * ident:π * ident:f');
+  assert.equal(show('ωn Δt θ_1 R_θ Ω λ2'), 'ident:ωn ident:Δt ident:θ_1 ident:R_θ ident:Ω ident:λ2');
+  assert.equal(show('[α β; γ -δ]'), '[ ident:α v, ident:β ; ident:γ v, - ident:δ ]');
+  assert.equal(show("α'"), "ident:α '");
+  assert.deepEqual(codes('αβγδεζηθικλμνξπρστυφχψω ΓΔΘΛΞΠΣΦΨΩ'), []);
+});
+
+test('letras gregas: variantes viram a forma comum, com as posições do texto original', () => {
+  const t = tokenize('µ0 ϕ ϑ ϵ ς ϖ ϰ ϱ').tokens.filter((x) => x.type === 'ident');
+  assert.deepEqual(t.map((x) => x.value), ['μ0', 'φ', 'θ', 'ε', 'σ', 'π', 'κ', 'ρ']);
+  assert.deepEqual([t[0].start, t[0].end, t[1].start], [0, 2, 3]);
+  assert.deepEqual(codes('µ0 ϕ'), []);
+});
+
+test('letras gregas iguais às latinas: erro com a sugestão, e a análise continua', () => {
+  for (const [g, l] of Object.entries({ 'Α': 'A', 'Β': 'B', 'Ε': 'E', 'Ζ': 'Z', 'Η': 'H', 'Ι': 'I', 'Κ': 'K', 'Μ': 'M', 'Ν': 'N', 'Ο': 'O', 'Ρ': 'P', 'Τ': 'T', 'Υ': 'Y', 'Χ': 'X', 'ο': 'o' })) {
+    const r = tokenize(`x${g}1`);
+    assert.deepEqual(r.errors.map((e) => [e.code, e.params.char, e.params.latin, e.loc.col]), [['greekLookalike', g, l, 2]]);
+    assert.equal(r.tokens[0].value, `x${l}1`);
+  }
+});
+
+test('letras gregas: acentuadas não são aceitas; número colado a letra grega é inválido', () => {
+  assert.deepEqual(codes('x = ά'), ['unexpectedChar@5']);
+  assert.deepEqual(codes('x = 2ω'), ['invalidNumber@5']);
+  assert.equal(show("s = 'αβ' % θ"), 'ident:s = str:αβ');
+});

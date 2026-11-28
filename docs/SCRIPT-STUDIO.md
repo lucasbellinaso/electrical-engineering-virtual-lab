@@ -578,6 +578,8 @@ Decisões a fechar antes do parser. Elas definem o que os testes verificam.
 | Semântica de valor | Atribuição e passagem não copiam; cópia só na primeira escrita em array compartilhado | Seção 6.3 |
 | Tipos embutidos | `sys` (TF, ZPK, SS), registrado em JavaScript; operadores `*`, `+`, `-`, `/`, `^` | Seção 7.2; classes do usuário depois da v1 |
 | Palavras reservadas | Além das do MATLAB e das de declaração: só `classdef` e `model`. `block`, `port`, `parameter`, `state`, `der` e `next` continuam livres (contextuais dentro de `model`, no futuro) | Seção 7.2 |
+| Letras gregas | Identificadores aceitam o alfabeto grego básico, maiúsculas e minúsculas, no início e no meio do nome (`ω`, `ωn`, `Δt`, `θ_1`, `R_θ`, `Ω`). Letras iguais às latinas são erro (`Α Β Ε Ζ Η Ι Κ Μ Ν Ο Ρ Τ Υ Χ` e `ο`), com a sugestão da latina. Variantes tipográficas são o mesmo nome da forma comum: `µ` (sinal de micro, AltGr+M no teclado ABNT2) = `μ`; `ϕ` = `φ`; `ϑ` = `θ`; `ϵ` = `ε`; `ς` = `σ`; `ϖ` = `π`; `ϰ` = `κ`; `ϱ` = `ρ`. Letras acentuadas e outros alfabetos não são aceitos | Divergência do MATLAB/Octave, que só aceitam ASCII (requisito 7). Evita ambiguidade (requisito 8). Palavras-chave e nomes de funções do registro continuam em ASCII. O tradutor converte os nomes para ASCII no JavaScript gerado (`ω` → `v_u03C9`); workspace e mensagens mostram a letra grega. Exportação para `.m` do MATLAB com transliteração opcional (`ω` → `omega`), com erro se o nome resultante colidir com outro |
+| Constante `π` | `π` é pré-definido e igual a `pi` (o mesmo double). É constante: atribuir a `π`, ou usá-lo como parâmetro, saída, variável de laço, declaração ou nome de função, é erro. `pi` continua como no MATLAB (função que pode ser redefinida), com aviso no painel Problemas quando for redefinida | Nenhuma outra letra grega é pré-definida (`ε`, `μ`, `Ω` etc. têm sentidos diferentes conforme a área e ficam livres) |
 | Literais de matriz | Espaço ou vírgula separa colunas, `;` ou quebra de linha separa linhas; `[1 -2]` tem dois elementos, `[1 - 2]` tem um | Regra do MATLAB |
 | Comentários | `%`, blocos `%{ ... %}`, seções `%%` | `#` não é comentário |
 | Continuação | `...` no fim da linha |  |
@@ -671,7 +673,7 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 
 | Parte | Conteúdo | Etapa |
 | --- | --- | --- |
-| Editor de script | Abas, numeração de linhas, realce de sintaxe, linha em execução, erros marcados na linha | v1 |
+| Editor de script | Abas, numeração de linhas, realce de sintaxe, linha em execução, erros marcados na linha; barra própria com o botão de letras gregas | v1 |
 | Command Window | Console de saída e linha de comando (`>>`) com histórico (seta para cima); barra de ferramentas própria | v1 |
 | Workspace | Variáveis publicadas: nome, valor resumido, tamanho, tipo; barra de ferramentas própria | v1 |
 | Figuras | Gráficos em abas, exportação de imagem pela interface | v1 |
@@ -683,6 +685,17 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 | Ajuda | Documentação da função sob o cursor, a partir do Function Registry | logo depois |
 | Depuração | Breakpoints na margem, pilha de chamadas, variáveis locais | fase 8 |
 | Futuro | Visualização do JavaScript gerado; configurações (formato, limites, tema, idioma) | depois |
+
+**Barra do editor** (logo acima do editor de script):
+
+- **Letras gregas:** um botão com o símbolo `α` abre um painel com todas as letras gregas aceitas em nomes (seção 8), minúsculas numa linha e maiúsculas na outra. As letras iguais às latinas não aparecem, e `π` vem destacado como constante. Clicar ou tocar numa letra a insere na posição do cursor e devolve o foco ao editor; o painel continua aberto até Esc, um clique fora ou o botão de novo, para inserir várias seguidas.
+- **Dica com o atalho:** ao parar o mouse sobre uma letra do painel, ou ao chegar nela pelo teclado, aparece acima dela o nome e o comando que a produz, no formato `\beta` → Tab ("beta — `\beta` → Tab"). No toque, a dica aparece com um toque longo. Assim o painel ensina o atalho de digitação.
+- **Sugestão ao digitar:** no editor e na linha de comando, `\` seguido de letras abre uma lista junto ao cursor, filtrada a cada letra digitada (`\om` mostra `ω ômega` e `Ω Ômega`), com a letra, o nome e o atalho. Valem os nomes do LaTeX (`\alpha`, `\omega`, `\Delta`, `\mu`, `\pi`) e os nomes em português (`\alfa`, `\gama`, `\teta`, `\mi`, `\ni`, `\ro`, `\fi`, `\qui`); a inicial maiúscula dá a maiúscula (`\Omega` → `Ω`). A lista não oferece as letras iguais às latinas.
+- **Só Tab aceita** a sugestão destacada (ou um clique nela); setas mudam a destacada. Enter **não** aceita: `\` também é o operador de divisão à esquerda, e `x = A\b` seguido de Enter tem de continuar `x = A\b`, não virar `x = Aβ`. Esc, espaço, operador ou qualquer caractere que não continue um nome fecham a lista sem trocar nada.
+- Sem sugestão dentro de textos e comentários (o editor usa o lexer do Script Studio para saber onde estão): em `fprintf('%d\n')`, `\n` não vira `ν`.
+- A troca acontece no editor; o código salvo contém a letra grega, nunca o atalho.
+- Acessível pelo teclado: o botão recebe foco, as setas percorrem as letras, Enter insere e Esc fecha. Os nomes das letras e as dicas seguem os três idiomas.
+- O painel também fica disponível na linha de comando da Command Window. Inserir uma letra não é um comando, então é exceção ao princípio de que todo botão equivale a um comando.
 
 **Barra da Command Window** (acima da linha de comando):
 
@@ -725,7 +738,7 @@ Sistemas discretos usam `z` e indicam o período de amostragem (`Sample time: 0.
 **Celular e tablet.** Objetivo: rodar scripts pequenos e usar a Command Window no celular, com todo o cálculo no próprio navegador e sem conexão (o MATLAB Mobile, por comparação, envia os comandos para a nuvem). Na tela estreita:
 
 - **Um painel por vez**, com barra de navegação embaixo: Editor, Console, Workspace, Figuras, Arquivos.
-- **Linha de símbolos acima do teclado**, como o MATLAB Mobile, com os caracteres mais usados: `[ ] ( ) ; : ' ^ . * = , ~` e as setas para o histórico de comandos.
+- **Linha de símbolos acima do teclado**, como o MATLAB Mobile, com os caracteres mais usados: `[ ] ( ) ; : ' ^ . * = , ~`, as setas para o histórico de comandos e uma tecla `α` que abre o mesmo painel de letras gregas da barra do editor.
 - **Ponto de aviso nas abas** (Workspace, Figuras, Problemas) quando o conteúdo muda e a aba está escondida. No celular a aba não troca sozinha; no computador, a aba Figuras continua vindo para a frente ao criar um gráfico.
 - **Tablet:** editor e Command Window lado a lado ou empilhados, com divisória arrastável por toque.
 - **Zoom da fonte** por gesto de pinça no editor e no console.

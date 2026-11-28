@@ -132,8 +132,8 @@ test('entrada vazia e sem quebra final', () => {
 // ---- garantias sobre o corpus -----------------------------------------------------------
 const corpus = readdirSync(corpusDir).filter((f) => f.endsWith('.m')).sort();
 
-test('corpus tem os 55 scripts', () => {
-  assert.equal(corpus.length, 55);
+test('corpus tem os 56 scripts', () => {
+  assert.equal(corpus.length, 56);
 });
 
 for (const file of corpus) {
